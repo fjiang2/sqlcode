@@ -32,7 +32,7 @@ namespace UnitTestProject
 				connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
 			}
 
-			Query.DefaultSqlCommand = query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query);
+			Query.SetDbCmdHandler(query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query));
 		}
 
 
