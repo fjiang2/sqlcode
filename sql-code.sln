@@ -11,6 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "UnitTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest-Entity", "UnitTest-Entity\UnitTest-Entity.csproj", "{82187B82-20DF-4FDC-BA4A-6769B06895F4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{67CE76B1-BEC6-4466-BEFF-30CD8B691353}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\sqlcode.nuspec = .nuget\sqlcode.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
