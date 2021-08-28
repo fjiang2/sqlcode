@@ -6,10 +6,24 @@ using System.Threading.Tasks;
 
 namespace Sys.Data
 {
+    /// <summary>
+    /// Generate SQL CRUD script
+    /// </summary>
     public class SqlGenerator : SqlColumnValuePairCollection
     {
+        /// <summary>
+        /// Table name
+        /// </summary>
         public string TableName { get; }
+
+        /// <summary>
+        /// A list of primary keys
+        /// </summary>
         public string[] PrimaryKeys { get; set; }
+
+        /// <summary>
+        /// a list of identity column names
+        /// </summary>
         public string[] IdentityKeys { get; set; }
 
         /// <summary>
@@ -38,7 +52,10 @@ namespace Sys.Data
 
         private string[] notUpdateColumns => columns.Where(p => !p.Column.Saved).Select(p => p.Column.Name).ToArray();
 
-
+        /// <summary>
+        /// SELECT * FROM Table WHERE condition
+        /// </summary>
+        /// <returns></returns>
         public string Select()
         {
             string where = Condition();
@@ -48,8 +65,17 @@ namespace Sys.Data
             return template.Select("*", where);
         }
 
+        /// <summary>
+        /// SELECT * FROM Table
+        /// </summary>
+        /// <returns></returns>
         public string SelectRows() => SelectRows("*");
 
+        /// <summary>
+        /// SELECT Col1,Col2,.. FROM Table
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <returns></returns>
         public string SelectRows(IEnumerable<string> columns)
         {
             var L1 = string.Join(",", columns.Select(c => SqlColumnValuePair.FormalName(c)));
@@ -61,6 +87,11 @@ namespace Sys.Data
 
         private string SelectRows(string columns) => template.Select(columns);
 
+        /// <summary>
+        /// INSERT... or UPDATE...
+        /// </summary>
+        /// <param name="exists"></param>
+        /// <returns></returns>
         public string InsertOrUpdate(bool? exists)
         {
             if (exists == false)
@@ -72,6 +103,10 @@ namespace Sys.Data
             return InsertOrUpdate();
         }
 
+        /// <summary>
+        /// IF NOT EXISTS INSERT... ELSE UPDATE ...
+        /// </summary>
+        /// <returns></returns>
         public string InsertOrUpdate()
         {
             string where = Condition();
@@ -90,6 +125,10 @@ namespace Sys.Data
             }
         }
 
+        /// <summary>
+        /// INSERT INTO table (Col1,Col2,...) VALUES (val1,val2,...)
+        /// </summary>
+        /// <returns></returns>
         public string Insert()
         {
             var C = columns.Where(c => !c.Column.Identity && !c.Value.IsNull);
@@ -99,6 +138,10 @@ namespace Sys.Data
             return template.Insert(L1, L2);
         }
 
+        /// <summary>
+        /// UPDATE Table SET ... WHERE ...
+        /// </summary>
+        /// <returns></returns>
         public string Update()
         {
             var C2 = columns.Where(c => !PrimaryKeys.Contains(c.ColumnName) && !notUpdateColumns.Contains(c.ColumnName));
@@ -115,6 +158,10 @@ namespace Sys.Data
             return template.Update(L2, where);
         }
 
+        /// <summary>
+        /// DELETE FROM Table WHERE ...
+        /// </summary>
+        /// <returns></returns>
         public string Delete()
         {
             string where = Condition();
@@ -125,6 +172,10 @@ namespace Sys.Data
             return template.Delete(where);
         }
 
+        /// <summary>
+        /// DELETE FROM Table
+        /// </summary>
+        /// <returns></returns>
         public string DeleteAll()
         {
             return template.Delete();

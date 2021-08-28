@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Sys.Data
 {
+    /// <summary>
+    /// Represent a collection of column/value pairs
+    /// </summary>
     public class SqlColumnValuePairCollection
     {
         protected List<SqlColumnValuePair> columns = new List<SqlColumnValuePair>();
@@ -13,6 +16,9 @@ namespace Sys.Data
         {
         }
 
+        /// <summary>
+        /// Clear all column/value pairs
+        /// </summary>
         public void Clear()
         {
             columns.Clear();
@@ -31,6 +37,10 @@ namespace Sys.Data
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="map"></param>
         public void AddRange(IDictionary<string, object> map)
         {
             foreach (var kvp in map)
@@ -39,6 +49,10 @@ namespace Sys.Data
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="row"></param>
         public void AddRange(DataRow row)
         {
             foreach (DataColumn column in row.Table.Columns)
@@ -47,6 +61,12 @@ namespace Sys.Data
             }
         }
 
+        /// <summary>
+        /// Add col0,col1,... 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="columnPrefix"></param>
+        /// <param name="values"></param>
         public void AddRange<T>(string columnPrefix, T[] values)
         {
             for (int i = 0; i < values.Length; i++)
@@ -56,6 +76,11 @@ namespace Sys.Data
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnPrefix"></param>
+        /// <param name="values"></param>
         public void AddRange(string columnPrefix, object[] values)
         {
             for (int i = 0; i < values.Length; i++)
@@ -65,6 +90,12 @@ namespace Sys.Data
             }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="values"></param>
         public void AddRange(string[] columns, object[] values)
         {
             for (int i = 0; i < values.Length; i++)

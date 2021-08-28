@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sys.Data.Text;
+using Sys.Data;
 
 namespace UnitTestProject
 {
