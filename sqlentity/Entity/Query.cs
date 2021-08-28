@@ -44,9 +44,6 @@ namespace Sys.Data.Entity
 
 		private static T Invoke<T>(this Func<DataContext, T> func)
 		{
-			if (mgr.ActiveCommand == null)
-				throw new ArgumentNullException("SQL command handler");
-
 			using (var db = new DataContext(mgr.ActiveCommand))
 			{
 				return func(db);

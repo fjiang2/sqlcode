@@ -18,10 +18,13 @@ namespace Sys.Data
 		{
 			get
 			{
+				if (commands.Count == 0)
+					throw new InvalidOperationException($"DbCmd not registered");
+
 				if (!commands.ContainsKey(activeName))
 					throw new InvalidOperationException($"invalid DbCmd name:{activeName}");
 
-					return commands[activeName];
+				return commands[activeName];
 
 			}
 		}
