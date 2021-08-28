@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ using System.Data;
 
 namespace Sys.Data.Entity
 {
-	public static class EntityExtension
+	static class EntityExtension
 	{
 		public static List<T> ToList<T>(this DataTable dt) where T : IEntityRow, new()
 		{
@@ -17,6 +18,17 @@ namespace Sys.Data.Entity
 				obj.FillObject(row);
 				list.Add(obj);
 			}
+			return list;
+		}
+
+		public static List<T> ToList<T>(this DataTable dt, Func<DataRow, T> select)
+		{
+			List<T> list = new List<T>();
+			foreach (DataRow row in dt.Rows)
+			{
+				list.Add(select(row));
+			}
+
 			return list;
 		}
 	}

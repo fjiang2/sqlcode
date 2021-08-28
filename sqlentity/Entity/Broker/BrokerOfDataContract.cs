@@ -1,6 +1,6 @@
 ﻿namespace Sys.Data.Entity
 {
-    class BrokerOfDataContract<TEntity> 
+	class BrokerOfDataContract<TEntity> 
     {
         public static IDataContractBroker<TEntity> CreateBroker(EntityClassType clss)
         {
@@ -9,11 +9,5 @@
             else
                 return new BrokerOfDataContract2<TEntity>();
         }
-    }
-
-    public enum EntityClassType
-    {
-        ExtensionClass,
-        SingleClass
     }
 }

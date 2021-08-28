@@ -16,10 +16,10 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTestDataContextDC2
+	public class UnitTest_EntityClass2
 	{
 		readonly string connectionString;
-		public UnitTestDataContextDC2()
+		public UnitTest_EntityClass2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
 

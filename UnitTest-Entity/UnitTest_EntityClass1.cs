@@ -16,10 +16,10 @@ namespace UnitTestProject
     /// Summary description for UnitTestDataContext
     /// </summary>
     [TestClass]
-    public class UnitTestDataContextDC1
+    public class UnitTest_EntityClass1
     {
         readonly string connectionString;
-        public UnitTestDataContextDC1()
+        public UnitTest_EntityClass1()
         {
             DataContext.EntityClassType = EntityClassType.ExtensionClass;
 

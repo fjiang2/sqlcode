@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\code-gen\sqlcode\sqlcode.csproj" />
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
   </ItemGroup>
 
