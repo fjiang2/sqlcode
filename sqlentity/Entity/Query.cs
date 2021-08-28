@@ -21,19 +21,9 @@ namespace Sys.Data.Entity
 			Query.dbCommand = cmd;
 		}
 
-		public static int ExecuteNonQuery(string sql)
+		public static BaseDbCmd NewDbCmd(string sql)
 		{
-			return dbCommand.Invoke(sql).ExecuteNonQuery();
-		}
-
-		public static object ExecuteScalar(string sql)
-		{
-			return dbCommand(sql).ExecuteScalar();
-		}
-
-		public static DataSet ExecuteScalar(string sql, DataSet ds)
-		{
-			return dbCommand(sql).FillDataSet(ds);
+			return new DelegateDbCmd(dbCommand, sql);
 		}
 
 		private static T Invoke<T>(this Func<DataContext, T> func)
