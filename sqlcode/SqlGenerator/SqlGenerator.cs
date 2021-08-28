@@ -126,6 +126,21 @@ namespace Sys.Data
         }
 
         /// <summary>
+        ///  IF NOT EXISTS INSERT...
+        /// </summary>
+        /// <returns></returns>
+        public string InsertIfNotExists()
+		{
+            string where = Condition();
+            if (string.IsNullOrEmpty(where))
+            {
+                throw new InvalidOperationException("WHERE is blank");
+            }
+
+            return template.IfNotExistsInsert(where, Insert());
+        }
+
+        /// <summary>
         /// INSERT INTO table (Col1,Col2,...) VALUES (val1,val2,...)
         /// </summary>
         /// <returns></returns>
@@ -136,6 +151,21 @@ namespace Sys.Data
             var L2 = string.Join(",", C.Select(c => c.Value.ToString()));
 
             return template.Insert(L1, L2);
+        }
+
+        /// <summary>
+        /// IF EXISTS ... UPDATE ...
+        /// </summary>
+        /// <returns></returns>
+        public string UpdateIfExists()
+		{
+            string where = Condition();
+            if (string.IsNullOrEmpty(where))
+            {
+                throw new InvalidOperationException("WHERE is blank");
+            }
+
+            return template.IfExistsUpdate(where, Update());
         }
 
         /// <summary>
