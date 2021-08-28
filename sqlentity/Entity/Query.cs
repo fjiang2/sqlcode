@@ -8,30 +8,46 @@ using System.Data;
 
 namespace Sys.Data.Entity
 {
+
+
 	public static class Query
 	{
-		private static Func<string, IDbCmd> dbCommand { get; set; }
+		private static DbCmdManager mgr = new DbCmdManager();
 
 		/// <summary>
-		/// Handler of SQL database command
+		/// Register handler of SQL database command
 		/// </summary>
 		/// <param name="cmd"></param>
-		public static void SetDbCmdHandler(Func<string, IDbCmd> cmd)
+		public static void Register(Func<string, IDbCmd> cmd, string name = null)
 		{
-			Query.dbCommand = cmd;
+			mgr.Register(name, cmd);
 		}
 
+		/// <summary>
+		/// Activate SQL database handler by given name
+		/// </summary>
+		/// <param name="name"></param>
+		public static void Activate(string name)
+		{
+			mgr.Activate(name);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sql"></param>
+		/// <returns></returns>
 		public static BaseDbCmd NewDbCmd(string sql)
 		{
-			return new DelegateDbCmd(dbCommand, sql);
+			return new DelegateDbCmd(mgr.ActiveCommand, sql);
 		}
 
 		private static T Invoke<T>(this Func<DataContext, T> func)
 		{
-			if (dbCommand == null)
+			if (mgr.ActiveCommand == null)
 				throw new ArgumentNullException("SQL command handler");
 
-			using (var db = new DataContext(dbCommand))
+			using (var db = new DataContext(mgr.ActiveCommand))
 			{
 				return func(db);
 			}
