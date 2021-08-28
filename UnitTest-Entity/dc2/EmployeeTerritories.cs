@@ -70,14 +70,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.TerritoryID = (string)dict[_TERRITORYID];
 		}
 		
-		public EmployeeTerritoriesAssociation GetAssociation()
+		public EmployeeTerritoriesAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new EmployeeTerritories[] { this }).FirstOrDefault();
+			return GetAssociation(query, new EmployeeTerritories[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<EmployeeTerritoriesAssociation> GetAssociation(IEnumerable<EmployeeTerritories> entities)
+		public static IEnumerable<EmployeeTerritoriesAssociation> GetAssociation(IQuery query, IEnumerable<EmployeeTerritories> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<EmployeeTerritoriesAssociation>();
 			

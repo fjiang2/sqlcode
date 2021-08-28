@@ -107,14 +107,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.RegionDescription = from.RegionDescription;
 		}
 		
-		public static RegionAssociation GetAssociation(this Region entity)
+		public static RegionAssociation GetAssociation(this Region entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new Region[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<RegionAssociation> GetAssociation(this IEnumerable<Region> entities)
+		public static IEnumerable<RegionAssociation> GetAssociation(this IEnumerable<Region> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<RegionAssociation>();
 			

@@ -50,5 +50,6 @@ namespace Sys.Data.Entity
 
 			return list;
 		}
+
 	}
 }

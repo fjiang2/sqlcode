@@ -8,28 +8,13 @@ using System.Data;
 
 namespace Sys.Data.Entity
 {
-
-
-	public static class Query
+	public class Query : IQuery
 	{
-		private static DbCmdManager mgr = new DbCmdManager();
+		private Func<string, IDbCmd> command { get; set; }
 
-		/// <summary>
-		/// Register handler of SQL database command
-		/// </summary>
-		/// <param name="cmd"></param>
-		public static void Register(Func<string, IDbCmd> cmd, string name = null)
+		public Query(Func<string, IDbCmd> cmd)
 		{
-			mgr.Register(name, cmd);
-		}
-
-		/// <summary>
-		/// Activate SQL database handler by given name
-		/// </summary>
-		/// <param name="name"></param>
-		public static void Activate(string name)
-		{
-			mgr.Activate(name);
+			this.command = cmd;
 		}
 
 		/// <summary>
@@ -37,20 +22,20 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="sql"></param>
 		/// <returns></returns>
-		public static BaseDbCmd NewDbCmd(string sql)
+		public BaseDbCmd NewDbCmd(string sql)
 		{
-			return new DelegateDbCmd(mgr.ActiveCommand, sql);
+			return new DelegateDbCmd(command, sql);
 		}
 
-		private static T Invoke<T>(this Func<DataContext, T> func)
+		private T Invoke<T>(Func<DataContext, T> func)
 		{
-			using (var db = new DataContext(mgr.ActiveCommand))
+			using (var db = new DataContext(command))
 			{
 				return func(db);
 			}
 		}
 
-		public static int Submit<TEntity>(this Action<Table<TEntity>> action) where TEntity : class
+		public int Submit<TEntity>(Action<Table<TEntity>> action) where TEntity : class
 		{
 			return Invoke(db =>
 			{
@@ -65,7 +50,7 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="action"></param>
 		/// <returns></returns>
-		public static IQueryResultReader Select(this Action<DataContext> action)
+		public IQueryResultReader Select(Action<DataContext> action)
 		{
 			return Invoke(db =>
 			{
@@ -80,7 +65,7 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <typeparam name="TEntity"></typeparam>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>() where TEntity : class
+		public IEnumerable<TEntity> Select<TEntity>() where TEntity : class
 		{
 			return Invoke(db => db.GetTable<TEntity>().Select(where: string.Empty));
 		}
@@ -91,7 +76,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(string where = null) where TEntity : class
+		public IEnumerable<TEntity> Select<TEntity>(string where = null) where TEntity : class
 		{
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
@@ -102,7 +87,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(this Expression<Func<TEntity, bool>> where) where TEntity : class
+		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
 		{
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
@@ -117,7 +102,7 @@ namespace Sys.Data.Entity
 		/// <param name="selectedColumns"></param>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(this Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where = null) where TEntity : class, new()
+		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where = null) where TEntity : class, new()
 		{
 			TEntity CreateInstance(System.Reflection.PropertyInfo[] properties, DataRow row, IEnumerable<string> columns)
 			{
@@ -161,7 +146,7 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public static IEnumerable<TResult> Select<TEntity, TKey, TResult>(this Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
+		public IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
 			where TEntity : class
 			where TResult : class
 		{
@@ -186,7 +171,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Insert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOnSubmit(entities));
 
 		/// <summary>
@@ -195,7 +180,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Update<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int Update<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.UpdateOnSubmit(entities));
 
 
@@ -209,7 +194,7 @@ namespace Sys.Data.Entity
 		/// <param name="entities"></param>
 		/// <param name="throwException"></param>
 		/// <returns></returns>
-		public static int PatialUpdate<TEntity>(this IEnumerable<object> entities, bool throwException = false) where TEntity : class
+		public int PatialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entities, throwException));
 
 		/// <summary>
@@ -220,10 +205,10 @@ namespace Sys.Data.Entity
 		/// <param name="modifiedProperties">The properties are modified</param>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int PatialUpdate<TEntity>(this TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
+		public int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, modifiedProperties, where));
 
-		public static int InsertOrUpdate<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int InsertOrUpdate<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOrUpdateOnSubmit(entities));
 
 		/// <summary>
@@ -232,7 +217,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int Delete<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.DeleteOnSubmit(entities));
 
 
@@ -242,7 +227,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(string where = null) where TEntity : class
+		public int Delete<TEntity>(string where = null) where TEntity : class
 		{
 			return Submit<TEntity>(table => table.DeleteOnSubmit(where));
 		}
@@ -253,7 +238,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(this Expression<Func<TEntity, bool>> where) where TEntity : class
+		public int Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
 		{
 			return Submit<TEntity>(table => table.DeleteOnSubmit(where));
 		}
@@ -265,7 +250,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TSubEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(this IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
+		public IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
 			=> Invoke(db => db.Expand<TEntity, TSubEntity>(entities));
 
 		/// <summary>
@@ -274,14 +259,8 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static IQueryResultReader Expand<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Invoke(db => db.Expand(entities));
-
-		public static IEnumerable<T> AsEnumerable<T>(this T item)
-			=> new T[] { item };
-
-		public static IEnumerable<T> Enumerable<T>(params T[] items)
-			=> items;
-
 	}
+	
 }

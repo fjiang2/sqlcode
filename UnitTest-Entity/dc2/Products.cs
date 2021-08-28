@@ -134,14 +134,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.Discontinued = (bool)dict[_DISCONTINUED];
 		}
 		
-		public ProductsAssociation GetAssociation()
+		public ProductsAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new Products[] { this }).FirstOrDefault();
+			return GetAssociation(query, new Products[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<ProductsAssociation> GetAssociation(IEnumerable<Products> entities)
+		public static IEnumerable<ProductsAssociation> GetAssociation(IQuery query, IEnumerable<Products> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<ProductsAssociation>();
 			
