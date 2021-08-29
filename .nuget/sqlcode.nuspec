@@ -2,22 +2,26 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode</id>
-    <version>1.0.0.0</version>
+    <version>1.0.1.0</version>
     <title>SQL code generator</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
-      Generate SQL code
+      Generate SQL code by SqlBuilder or SqlGenerator
     </description>
-    <summary>C# code generator</summary>
+    <summary>SQL code generator</summary>
     <releaseNotes>
-	  8/20/2021 v1.0.0.0
-	    Features:
-  	    1. Create SQL by SqlBuilder
+		8/28/2021 v1.0.0.1
+		Features:
+		1. Query SQL database by entity class
+
+        8/20/2021 v1.0.0.0
+		Features:
+		1. Create SQL by SqlBuilder
 		2. Create SQL by SqlGenerator
-    </releaseNotes>
+	</releaseNotes>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
       </group>
