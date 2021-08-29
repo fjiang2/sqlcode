@@ -70,14 +70,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.CustomerTypeID = (string)dict[_CUSTOMERTYPEID];
 		}
 		
-		public CustomerCustomerDemoAssociation GetAssociation()
+		public CustomerCustomerDemoAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new CustomerCustomerDemo[] { this }).FirstOrDefault();
+			return GetAssociation(query, new CustomerCustomerDemo[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(IEnumerable<CustomerCustomerDemo> entities)
+		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(IQuery query, IEnumerable<CustomerCustomerDemo> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<CustomerCustomerDemoAssociation>();
 			

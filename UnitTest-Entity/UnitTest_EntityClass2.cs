@@ -19,6 +19,7 @@ namespace UnitTestProject
 	public class UnitTest_EntityClass2
 	{
 		readonly string connectionString;
+		Query Query;
 		public UnitTest_EntityClass2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
@@ -32,7 +33,7 @@ namespace UnitTestProject
 				connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
 			}
 
-			Query.DefaultSqlCommand = query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query);
+			Query = new Query(query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query));
 		}
 
 
@@ -428,8 +429,8 @@ namespace UnitTestProject
 			var req = new { OrderId = 10254 };
 			var orders = Query.Select<Orders>(row => row.OrderID == req.OrderId || row.OrderID == 10260);
 
-			var order_details = orders.Expand<Orders, Order_Details>();
-			var products = order_details.Expand<Order_Details, Products>();
+			var order_details = Query.Expand<Orders, Order_Details>(orders);
+			var products = Query.Expand<Order_Details, Products>(order_details);
 
 			var product = products.First(row => row.ProductName == "Tarte au sucre");
 			Debug.Assert(product.UnitsInStock == 17);
@@ -437,8 +438,8 @@ namespace UnitTestProject
 
 			var order = Query.Select<Orders>(row => row.OrderID == 10260).First();
 
-			var order_detail = order.AsEnumerable().Expand<Orders, Order_Details>().First();
-			products = order_detail.AsEnumerable().Expand<Order_Details, Products>();
+			var order_detail = Query.Expand<Orders, Order_Details>(new Orders[] { order }).First();
+			products = Query.Expand<Order_Details, Products>(new Order_Details[] { order_detail });
 
 			product = products.First(row => row.ProductName == "Jack's New England Clam Chowder");
 			Debug.Assert(product.UnitsInStock == 85);
@@ -453,13 +454,16 @@ namespace UnitTestProject
 				new CustomerDemographics { CustomerTypeID = "EE",  CustomerDesc = "Electrical Engineering" },
 			};
 
-			demographics.InsertOrUpdate();
+			Query.InsertOrUpdate(demographics);
 
-			new CustomerCustomerDemo
-			{
-				CustomerID = "ALFKI",
-				CustomerTypeID = "IT",
-			}.AsEnumerable().InsertOrUpdate();
+			Query.InsertOrUpdate(new CustomerCustomerDemo[]
+				{
+					new CustomerCustomerDemo
+					 {
+						 CustomerID = "ALFKI",
+						 CustomerTypeID = "IT",
+					 }
+				});
 
 			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT").First().CustomerDesc;
 			Debug.Assert(desc == "Computer Science");
@@ -472,7 +476,7 @@ namespace UnitTestProject
 		public void TestAssoicationClass()
 		{
 			var product = Query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
-			var A = product.GetAssociation();
+			var A = product.GetAssociation(Query);
 			var D = A.Order_Details;
 
 			Debug.Assert(D.Count == 22);

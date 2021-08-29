@@ -140,14 +140,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.Discount = from.Discount;
 		}
 		
-		public static Order_DetailsAssociation GetAssociation(this Order_Details entity)
+		public static Order_DetailsAssociation GetAssociation(this Order_Details entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new Order_Details[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<Order_DetailsAssociation> GetAssociation(this IEnumerable<Order_Details> entities)
+		public static IEnumerable<Order_DetailsAssociation> GetAssociation(this IEnumerable<Order_Details> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<Order_DetailsAssociation>();
 			

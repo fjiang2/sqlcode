@@ -228,14 +228,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.ShipCountry = from.ShipCountry;
 		}
 		
-		public static OrdersAssociation GetAssociation(this Orders entity)
+		public static OrdersAssociation GetAssociation(this Orders entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new Orders[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<OrdersAssociation> GetAssociation(this IEnumerable<Orders> entities)
+		public static IEnumerable<OrdersAssociation> GetAssociation(this IEnumerable<Orders> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<OrdersAssociation>();
 			

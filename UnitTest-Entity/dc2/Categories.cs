@@ -86,14 +86,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.Picture = (byte[])dict[_PICTURE];
 		}
 		
-		public CategoriesAssociation GetAssociation()
+		public CategoriesAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new Categories[] { this }).FirstOrDefault();
+			return GetAssociation(query, new Categories[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CategoriesAssociation> GetAssociation(IEnumerable<Categories> entities)
+		public static IEnumerable<CategoriesAssociation> GetAssociation(IQuery query, IEnumerable<Categories> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<CategoriesAssociation>();
 			

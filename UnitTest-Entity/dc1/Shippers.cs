@@ -116,14 +116,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.Phone = from.Phone;
 		}
 		
-		public static ShippersAssociation GetAssociation(this Shippers entity)
+		public static ShippersAssociation GetAssociation(this Shippers entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new Shippers[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<ShippersAssociation> GetAssociation(this IEnumerable<Shippers> entities)
+		public static IEnumerable<ShippersAssociation> GetAssociation(this IEnumerable<Shippers> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<ShippersAssociation>();
 			

@@ -166,14 +166,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.ShipCountry = (string)dict[_SHIPCOUNTRY];
 		}
 		
-		public OrdersAssociation GetAssociation()
+		public OrdersAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new Orders[] { this }).FirstOrDefault();
+			return GetAssociation(query, new Orders[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<OrdersAssociation> GetAssociation(IEnumerable<Orders> entities)
+		public static IEnumerable<OrdersAssociation> GetAssociation(IQuery query, IEnumerable<Orders> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<OrdersAssociation>();
 			

@@ -107,14 +107,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.CustomerDesc = from.CustomerDesc;
 		}
 		
-		public static CustomerDemographicsAssociation GetAssociation(this CustomerDemographics entity)
+		public static CustomerDemographicsAssociation GetAssociation(this CustomerDemographics entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new CustomerDemographics[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerDemographicsAssociation> GetAssociation(this IEnumerable<CustomerDemographics> entities)
+		public static IEnumerable<CustomerDemographicsAssociation> GetAssociation(this IEnumerable<CustomerDemographics> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<CustomerDemographicsAssociation>();
 			

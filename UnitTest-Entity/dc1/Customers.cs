@@ -186,14 +186,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.Fax = from.Fax;
 		}
 		
-		public static CustomersAssociation GetAssociation(this Customers entity)
+		public static CustomersAssociation GetAssociation(this Customers entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new Customers[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomersAssociation> GetAssociation(this IEnumerable<Customers> entities)
+		public static IEnumerable<CustomersAssociation> GetAssociation(this IEnumerable<Customers> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<CustomersAssociation>();
 			

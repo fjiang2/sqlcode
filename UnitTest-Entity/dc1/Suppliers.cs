@@ -188,14 +188,14 @@ namespace UnitTestProject.Northwind.dc1
 			to.HomePage = from.HomePage;
 		}
 		
-		public static SuppliersAssociation GetAssociation(this Suppliers entity)
+		public static SuppliersAssociation GetAssociation(this Suppliers entity, IQuery query)
 		{
-			return entity.AsEnumerable().GetAssociation().FirstOrDefault();
+			return GetAssociation(new Suppliers[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<SuppliersAssociation> GetAssociation(this IEnumerable<Suppliers> entities)
+		public static IEnumerable<SuppliersAssociation> GetAssociation(this IEnumerable<Suppliers> entities, IQuery query)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<SuppliersAssociation>();
 			

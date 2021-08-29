@@ -18,7 +18,7 @@ namespace Sys.Data
         }
 
 
-        private SqlTemplateFormat Format
+        internal SqlTemplateFormat Format
         {
             get
             {

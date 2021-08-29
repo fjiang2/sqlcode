@@ -198,14 +198,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.PhotoPath = (string)dict[_PHOTOPATH];
 		}
 		
-		public EmployeesAssociation GetAssociation()
+		public EmployeesAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new Employees[] { this }).FirstOrDefault();
+			return GetAssociation(query, new Employees[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<EmployeesAssociation> GetAssociation(IEnumerable<Employees> entities)
+		public static IEnumerable<EmployeesAssociation> GetAssociation(IQuery query, IEnumerable<Employees> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<EmployeesAssociation>();
 			

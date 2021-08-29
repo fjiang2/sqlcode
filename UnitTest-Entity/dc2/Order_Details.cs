@@ -94,14 +94,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.Discount = (float)dict[_DISCOUNT];
 		}
 		
-		public Order_DetailsAssociation GetAssociation()
+		public Order_DetailsAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new Order_Details[] { this }).FirstOrDefault();
+			return GetAssociation(query, new Order_Details[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<Order_DetailsAssociation> GetAssociation(IEnumerable<Order_Details> entities)
+		public static IEnumerable<Order_DetailsAssociation> GetAssociation(IQuery query, IEnumerable<Order_Details> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<Order_DetailsAssociation>();
 			

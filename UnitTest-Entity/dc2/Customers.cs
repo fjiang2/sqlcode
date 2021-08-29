@@ -142,14 +142,14 @@ namespace UnitTestProject.Northwind.dc2
 			this.Fax = (string)dict[_FAX];
 		}
 		
-		public CustomersAssociation GetAssociation()
+		public CustomersAssociation GetAssociation(IQuery query)
 		{
-			return GetAssociation(new Customers[] { this }).FirstOrDefault();
+			return GetAssociation(query, new Customers[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomersAssociation> GetAssociation(IEnumerable<Customers> entities)
+		public static IEnumerable<CustomersAssociation> GetAssociation(IQuery query, IEnumerable<Customers> entities)
 		{
-			var reader = entities.Expand();
+			var reader = query.Expand(entities);
 			
 			var associations = new List<CustomersAssociation>();
 			
