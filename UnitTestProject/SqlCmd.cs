@@ -11,7 +11,7 @@ using Sys.Data;
 
 namespace UnitTestProject
 {
-    public class SqlCmd : IDbCmd
+    public class SqlCmd : BaseDbCmd
     {
         private SqlCommand cmd;
         private SqlConnection conn;
@@ -96,34 +96,8 @@ namespace UnitTestProject
 
         }
 
-        public object FillObject()
-        {
-            DataRow row = FillDataRow();
-            if (row != null && row.Table.Columns.Count > 0)
-                return row[0];
-            else
-                return null;
-        }
 
-        public DataRow FillDataRow(int row = 0)
-        {
-            DataTable table = FillDataTable();
-            if (table != null && row < table.Rows.Count)
-                return table.Rows[row];
-            else
-                return null;
-        }
-
-        public DataTable FillDataTable()
-        {
-            DataSet ds = FillDataSet(new DataSet());
-            if (ds != null && ds.Tables.Count > 0)
-                return ds.Tables[0];
-            else
-                return null;
-        }
-
-        public DataSet FillDataSet(DataSet ds)
+        public override DataSet FillDataSet(DataSet ds)
         {
             try
             {
@@ -138,7 +112,7 @@ namespace UnitTestProject
             }
         }
 
-        public int ExecuteNonQuery()
+        public override int ExecuteNonQuery()
         {
             try
             {
@@ -152,7 +126,7 @@ namespace UnitTestProject
             }
         }
 
-        public object ExecuteScalar()
+        public override object ExecuteScalar()
         {
             try
             {

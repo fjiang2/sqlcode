@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
+using System.Data.SqlClient;
 
 using UnitTestProject.Northwind.dc2;
 using Sys;
@@ -24,7 +25,7 @@ namespace UnitTestProject
 		public UnitTest_EntityClass2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query(query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query));
+			Query = new Query(query => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query));
 		}
 
 
