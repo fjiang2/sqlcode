@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode", "sqlcode\sqlcode.csproj", "{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{3D772EEB-11E6-49BF-BAF5-89FC9845CC3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{67CE76B1-BEC6-4466-BEFF-30CD8B691353}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\sqlcode.nuspec = .nuget\sqlcode.nuspec
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D772EEB-11E6-49BF-BAF5-89FC9845CC3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D772EEB-11E6-49BF-BAF5-89FC9845CC3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D772EEB-11E6-49BF-BAF5-89FC9845CC3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D772EEB-11E6-49BF-BAF5-89FC9845CC3F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41CE5E9C-67D4-46CD-8B7C-9460E6F4C501}
+	EndGlobalSection
+EndGlobal
