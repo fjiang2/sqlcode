@@ -28,13 +28,7 @@ namespace UnitTestProject
 
         public UnitTest_SqlBuilder()
         {
-            string connectionString;
-            if (Environment.MachineName.StartsWith("XPS"))
-                connectionString = "data source=localhost\\sqlexpress;initial catalog=Northwind;integrated security=SSPI;packet size=4096";
-            else
-                connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
-
-            conn = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+            conn = new System.Data.SqlClient.SqlConnectionStringBuilder(Setting.ConnectionString);
         }
 
         [TestMethod]

@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
 
-using UnitTestProject.Northwind.dc1;
+using UnitTestProject.Northwind.dc2;
 using Sys;
 using Sys.Data.Entity;
 using Sys.Data;
@@ -16,23 +16,14 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTest_EntityClass1
+	public class UnitTest_EntityClass2
 	{
-		readonly string connectionString;
-		Query Query;
-		public UnitTest_EntityClass1()
+		private readonly string connectionString = Setting.ConnectionString;
+		private Query Query;
+
+		public UnitTest_EntityClass2()
 		{
-			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-
-			if (Environment.MachineName.StartsWith("XPS"))
-			{
-				connectionString = "data source=localhost\\sqlexpress;initial catalog=Northwind;integrated security=SSPI;packet size=4096";
-			}
-			else
-			{
-				connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
-			}
-
+			DataContext.EntityClassType = EntityClassType.SingleClass;
 			Query = new Query(query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query));
 		}
 
@@ -457,13 +448,13 @@ namespace UnitTestProject
 			Query.InsertOrUpdate(demographics);
 
 			Query.InsertOrUpdate(new CustomerCustomerDemo[]
-			{
-				new CustomerCustomerDemo
-				 {
-					 CustomerID = "ALFKI",
-					 CustomerTypeID = "IT",
-				 } 
-			});
+				{
+					new CustomerCustomerDemo
+					 {
+						 CustomerID = "ALFKI",
+						 CustomerTypeID = "IT",
+					 }
+				});
 
 			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT").First().CustomerDesc;
 			Debug.Assert(desc == "Computer Science");
@@ -549,8 +540,6 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-			Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
-
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using Sys.Data;
+
 
 namespace UnitTestProject
 {
-    public class SqlCmd
+    public class SqlCmd : IDbCmd
     {
         private SqlCommand cmd;
         private SqlConnection conn;
@@ -29,6 +31,12 @@ namespace UnitTestProject
                 DecodeObject(parameters);
         }
 
+        public SqlCmd(SqlConnectionStringBuilder connectionString, string sql)
+        {
+            this.cmd = new SqlCommand(sql);
+            this.conn = new SqlConnection(connectionString.ConnectionString);
+            this.cmd.Connection = conn;
+        }
 
         private void DecodeObject(object args)
         {
@@ -108,19 +116,18 @@ namespace UnitTestProject
 
         public DataTable FillDataTable()
         {
-            DataSet ds = FillDataSet();
+            DataSet ds = FillDataSet(new DataSet());
             if (ds != null && ds.Tables.Count > 0)
                 return ds.Tables[0];
             else
                 return null;
         }
 
-        public DataSet FillDataSet()
+        public DataSet FillDataSet(DataSet ds)
         {
             try
             {
                 conn.Open();
-                DataSet ds = new DataSet();
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 adapter.Fill(ds);
                 return ds;
