@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
+using System.Data.SqlClient;
 
 using UnitTestProject.Northwind.dc1;
 using Sys;
@@ -18,22 +19,13 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_EntityClass1
 	{
-		readonly string connectionString;
-		Query Query;
+		private readonly string connectionString = Setting.ConnectionString;
+		private Query Query;
+
 		public UnitTest_EntityClass1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-
-			if (Environment.MachineName.StartsWith("XPS"))
-			{
-				connectionString = "data source=localhost\\sqlexpress;initial catalog=Northwind;integrated security=SSPI;packet size=4096";
-			}
-			else
-			{
-				connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
-			}
-
-			Query = new Query(query => new SqlCmd(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString), query));
+			Query = new Query(query => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query));
 		}
 
 

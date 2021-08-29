@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Data.SqlClient;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
@@ -16,7 +17,7 @@ namespace UnitTestProject
     [TestClass]
     public class UnitTest_SqlBuilder
     {
-        private System.Data.SqlClient.SqlConnectionStringBuilder conn;
+        private SqlConnectionStringBuilder conn;
 
         private readonly Expression ProductId = "ProductId".AsColumn();
 
@@ -28,13 +29,7 @@ namespace UnitTestProject
 
         public UnitTest_SqlBuilder()
         {
-            string connectionString;
-            if (Environment.MachineName.StartsWith("XPS"))
-                connectionString = "data source=localhost\\sqlexpress;initial catalog=Northwind;integrated security=SSPI;packet size=4096";
-            else
-                connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
-
-            conn = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+            conn = new SqlConnectionStringBuilder(Setting.ConnectionString);
         }
 
         [TestMethod]
