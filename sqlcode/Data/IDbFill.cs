@@ -14,8 +14,7 @@ namespace Sys.Data
         DataRow FillDataRow();
         IEnumerable<T> FillDataColumn<T>(int column);
         IEnumerable<T> FillDataColumn<T>(string columnName);
-        object FillObject();
-        T FillObject<T>();
-        List<T> ToList<T>(Func<DataRow, T> newObject);
+        object FillObject(int column);
+        T FillObject<T>(int column);
     }
 }

@@ -8,133 +8,118 @@ using System.Diagnostics.Contracts;
 
 namespace Sys.Data
 {
-    public abstract class BaseDbCmd : IDbFill, IDbCmd
-    {
-        public string Description { get; set; } = nameof(BaseDbCmd);
-        
-        public BaseDbCmd()
-        {
-        }
+	public abstract class BaseDbCmd : IDbFill, IDbCmd
+	{
+		public string Description { get; set; } = nameof(BaseDbCmd);
 
-        public abstract DataSet FillDataSet(DataSet dataSet);
-        public abstract int ExecuteNonQuery();
-        public abstract object ExecuteScalar();
+		public BaseDbCmd()
+		{
+		}
 
-        public DataSet FillDataSet()
-        {
+		public abstract DataSet FillDataSet(DataSet dataSet);
+		public abstract int ExecuteNonQuery();
+		public abstract object ExecuteScalar();
 
-            DataSet ds = new DataSet();
+		public DataSet FillDataSet()
+		{
 
-            if (FillDataSet(ds) == null)
-                return null;
+			DataSet ds = new DataSet();
 
-            return ds;
-        }
+			if (FillDataSet(ds) == null)
+				return null;
 
-        public DataTable FillDataTable()
-        {
-            DataSet ds = FillDataSet();
-            if (ds == null)
-                return null;
+			return ds;
+		}
 
-            if (ds.Tables.Count >= 1)
-                return ds.Tables[0];
+		public DataTable FillDataTable()
+		{
+			DataSet ds = FillDataSet();
+			if (ds == null)
+				return null;
 
-            return null;
-        }
+			if (ds.Tables.Count >= 1)
+				return ds.Tables[0];
 
-        public IEnumerable<T> FillDataColumn<T>(int column = 0)
-        {
-            Contract.Requires(column >= 0);
+			return null;
+		}
 
-            List<T> list = new List<T>();
+		public IEnumerable<T> FillDataColumn<T>(int column = 0)
+		{
+			Contract.Requires(column >= 0);
 
-            DataTable table = FillDataTable();
-            if (table == null)
-                return list;
+			List<T> list = new List<T>();
 
-            foreach (DataRow row in table.Rows)
-            {
-                object obj = row[column];
-                list.Add(ToObject<T>(obj));
-            }
+			DataTable table = FillDataTable();
+			if (table == null)
+				return list;
 
-            return list;
-        }
+			foreach (DataRow row in table.Rows)
+			{
+				object obj = row[column];
+				list.Add(ToObject<T>(obj));
+			}
 
-        public IEnumerable<T> FillDataColumn<T>(string columnName)
-        {
-            Contract.Requires(!string.IsNullOrEmpty(columnName));
+			return list;
+		}
 
-            List<T> list = new List<T>();
+		public IEnumerable<T> FillDataColumn<T>(string columnName)
+		{
+			Contract.Requires(!string.IsNullOrEmpty(columnName));
 
-            DataTable table = FillDataTable();
-            if (table == null)
-                return list;
+			List<T> list = new List<T>();
 
-            foreach (DataRow row in table.Rows)
-            {
-                object obj = row[columnName];
-                list.Add(ToObject<T>(obj));
-            }
+			DataTable table = FillDataTable();
+			if (table == null)
+				return list;
 
-            return list;
-        }
+			foreach (DataRow row in table.Rows)
+			{
+				object obj = row[columnName];
+				list.Add(ToObject<T>(obj));
+			}
 
-        public DataRow FillDataRow()
-        {
-            return FillDataRow(0);
-        }
+			return list;
+		}
 
-        public DataRow FillDataRow(int row = 0)
-        {
-            Contract.Requires(row >= 0);
+		public DataRow FillDataRow()
+		{
+			return FillDataRow(row: 0);
+		}
 
-            DataTable table = FillDataTable();
-            if (table != null && row < table.Rows.Count)
-                return table.Rows[row];
-            else
-                return null;
-        }
+		public DataRow FillDataRow(int row = 0)
+		{
+			Contract.Requires(row >= 0);
 
-        public object FillObject()
-        {
-            DataRow row = FillDataRow();
-            if (row != null && row.Table.Columns.Count > 0)
-                return row[0];
-            else
-                return null;
-        }
+			DataTable table = FillDataTable();
+			if (table != null && row < table.Rows.Count)
+				return table.Rows[row];
+			else
+				return null;
+		}
 
-        public T FillObject<T>()
-        {
-            var obj = FillObject();
+		public object FillObject(int column = 0)
+		{
+			DataRow row = FillDataRow();
+			if (row != null && row.Table.Columns.Count > column)
+				return row[column];
+			else
+				return null;
+		}
 
-            return ToObject<T>(obj);
-        }
+		public T FillObject<T>(int column = 0)
+		{
+			var obj = FillObject(column);
 
-        private static T ToObject<T>(object obj)
-        {
-            if (obj != null && obj != DBNull.Value)
-                return (T)obj;
-            else
-                return default(T);
-        }
+			return ToObject<T>(obj);
+		}
 
-        public List<T> ToList<T>(Func<DataRow, T> newObject)
-        {
-            var dt = FillDataTable();
-            if (dt == null)
-                return null;
-
-            List<T> list = new List<T>();
-            foreach (DataRow row in dt.Rows)
-            {
-                list.Add(newObject(row));
-            }
-
-            return list;
-        }
+		private static T ToObject<T>(object obj)
+		{
+			if (obj != null && obj != DBNull.Value)
+				return (T)obj;
+			else
+				return default(T);
+		}
 
 		public override string ToString()
 		{
