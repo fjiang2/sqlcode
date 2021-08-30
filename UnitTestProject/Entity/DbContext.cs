@@ -10,7 +10,7 @@ namespace UnitTestProject
 	public class DbContext : DataContext
 	{
 		public DbContext(string connectionString)
-			: base(query => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query))
+			: base( (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args))
 		{
 		}
 	}
