@@ -31,29 +31,36 @@ namespace Sys.Data
 			return ds;
 		}
 
-		public DataTable FillDataTable()
+		public DataTable FillDataTable(int table = 0)
 		{
 			DataSet ds = FillDataSet();
 			if (ds == null)
 				return null;
 
-			if (ds.Tables.Count >= 1)
-				return ds.Tables[0];
+			if (table < ds.Tables.Count)
+				return ds.Tables[table];
 
 			return null;
 		}
 
-		public IEnumerable<T> FillDataColumn<T>(int column = 0)
+		/// <summary>
+		/// Get list from specified column in a table
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="column"></param>
+		/// <param name="table">table id from 0 to max-1</param>
+		/// <returns></returns>
+		public List<T> FillDataColumn<T>(int column = 0, int table = 0)
 		{
 			Contract.Requires(column >= 0);
 
 			List<T> list = new List<T>();
 
-			DataTable table = FillDataTable();
-			if (table == null)
+			DataTable _table = FillDataTable(table);
+			if (_table == null)
 				return list;
 
-			foreach (DataRow row in table.Rows)
+			foreach (DataRow row in _table.Rows)
 			{
 				object obj = row[column];
 				list.Add(ToObject<T>(obj));
@@ -62,17 +69,17 @@ namespace Sys.Data
 			return list;
 		}
 
-		public IEnumerable<T> FillDataColumn<T>(string columnName)
+		public List<T> FillDataColumn<T>(string columnName, int table = 0)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(columnName));
 
 			List<T> list = new List<T>();
 
-			DataTable table = FillDataTable();
-			if (table == null)
+			DataTable _table = FillDataTable(table);
+			if (_table == null)
 				return list;
 
-			foreach (DataRow row in table.Rows)
+			foreach (DataRow row in _table.Rows)
 			{
 				object obj = row[columnName];
 				list.Add(ToObject<T>(obj));
@@ -83,32 +90,48 @@ namespace Sys.Data
 
 		public DataRow FillDataRow()
 		{
-			return FillDataRow(row: 0);
+			return FillDataRow(row: 0, table: 0);
 		}
 
-		public DataRow FillDataRow(int row = 0)
+		public DataRow FillDataRow(int row = 0, int table = 0)
 		{
 			Contract.Requires(row >= 0);
 
-			DataTable table = FillDataTable();
-			if (table != null && row < table.Rows.Count)
-				return table.Rows[row];
+			DataTable _table = FillDataTable(table);
+			if (_table != null && row < _table.Rows.Count)
+				return _table.Rows[row];
 			else
 				return null;
 		}
 
-		public object FillObject(int column = 0)
+		public object FillObject(int column = 0, int row = 0, int table = 0)
 		{
-			DataRow row = FillDataRow();
-			if (row != null && row.Table.Columns.Count > column)
-				return row[column];
+			DataRow _row = FillDataRow(row, table);
+			if (_row != null && column < _row.Table.Columns.Count)
+				return _row[column];
 			else
 				return null;
 		}
 
-		public T FillObject<T>(int column = 0)
+		public T FillObject<T>(int column = 0, int row = 0, int table = 0)
 		{
-			var obj = FillObject(column);
+			var obj = FillObject(column, row, table);
+
+			return ToObject<T>(obj);
+		}
+
+		public object FillObject(string column, int row = 0, int table = 0)
+		{
+			DataRow _row = FillDataRow(row, table);
+			if (_row != null && _row.Table.Columns.Contains(column))
+				return _row[column];
+			else
+				return null;
+		}
+
+		public T FillObject<T>(string column, int row = 0, int table = 0)
+		{
+			var obj = FillObject(column, row, table);
 
 			return ToObject<T>(obj);
 		}

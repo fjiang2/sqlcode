@@ -17,7 +17,14 @@ namespace Sys.Data.Entity
 
 		public string Description { get; set; }
 
+		/// <summary>
+		///  event triggered when a row inserting, updating or deleting
+		/// </summary>
 		public event EventHandler<RowEventArgs> RowChanging;
+
+		/// <summary>
+		/// event triggered when a row inserted, updated or deleted
+		/// </summary>
 		public event EventHandler<RowEventArgs> RowChanged;
 
 		/// <summary>
