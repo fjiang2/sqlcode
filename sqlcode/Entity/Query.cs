@@ -10,9 +10,9 @@ namespace Sys.Data.Entity
 {
 	public class Query : IQuery
 	{
-		private Func<string, IDbCmd> command { get; set; }
+		private DbCmdFunc command { get; set; }
 
-		public Query(Func<string, IDbCmd> cmd)
+		public Query(DbCmdFunc cmd)
 		{
 			this.command = cmd;
 		}
@@ -22,9 +22,9 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="sql"></param>
 		/// <returns></returns>
-		public BaseDbCmd NewDbCmd(string sql)
+		public BaseDbCmd NewDbCmd(string sql, object args)
 		{
-			return new DelegateDbCmd(command, sql);
+			return new DelegateDbCmd(command, sql, args);
 		}
 
 		private T Invoke<T>(Func<DataContext, T> func)

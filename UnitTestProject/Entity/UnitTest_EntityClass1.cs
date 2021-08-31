@@ -25,7 +25,7 @@ namespace UnitTestProject
 		public UnitTest_EntityClass1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(query => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query));
+			Query = new Query((query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
 		}
 
 
@@ -454,7 +454,7 @@ namespace UnitTestProject
 				 {
 					 CustomerID = "ALFKI",
 					 CustomerTypeID = "IT",
-				 } 
+				 }
 			});
 
 			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT").First().CustomerDesc;

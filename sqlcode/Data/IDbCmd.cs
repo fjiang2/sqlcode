@@ -18,6 +18,8 @@ using System.Data;
 
 namespace Sys.Data
 {
+    public delegate IDbCmd DbCmdFunc(string sql, object args);
+
     public interface IDbCmd
     {
         int ExecuteNonQuery();

@@ -7,125 +7,132 @@ using System.Linq;
 namespace Sys.Data.Entity
 {
 
-    public partial class DataContext : IDisposable
-    {
-        private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
-        private readonly Func<string, IDbCmd> sqlCommand;
+	public partial class DataContext : IDisposable
+	{
+		private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
+		private readonly DbCmdFunc sqlCommand;
 
-        internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
-        internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
+		internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
+		internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
 
-        public string Description { get; set; }
+		public string Description { get; set; }
 
-        public event EventHandler<RowEventArgs> RowChanging;
-        public event EventHandler<RowEventArgs> RowChanged;
+		/// <summary>
+		///  event triggered when a row inserting, updating or deleting
+		/// </summary>
+		public event EventHandler<RowEventArgs> RowChanging;
 
-        /// <summary>
-        /// DataContext using extension class (dc1) or single class (dc2)
-        /// </summary>
-        public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
+		/// <summary>
+		/// event triggered when a row inserted, updated or deleted
+		/// </summary>
+		public event EventHandler<RowEventArgs> RowChanged;
 
-       
-        public DataContext(Func<string, IDbCmd> cmd)
-        {
-            this.sqlCommand = cmd;
-            this.Description = "SQL command handler";
-        }
-
-        public void Dispose()
-        {
-            CodeBlock.Clear();
-            tables.Clear();
-        }
-
-        protected void OnRowChanging(IEnumerable<RowEvent> evt)
-        {
-            RowChanging?.Invoke(this, new RowEventArgs(evt));
-        }
-
-        protected void OnRowChanged(IEnumerable<RowEvent> evt)
-        {
-            RowChanged?.Invoke(this, new RowEventArgs(evt));
-        }
-
-        public Table<TEntity> GetTable<TEntity>()
-            where TEntity : class
-        {
-            Type key = typeof(TEntity);
-            if (tables.ContainsKey(key))
-                return (Table<TEntity>)tables[key];
-
-            var obj = new Table<TEntity>(this);
-            tables.Add(key, obj);
-            return obj;
-        }
-
-        public string GetNonQueryScript()
-        {
-            return CodeBlock.GetNonQuery();
-        }
-
-        public string GetQueryScript()
-        {
-            return CodeBlock.GetQuery();
-        }
+		/// <summary>
+		/// DataContext using extension class (dc1) or single class (dc2)
+		/// </summary>
+		public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
 
 
+		public DataContext(DbCmdFunc cmd)
+		{
+			this.sqlCommand = cmd;
+			this.Description = "SQL command handler";
+		}
 
-        internal DataTable FillDataTable(string query)
-        {
-            DataSet ds = FillDataSet(query);
-            if (ds == null)
-                return null;
+		public void Dispose()
+		{
+			CodeBlock.Clear();
+			tables.Clear();
+		}
 
-            if (ds.Tables.Count >= 1)
-                return ds.Tables[0];
+		protected void OnRowChanging(IEnumerable<RowEvent> evt)
+		{
+			RowChanging?.Invoke(this, new RowEventArgs(evt));
+		}
 
-            return null;
-        }
+		protected void OnRowChanged(IEnumerable<RowEvent> evt)
+		{
+			RowChanged?.Invoke(this, new RowEventArgs(evt));
+		}
 
-        private DataSet FillDataSet(string query)
-        {
-            var cmd = sqlCommand(query);
-            var ds = new DataSet();
-            return cmd.FillDataSet(ds);
-        }
+		public Table<TEntity> GetTable<TEntity>()
+			where TEntity : class
+		{
+			Type key = typeof(TEntity);
+			if (tables.ContainsKey(key))
+				return (Table<TEntity>)tables[key];
 
-        public IQueryResultReader SumbitQueries()
-        {
-            if (CodeBlock.Length == 0)
-                return null;
+			var obj = new Table<TEntity>(this);
+			tables.Add(key, obj);
+			return obj;
+		}
 
-            string query = CodeBlock.GetQuery();
-            Type[] types = CodeBlock.GetQueryTypes();
-            var ds = FillDataSet(query);
-            CodeBlock.Clear();
+		public string GetNonQueryScript()
+		{
+			return CodeBlock.GetNonQuery();
+		}
 
-            return new QueryResultReader(this, types, ds);
-        }
-
-        public int SubmitChanges()
-        {
-            if (CodeBlock.Length == 0)
-                return -1;
-            
-            OnRowChanging(RowEvents);
-            
-            var cmd = sqlCommand(CodeBlock.GetNonQuery());
-            int count = cmd.ExecuteNonQuery();
-            CodeBlock.Clear();
-
-            OnRowChanged(RowEvents);
-            RowEvents.Clear();
-
-            return count;
-        }
+		public string GetQueryScript()
+		{
+			return CodeBlock.GetQuery();
+		}
 
 
-        public override string ToString()
-        {
-            return Description;
-        }
 
-    }
+		internal DataTable FillDataTable(string query)
+		{
+			DataSet ds = FillDataSet(query);
+			if (ds == null)
+				return null;
+
+			if (ds.Tables.Count >= 1)
+				return ds.Tables[0];
+
+			return null;
+		}
+
+		private DataSet FillDataSet(string query)
+		{
+			var cmd = sqlCommand(query, args: null);
+			var ds = new DataSet();
+			return cmd.FillDataSet(ds);
+		}
+
+		public IQueryResultReader SumbitQueries()
+		{
+			if (CodeBlock.Length == 0)
+				return null;
+
+			string query = CodeBlock.GetQuery();
+			Type[] types = CodeBlock.GetQueryTypes();
+			var ds = FillDataSet(query);
+			CodeBlock.Clear();
+
+			return new QueryResultReader(this, types, ds);
+		}
+
+		public int SubmitChanges()
+		{
+			if (CodeBlock.Length == 0)
+				return -1;
+
+			OnRowChanging(RowEvents);
+
+			var cmd = sqlCommand(CodeBlock.GetNonQuery(), args: null);
+			int count = cmd.ExecuteNonQuery();
+			CodeBlock.Clear();
+
+			OnRowChanged(RowEvents);
+			RowEvents.Clear();
+
+			return count;
+		}
+
+
+		public override string ToString()
+		{
+			return Description;
+		}
+
+	}
 }
