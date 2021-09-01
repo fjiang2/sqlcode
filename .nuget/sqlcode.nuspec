@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode</id>
-    <version>1.0.2.0</version>
+    <version>1.0.3.0</version>
     <title>SQL code generator</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,11 +13,15 @@
     </description>
     <summary>SQL code generator</summary>
     <releaseNotes>
+		9/1/2021 v1.0.3
+		Improvements:
+		1. Support list in the operation IN or NOT IN on SqlBuilder
+		
 		8/30/2021 v1.0.2
 		Improvements:
 		1. Support parameters in class DelegateDbCmd
 
-        8/28/2021 v1.0.1
+		8/28/2021 v1.0.1
 		Features:
 		1. Query SQL database by entity class
 
