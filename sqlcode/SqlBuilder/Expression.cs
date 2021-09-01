@@ -149,18 +149,25 @@ namespace Sys.Data.Text
 		public Expression AS(VariableName name) => new Expression(this).WrapSpace("AS").Append(name);
 
 		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace($"IN ({select.Script})");
-		public Expression IN(IEnumerable<Expression> collection) => new Expression(this).AffixSpace($"IN ({Join(", ", collection)})");
+		public Expression IN(IEnumerable<Expression> collection)
+		{
+			if (collection == null || collection.Count() == 0)
+				return this;
+
+			return new Expression(this).AffixSpace($"IN ({Join(", ", collection)})");
+		}
 		public Expression IN(params Expression[] collection) => IN((IEnumerable<Expression>)collection);
-		public Expression IN<T>(IEnumerable<T> collection) => IN(collection.Select(x => new Expression(new SqlValue(x))));
+		public Expression IN<T>(IEnumerable<T> values) => IN(values.Select(x => new Expression(new SqlValue(x))));
 
 		public static Expression BETWEEN(Expression expr, Expression expr1, Expression expr2) => new Expression(expr).WrapSpace($"BETWEEN").Append(OPR(expr1, "AND", expr2));
 		public Expression BETWEEN(Expression expr1, Expression expr2) => BETWEEN(this, expr1, expr2);
+		public Expression BETWEEN<T>(T value1, T value2) => BETWEEN(this, new Expression(new SqlValue(value1)), new Expression(new SqlValue(value2)));
 
 		public Expression IS_NULL() => new Expression(this).AffixSpace("IS NULL");
 		public Expression IS_NOT_NULL() => new Expression(this).AffixSpace("IS NOT NULL");
 
 
-		public static Expression EXISTS(SqlBuilder condition) => new Expression($"EXISTS ({condition})");
+		public static Expression EXISTS(SqlBuilder select) => new Expression($"EXISTS ({select})");
 
 
 		public static Expression LIKE(Expression expr, Expression pattern) => OPR(expr, "LIKE", pattern);

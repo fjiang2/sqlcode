@@ -432,6 +432,25 @@ WHERE Products.[Discontinued] <> 1";
 
         }
 
+
+        [TestMethod]
+        public void Test_NOT_IN_List()
+        {
+            var ProductId = "ProductId".AsColumn();
+            List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+
+            var SQL = new SqlBuilder()
+                .SELECT()
+                .COLUMNS()
+                .FROM("Products")
+                .WHERE(ProductId.NOT().IN(list)).
+                ToString();
+
+            Debug.Assert(SQL == "SELECT * FROM [Products] WHERE [ProductId] NOT IN (1, 2, 3, 4, 5)");
+
+        }
+
+
         [TestMethod]
         public void Test_IS_NOT_NULL1()
         {

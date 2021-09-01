@@ -120,7 +120,12 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		private SqlBuilder COLUMNS(string columns)
+		/// <summary>
+		/// Any columns
+		/// </summary>
+		/// <param name="columns"></param>
+		/// <returns></returns>
+		public SqlBuilder COLUMNS(string columns)
 		{
 			return AppendSpace(columns);
 		}
