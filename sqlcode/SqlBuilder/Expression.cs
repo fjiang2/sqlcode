@@ -149,15 +149,19 @@ namespace Sys.Data.Text
 		public Expression AS(VariableName name) => new Expression(this).WrapSpace("AS").Append(name);
 
 		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace($"IN ({select.Script})");
-		public Expression IN(IEnumerable<Expression> collection)
+		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace($"NOT IN ({select.Script})");
+		
+		private Expression IN__NOT_IN(string opr, IEnumerable<Expression> collection)
 		{
 			if (collection == null || collection.Count() == 0)
 				return this;
 
-			return new Expression(this).AffixSpace($"IN ({Join(", ", collection)})");
+			return new Expression(this).AffixSpace($"{opr} ({Join(", ", collection)})");
 		}
-		public Expression IN(params Expression[] collection) => IN((IEnumerable<Expression>)collection);
-		public Expression IN<T>(IEnumerable<T> values) => IN(values.Select(x => new Expression(new SqlValue(x))));
+		public Expression IN(params Expression[] collection) => IN__NOT_IN("IN", collection);
+		public Expression NOT_IN(params Expression[] collection) => IN__NOT_IN("NOT IN", collection);
+		public Expression IN<T>(IEnumerable<T> values) => IN__NOT_IN("IN", values.Select(x => new Expression(new SqlValue(x))));
+		public Expression NOT_IN<T>(IEnumerable<T> values) => IN__NOT_IN("NOT IN", values.Select(x => new Expression(new SqlValue(x))));
 
 		public static Expression BETWEEN(Expression expr, Expression expr1, Expression expr2) => new Expression(expr).WrapSpace($"BETWEEN").Append(OPR(expr1, "AND", expr2));
 		public Expression BETWEEN(Expression expr1, Expression expr2) => BETWEEN(this, expr1, expr2);

@@ -388,6 +388,9 @@ WHERE Products.[Discontinued] <> 1";
 
             Debug.Assert(SQL == "SELECT MIN([UnitPrice]) FROM [Products] WHERE ([CategoryId] = 5) AND ([UnitsInStock] > 100)");
 
+            SQL = new SqlBuilder().SELECT().COLUMNS("COUNT".AsFunction("*".AsColumn())).FROM("Products").ToString();
+            Debug.Assert(SQL == "SELECT COUNT(*) FROM [Products]");
+
         }
 
         [TestMethod]
@@ -443,7 +446,7 @@ WHERE Products.[Discontinued] <> 1";
                 .SELECT()
                 .COLUMNS()
                 .FROM("Products")
-                .WHERE(ProductId.NOT().IN(list)).
+                .WHERE(ProductId.NOT_IN(list)).
                 ToString();
 
             Debug.Assert(SQL == "SELECT * FROM [Products] WHERE [ProductId] NOT IN (1, 2, 3, 4, 5)");

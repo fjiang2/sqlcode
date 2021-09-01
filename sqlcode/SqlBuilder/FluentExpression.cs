@@ -69,6 +69,9 @@ namespace Sys.Data.Text
 		/// <returns></returns>
 		public static Expression AsColumn(this string columnName)
 		{
+			if (columnName == "*")
+				return Expression.STAR;
+
 			return new Expression(new ColumnName(columnName));
 		}
 
@@ -109,6 +112,11 @@ namespace Sys.Data.Text
 		public static Expression AssignColumn(this string columnName, object value)
 		{
 			return columnName.AsColumn().LET(value);
+		}
+
+		public static Expression AsFunction(this string function, params Expression[] args)
+		{
+			return Expression.Function(function, args);
 		}
 
 

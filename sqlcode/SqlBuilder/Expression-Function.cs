@@ -13,11 +13,11 @@ namespace Sys.Data.Text
         public static readonly Expression GETUTCDATE = Function("GETUTCDATE");
         public static readonly Expression SYSDATETIME = Function("SYSDATETIME");
 
-        public static Expression Function(string func, params Expression[] expressions)
+        public static Expression Function(string func, params Expression[] args)
         {
             Expression expr = new Expression(func)
                 .Append("(")
-                .Append(string.Join<Expression>(",", expressions))
+                .Append(string.Join<Expression>(",", args))
                 .Append(")");
 
             return expr;
