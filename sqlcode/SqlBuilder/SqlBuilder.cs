@@ -120,7 +120,12 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		private SqlBuilder COLUMNS(string columns)
+		/// <summary>
+		/// Any columns
+		/// </summary>
+		/// <param name="columns"></param>
+		/// <returns></returns>
+		public SqlBuilder COLUMNS(string columns)
 		{
 			return AppendSpace(columns);
 		}
@@ -136,19 +141,6 @@ namespace Sys.Data.Text
 		}
 
 		public SqlBuilder COLUMNS(IEnumerable<Expression> columns)
-		{
-			if (columns.Count() == 0)
-				return COLUMNS("*");
-			else
-				return COLUMNS(JoinColumns(columns));
-		}
-
-		public SqlBuilder COLUMNS(params string[] columns)
-		{
-			return COLUMNS((IEnumerable<string>)columns);
-		}
-
-		public SqlBuilder COLUMNS(IEnumerable<string> columns)
 		{
 			if (columns.Count() == 0)
 				return COLUMNS("*");
