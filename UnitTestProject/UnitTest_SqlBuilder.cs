@@ -388,6 +388,9 @@ WHERE Products.[Discontinued] <> 1";
 
             Debug.Assert(SQL == "SELECT MIN([UnitPrice]) FROM [Products] WHERE ([CategoryId] = 5) AND ([UnitsInStock] > 100)");
 
+            SQL = new SqlBuilder().SELECT().COLUMNS("COUNT".AsFunction("*".AsColumn())).FROM("Products").ToString();
+            Debug.Assert(SQL == "SELECT COUNT(*) FROM [Products]");
+
         }
 
         [TestMethod]
@@ -413,6 +416,43 @@ WHERE Products.[Discontinued] <> 1";
             Debug.Assert(SQL == "SELECT * FROM [Order Details] WHERE [ProductId] IN (SELECT [ProductId] FROM [Products] WHERE [CategoryId] = 7)");
 
         }
+
+
+        [TestMethod]
+        public void Test_IN_List()
+        {
+            var ProductId = "ProductId".AsColumn();
+            List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+           
+            var SQL = new SqlBuilder()
+                .SELECT()
+                .COLUMNS()
+                .FROM("Products")
+                .WHERE(ProductId.IN(list)).
+                ToString();
+
+            Debug.Assert(SQL == "SELECT * FROM [Products] WHERE [ProductId] IN (1, 2, 3, 4, 5)");
+
+        }
+
+
+        [TestMethod]
+        public void Test_NOT_IN_List()
+        {
+            var ProductId = "ProductId".AsColumn();
+            List<int> list = new List<int> { 1, 2, 3, 4, 5 };
+
+            var SQL = new SqlBuilder()
+                .SELECT()
+                .COLUMNS()
+                .FROM("Products")
+                .WHERE(ProductId.NOT_IN(list)).
+                ToString();
+
+            Debug.Assert(SQL == "SELECT * FROM [Products] WHERE [ProductId] NOT IN (1, 2, 3, 4, 5)");
+
+        }
+
 
         [TestMethod]
         public void Test_IS_NOT_NULL1()

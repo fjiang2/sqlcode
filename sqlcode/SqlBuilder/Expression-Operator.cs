@@ -103,6 +103,11 @@ namespace Sys.Data.Text
             return new Expression(new SqlValue(value));   //dt = '10/20/2012'
         }
 
+        public static implicit operator Expression(DateTimeOffset value)
+        {
+            return new Expression(new SqlValue(value));  
+        }
+
         public static implicit operator Expression(DBNull value)
         {
             return new Expression(new SqlValue(value));   // NULL
