@@ -14,6 +14,9 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Sys.Data.Text
 {
@@ -28,11 +31,21 @@ namespace Sys.Data.Text
 			this.Left = left;
 			this.Right = right;
 			this.Method = method;
+
+			base.Append($"{Expr2Str(Left)} {Method} {Expr2Str(Right)}");
+			Compound = true;
+		}
+
+		public BinaryExpression(string method, IEnumerable<Expression> exprList)
+		{
+			this.Method = method;
+			base.Append(string.Join($" {Method} ", exprList));
+			base.Compound = true;
 		}
 
 		public Expression Reduce()
 		{
-			Expression expr = new Expression(string.Format("{0} {1} {2}", Expr2Str(Left), Method, Expr2Str(Right)))
+			Expression expr = new Expression($"{Expr2Str(Left)} {Method} {Expr2Str(Right)}")
 			{
 				Compound = true
 			};
@@ -45,9 +58,5 @@ namespace Sys.Data.Text
 			return expr.Compound ? $"({expr})" : expr.ToString();
 		}
 
-		public override string ToString()
-		{
-			return Reduce().ToString();
-		}
 	}
 }

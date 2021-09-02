@@ -123,7 +123,7 @@ WHERE Products.[Discontinued] <> 1";
 				.WHERE(ProductID.IN(1, 2, 3, 4).OR(ProductID.BETWEEN(1, 4)))
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT * FROM [Products] WHERE [ProductID] IN (1, 2, 3, 4) OR [ProductID] BETWEEN 1 AND 4");
+			Debug.Assert(SQL == "SELECT * FROM [Products] WHERE ([ProductID] IN (1, 2, 3, 4)) OR ([ProductID] BETWEEN 1 AND 4)");
 		}
 
 		[TestMethod]

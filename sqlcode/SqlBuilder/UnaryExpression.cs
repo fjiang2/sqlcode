@@ -26,6 +26,9 @@ namespace Sys.Data.Text
 		{
 			this.Operand = operand;
 			this.Method = method;
+
+			base.Append($"{Method} {Expr2Str(Operand)}");
+			base.Compound = true;
 		}
 
 		public Expression Reduce()
@@ -41,11 +44,6 @@ namespace Sys.Data.Text
 		private static string Expr2Str(Expression expr)
 		{
 			return expr.Compound ? $"({expr})" : expr.ToString();
-		}
-
-		public override string ToString()
-		{
-			return Reduce().ToString();
 		}
 	}
 }

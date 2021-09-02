@@ -63,8 +63,13 @@ namespace Sys.Data.Text
 
 		private Expression(Expression expr)
 		{
-			this.script = new StringBuilder(expr.script.ToString());
+			this.Append(expr.script.ToString());
 			this.Compound = expr.Compound;
+		}
+
+		private Expression(IEnumerable<Expression> exprList)
+		{
+			Append($"({string.Join(", ", exprList)})");
 		}
 
 		private Expression(string text)
@@ -88,7 +93,7 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		private Expression Append(string text)
+		protected Expression Append(string text)
 		{
 			script.Append(text);
 			return this;
@@ -99,37 +104,13 @@ namespace Sys.Data.Text
 		private Expression AffixSpace(string text) => AppendSpace().Append(text);
 		private Expression AppendSpace() => Append(" ");
 
-	
-		private static Expression Join(string separator, IEnumerable<Expression> exprList)
-		{
-			return new Expression(string.Join(separator, exprList));
-		}
-
-		private static Expression OPR(Expression expr1, string opr, Expression expr2)
-		{
-			return new BinaryExpression(expr1, opr, expr2).Reduce();
-		}
-
-		// AND(A==1, B!=3, C>4) => "(A=1 AND B<>3 AND C>4)"
-		private static Expression OPR(string opr, IEnumerable<Expression> exprList)
-		{
-			Expression expr = Join($" {opr} ", exprList);
-			expr.Compound = true;
-			return expr;
-		}
-
-		private static Expression OPR(string opr, Expression expr)
-		{
-			return new UnaryExpression(opr, expr).Reduce();
-		}
-
 		/// <summary>
 		/// Assignment: name = value
 		/// </summary>
 		/// <param name="name"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static Expression LET(Expression name, Expression value) => OPR(name, "=", value);
+		public static Expression LET(Expression name, Expression value) => new BinaryExpression(name, "=", value);
 		public static Expression LET(Expression name, object value) => LET(name, new Expression(new SqlValue(value)));
 		public Expression LET(object value) => LET(this, value);
 		public Expression LET() => new Expression(this).WrapSpace("=");
@@ -144,14 +125,15 @@ namespace Sys.Data.Text
 			if (collection == null || collection.Count() == 0)
 				return this;
 
-			return new Expression(this).AffixSpace($"{opr} ({Join(", ", collection)})");
+			return new BinaryExpression(this, opr, new Expression(collection));
 		}
+
 		public Expression IN(params Expression[] collection) => IN__NOT_IN("IN", collection);
 		public Expression NOT_IN(params Expression[] collection) => IN__NOT_IN("NOT IN", collection);
 		public Expression IN<T>(IEnumerable<T> values) => IN__NOT_IN("IN", values.Select(x => new Expression(new SqlValue(x))));
 		public Expression NOT_IN<T>(IEnumerable<T> values) => IN__NOT_IN("NOT IN", values.Select(x => new Expression(new SqlValue(x))));
 
-		public static Expression BETWEEN(Expression expr, Expression expr1, Expression expr2) => new Expression(expr).WrapSpace($"BETWEEN").Append(OPR(expr1, "AND", expr2));
+		public static Expression BETWEEN(Expression expr, Expression expr1, Expression expr2) => new BinaryExpression(expr, "BETWEEN", new BinaryExpression(expr1, "AND", expr2) { Compound = false });
 		public Expression BETWEEN(Expression expr1, Expression expr2) => BETWEEN(this, expr1, expr2);
 		public Expression BETWEEN<T>(T value1, T value2) => BETWEEN(this, new Expression(new SqlValue(value1)), new Expression(new SqlValue(value2)));
 
@@ -162,18 +144,18 @@ namespace Sys.Data.Text
 		public static Expression EXISTS(SqlBuilder select) => new Expression($"EXISTS ({select})");
 
 
-		public static Expression LIKE(Expression expr, Expression pattern) => OPR(expr, "LIKE", pattern);
+		public static Expression LIKE(Expression expr, Expression pattern) => new BinaryExpression(expr, "LIKE", pattern);
 		public Expression LIKE(Expression pattern) => LIKE(this, pattern);
 
-		public static Expression AND(params Expression[] exprList) => OPR("AND", exprList);
-		public static Expression AND(Expression expr1, Expression expr2) => OPR(expr1, "AND", expr2);
+		public static Expression AND(params Expression[] exprList) => new BinaryExpression("AND", exprList);
+		public static Expression AND(Expression expr1, Expression expr2) => new BinaryExpression(expr1, "AND", expr2);
 		public Expression AND(Expression expr) => AND(this, expr);
 
-		public static Expression OR(params Expression[] exprList) => OPR("OR", exprList);
-		public static Expression OR(Expression expr1, Expression expr2) => OPR(expr1, "OR", expr2);
+		public static Expression OR(params Expression[] exprList) => new BinaryExpression("OR", exprList);
+		public static Expression OR(Expression expr1, Expression expr2) => new BinaryExpression(expr1, "OR", expr2);
 		public Expression OR(Expression expr) => OR(this, expr);
 
-		public static Expression NOT(Expression expr) => OPR("NOT", expr);
+		public static Expression NOT(Expression expr) => new UnaryExpression("NOT", expr);
 		public Expression NOT() => NOT(this);
 
 
