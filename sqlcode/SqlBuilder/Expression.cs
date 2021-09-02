@@ -142,7 +142,8 @@ namespace Sys.Data.Text
 		/// <param name="name"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static Expression LET(Expression name, object value) => OPR(name, "=", new Expression(new SqlValue(value)));
+		public static Expression LET(Expression name, Expression value) => OPR(name, "=", value);
+		public static Expression LET(Expression name, object value) => LET(name, new Expression(new SqlValue(value)));
 		public Expression LET(object value) => LET(this, value);
 		public Expression LET() => new Expression(this).WrapSpace("=");
 
@@ -150,7 +151,7 @@ namespace Sys.Data.Text
 
 		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace($"IN ({select.Script})");
 		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace($"NOT IN ({select.Script})");
-		
+
 		private Expression IN__NOT_IN(string opr, IEnumerable<Expression> collection)
 		{
 			if (collection == null || collection.Count() == 0)
