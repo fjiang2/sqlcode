@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    public sealed partial class Expression
+    public partial class Expression
     {
         public static readonly Expression COUNT_STAR = new Expression("COUNT(*)");
         public static readonly Expression GETDATE = Function("GETDATE");

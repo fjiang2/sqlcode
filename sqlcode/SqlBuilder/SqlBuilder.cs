@@ -162,7 +162,6 @@ namespace Sys.Data.Text
 
 		public SqlBuilder SET(IEnumerable<Expression> assignments) => AppendSpace("SET").AppendSpace(string.Join<Expression>(", ", assignments));
 		public SqlBuilder SET(params Expression[] assignments) => SET((IEnumerable<Expression>)assignments);
-		public SqlBuilder SET(SqlColumnValuePairCollection collection) => SET(collection.ToList().Select(pair => pair.LET()));
 
 		public SqlBuilder INSERT_INTO(ITableName tableName) => INSERT_INTO(tableName.FullName);
 		public SqlBuilder INSERT_INTO(string tableName)

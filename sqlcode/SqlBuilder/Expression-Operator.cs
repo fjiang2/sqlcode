@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    public sealed partial class Expression
+    public partial class Expression
     {
 
         #region implicit section

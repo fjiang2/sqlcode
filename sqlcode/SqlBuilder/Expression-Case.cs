@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    public sealed partial class Expression
+    public partial class Expression
     {
         public Expression CASE(Expression _case)
         {

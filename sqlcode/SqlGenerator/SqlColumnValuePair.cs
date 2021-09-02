@@ -31,9 +31,9 @@ namespace Sys.Data
 			return $"[{name}]";
 		}
 
-		internal Expression LET()
+		internal BinaryExpression Reduce(string method)
 		{
-			return Expression.LET(new Expression(new ColumnName(Column.Name)), new Expression(Value));
+			return new BinaryExpression(new Expression(new ColumnName(Column.Name)), method, new Expression(Value));
 		}
 	}
 }

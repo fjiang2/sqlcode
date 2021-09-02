@@ -22,7 +22,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-	public sealed partial class Expression : IQueryScript
+	public partial class Expression : IQueryScript
 	{
 		public static readonly Expression NULL = new Expression("NULL");
 		public static readonly Expression STAR = new Expression("*");
@@ -35,7 +35,11 @@ namespace Sys.Data.Text
 		/// <summary>
 		/// Compound expression
 		/// </summary>
-		private bool compound = false;
+		internal bool Compound = false;
+
+		internal Expression()
+		{
+		}
 
 		internal Expression(VariableName name)
 		{
@@ -60,7 +64,7 @@ namespace Sys.Data.Text
 		private Expression(Expression expr)
 		{
 			this.script = new StringBuilder(expr.script.ToString());
-			this.compound = expr.compound;
+			this.Compound = expr.Compound;
 		}
 
 		private Expression(string text)
@@ -95,19 +99,7 @@ namespace Sys.Data.Text
 		private Expression AffixSpace(string text) => AppendSpace().Append(text);
 		private Expression AppendSpace() => Append(" ");
 
-		/// <summary>
-		/// Expression to string
-		/// </summary>
-		/// <param name="expr"></param>
-		/// <returns></returns>
-		private static string Expr2Str(Expression expr)
-		{
-			if (expr.compound)
-				return string.Format("({0})", expr);
-			else
-				return expr.ToString();
-		}
-
+	
 		private static Expression Join(string separator, IEnumerable<Expression> exprList)
 		{
 			return new Expression(string.Join(separator, exprList));
@@ -115,25 +107,20 @@ namespace Sys.Data.Text
 
 		private static Expression OPR(Expression expr1, string opr, Expression expr2)
 		{
-			Expression expr = new Expression(string.Format("{0} {1} {2}", Expr2Str(expr1), opr, Expr2Str(expr2)))
-			{
-				compound = true
-			};
-
-			return expr;
+			return new BinaryExpression(expr1, opr, expr2).Reduce();
 		}
 
 		// AND(A==1, B!=3, C>4) => "(A=1 AND B<>3 AND C>4)"
 		private static Expression OPR(string opr, IEnumerable<Expression> exprList)
 		{
 			Expression expr = Join($" {opr} ", exprList);
-			expr.compound = true;
+			expr.Compound = true;
 			return expr;
 		}
 
 		private static Expression OPR(string opr, Expression expr)
 		{
-			return new Expression(string.Format("{0} {1}", opr, Expr2Str(expr)));
+			return new UnaryExpression(opr, expr).Reduce();
 		}
 
 		/// <summary>

@@ -179,26 +179,6 @@ WHERE Products.[Discontinued] <> 1";
 		}
 
 		[TestMethod]
-		public void Test_UPDATE3()
-		{
-			var L = new SqlColumnValuePairCollection();
-			L.AddRange(new
-			{
-				ProductName = "Apple",
-				UnitPrice = 20
-			});
-
-			string sql = "UPDATE [Products] SET [ProductName] = N'Apple', [UnitPrice] = 20 WHERE [ProductId] BETWEEN 10 AND 30";
-			string query = new SqlBuilder()
-				.UPDATE(Products)
-				.SET(L)
-				.WHERE(ProductId.BETWEEN(10, 30))
-				.ToString();
-
-			Debug.Assert(sql == query);
-		}
-
-		[TestMethod]
 		public void Test_DELETE()
 		{
 			string SQL = new SqlBuilder()
