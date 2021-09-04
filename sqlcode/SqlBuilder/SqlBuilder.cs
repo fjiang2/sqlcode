@@ -148,6 +148,14 @@ namespace Sys.Data.Text
 				return COLUMNS(JoinColumns(columns));
 		}
 
+		public SqlBuilder COLUMNS(IEnumerable<string> columns)
+		{
+			if (columns.Count() == 0)
+				return COLUMNS("*");
+			else
+				return COLUMNS(JoinColumns(columns));
+		}
+
 		#endregion
 
 		public SqlBuilder FROM(ITableName from, string alias = null) => FROM(from.FullName, alias);
