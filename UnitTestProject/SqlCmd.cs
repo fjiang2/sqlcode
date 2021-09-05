@@ -15,12 +15,14 @@ namespace UnitTestProject
 	{
 		private SqlCommand cmd;
 		private SqlConnection conn;
+		private object parameters;
 
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object parameters)
 		{
 			this.cmd = new SqlCommand(sql);
 			this.conn = new SqlConnection(connectionString.ConnectionString);
 			this.cmd.Connection = conn;
+			this.parameters = parameters;
 
 			if (parameters == null)
 				return;
@@ -70,7 +72,7 @@ namespace UnitTestProject
 				cmd.Parameters.Add(parameter);
 			}
 		}
-	
+
 
 		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
@@ -131,6 +133,16 @@ namespace UnitTestProject
 			{
 				conn.Open();
 				int n = cmd.ExecuteNonQuery();
+				if (parameters is List<IDataParameter> list)
+					foreach (IDataParameter parameter in cmd.Parameters)
+					{
+						if (parameter.Direction != ParameterDirection.Input)
+						{
+							var result = list.Find(x => x.ParameterName == parameter.ParameterName.Substring(1));
+							if (result != null)
+								result.Value = parameter.Value;
+						}
+					}
 				return n;
 			}
 			finally

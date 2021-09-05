@@ -137,6 +137,38 @@ WHERE Products.[Discontinued] <> 1";
 			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
 		}
 
+
+		[TestMethod]
+		public void Test_INSERT_IDENTIY()
+		{
+			var context = new ParameterContext();
+
+			string SQL = new SqlBuilder()
+				.DELETE_FROM(Categories).WHERE("CategoryName".AsColumn() == "Electronics")
+				.ToString();
+
+
+			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = N'Electronics'");
+
+			int result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
+			Debug.Assert(result >= 0);
+
+			SQL = new SqlBuilder()
+				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
+				.VALUES("Electronics", "Electronics and Computers", new byte[] { 0x15, 0xC2 })
+				.AppendLine()
+				.SET(context.AsIdentityParameter("CategoryId") == Expression.IDENTITY)
+				.ToString();
+
+			Debug.Assert(SQL == @"INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Electronics', N'Electronics and Computers', 0x15C2)
+SET @CategoryId = @@IDENTITY");
+
+			result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
+			Debug.Assert(result == 1);
+			int CategoryId = (int)context["CategoryId"].Value;
+			Debug.Assert(CategoryId > 8);
+		}
+
 		[TestMethod]
 		public void Test_UPDATE1()
 		{

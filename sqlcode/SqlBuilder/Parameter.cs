@@ -34,7 +34,7 @@ namespace Sys.Data.Text
 					break;
 
 				case ParameterDirection.InputOutput:
-					modifier = "in out";
+					modifier = "ref";
 					break;
 
 				case ParameterDirection.ReturnValue:

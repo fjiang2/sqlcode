@@ -65,8 +65,28 @@ namespace Sys.Data.Text
 				Direction = direction,
 			};
 
-			context.AddParameter(parameter);
-			return new Expression(new ParameterName(parameterName));
+			return AsParameter(context, parameter);
+		}
+
+		/// <summary>
+		/// Create a parameter to retrive identity value
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="parameterName"></param>
+		/// <param name="columnName">default: columnName == parameterName</param>
+		/// <returns></returns>
+		public static Expression AsIdentityParameter(this ParameterContext context, string parameterName, string columnName = null)
+		{
+			if (columnName == null)
+				columnName = parameterName;
+
+			var parameter = new Parameter(parameterName, 0)
+			{
+				SourceColumn = columnName,
+				Direction = ParameterDirection.Output,
+			};
+
+			return AsParameter(context, parameter);
 		}
 
 		/// <summary>
@@ -80,6 +100,7 @@ namespace Sys.Data.Text
 			context.AddParameter(parameter);
 			return new Expression(new ParameterName(parameter.ParameterName));
 		}
+
 
 		/// <summary>
 		/// Create expression of  column name: "name" -> [name]
