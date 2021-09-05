@@ -17,12 +17,12 @@ namespace Sys.Data.Text
 		public Parameter(string parameterName, object value)
 		{
 			this.ParameterName = parameterName;
-			this.Value = value;
+			this.Value = value ?? DBNull.Value;
 		}
 
 		public override string ToString()
 		{
-			string modifier = "";
+			string modifier = null;
 			switch (Direction)
 			{
 				case ParameterDirection.Input:
@@ -41,7 +41,11 @@ namespace Sys.Data.Text
 					modifier = "ret";
 					break;
 			}
-			return $"{modifier} @{ParameterName} = {Value}";
+
+			if (modifier != null)
+				return $"{modifier} @{ParameterName} = {Value}";
+			else
+				return $"@{ParameterName} = {Value}";
 		}
 	}
 }

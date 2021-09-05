@@ -120,22 +120,24 @@ namespace Sys.Data.Text
 		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace($"IN ({select.Script})");
 		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace($"NOT IN ({select.Script})");
 
-		private Expression IN__NOT_IN(string opr, IEnumerable<Expression> collection)
+		private static Expression IN__NOT_IN(Expression expr, string opr, IEnumerable<Expression> collection)
 		{
 			if (collection == null || collection.Count() == 0)
-				return this;
+				return expr;
 
-			return new BinaryExpression(this, opr, new Expression(collection));
+			return new BinaryExpression(expr, opr, new Expression(collection));
 		}
 
-		public Expression IN(params Expression[] collection) => IN__NOT_IN("IN", collection);
-		public Expression NOT_IN(params Expression[] collection) => IN__NOT_IN("NOT IN", collection);
-		public Expression IN<T>(IEnumerable<T> values) => IN__NOT_IN("IN", values.Select(x => new Expression(new SqlValue(x))));
-		public Expression NOT_IN<T>(IEnumerable<T> values) => IN__NOT_IN("NOT IN", values.Select(x => new Expression(new SqlValue(x))));
+		public Expression IN(params Expression[] collection) => IN__NOT_IN(this, "IN", collection);
+		public Expression NOT_IN(params Expression[] collection) => IN__NOT_IN(this, "NOT IN", collection);
+		public Expression IN<T>(IEnumerable<T> values) => IN__NOT_IN(this, "IN", values.Select(x => new Expression(new SqlValue(x))));
+		public Expression NOT_IN<T>(IEnumerable<T> values) => IN__NOT_IN(this, "NOT IN", values.Select(x => new Expression(new SqlValue(x))));
 
-		public static Expression BETWEEN(Expression expr, Expression expr1, Expression expr2) => new BinaryExpression(expr, "BETWEEN", new BinaryExpression(expr1, "AND", expr2) { Compound = false });
-		public Expression BETWEEN(Expression expr1, Expression expr2) => BETWEEN(this, expr1, expr2);
-		public Expression BETWEEN<T>(T value1, T value2) => BETWEEN(this, new Expression(new SqlValue(value1)), new Expression(new SqlValue(value2)));
+		private static Expression BETWEEN(Expression expr, string opr, Expression expr1, Expression expr2) => new BinaryExpression(expr, opr, new BinaryExpression(expr1, "AND", expr2) { Compound = false });
+		public Expression BETWEEN(Expression expr1, Expression expr2) => BETWEEN(this, "BETWEEN", expr1, expr2);
+		public Expression NOT_BETWEEN(Expression expr1, Expression expr2) => BETWEEN(this, "NOT BETWEEN", expr1, expr2);
+		public Expression BETWEEN<T>(T value1, T value2) => BETWEEN(this, "BETWEEN", new Expression(new SqlValue(value1)), new Expression(new SqlValue(value2)));
+		public Expression NOT_BETWEEN<T>(T value1, T value2) => BETWEEN(this, "NOT BETWEEN", new Expression(new SqlValue(value1)), new Expression(new SqlValue(value2)));
 
 		public Expression IS_NULL() => new Expression(this).AffixSpace("IS NULL");
 		public Expression IS_NOT_NULL() => new Expression(this).AffixSpace("IS NOT NULL");

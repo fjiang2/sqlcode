@@ -532,6 +532,11 @@ WHERE Products.[Discontinued] <> 1";
 			string query = new SqlBuilder().SELECT().COLUMNS(Expression.COUNT_STAR, ProductId.MAX()).FROM(Products).WHERE(ProductId.BETWEEN(10, 30)).ToString();
 
 			Debug.Assert(sql == query);
+
+			sql = "SELECT COUNT(*), MAX([ProductId]) FROM [Products] WHERE [ProductId] NOT BETWEEN N'apple' AND N'pear'";
+			query = new SqlBuilder().SELECT().COLUMNS(Expression.COUNT_STAR, ProductId.MAX()).FROM(Products).WHERE(ProductId.NOT_BETWEEN("apple", "pear")).ToString();
+
+			Debug.Assert(sql == query);
 		}
 
 
