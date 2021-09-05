@@ -69,13 +69,13 @@ namespace Sys.Data.Text
 		}
 
 		/// <summary>
-		/// Create a parameter to retrive identity value
+		/// Create out parameter which can be used to retrieve identity value
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="parameterName"></param>
 		/// <param name="columnName">default: columnName == parameterName</param>
 		/// <returns></returns>
-		public static Expression AsIdentityParameter(this ParameterContext context, string parameterName, string columnName = null)
+		public static Expression AsOutParameter(this ParameterContext context, string parameterName, string columnName = null)
 		{
 			if (columnName == null)
 				columnName = parameterName;

@@ -157,16 +157,20 @@ WHERE Products.[Discontinued] <> 1";
 				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
 				.VALUES("Electronics", "Electronics and Computers", new byte[] { 0x15, 0xC2 })
 				.AppendLine()
-				.SET(context.AsIdentityParameter("CategoryId") == Expression.IDENTITY)
+				.SET(context.AsOutParameter("CategoryId") == Expression.IDENTITY)
 				.ToString();
+
 
 			Debug.Assert(SQL == @"INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Electronics', N'Electronics and Computers', 0x15C2)
 SET @CategoryId = @@IDENTITY");
 
+#if HAS_SQL_SERVER
 			result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result == 1);
+			
 			int CategoryId = (int)context["CategoryId"].Value;
 			Debug.Assert(CategoryId > 8);
+#endif
 		}
 
 		[TestMethod]

@@ -24,54 +24,81 @@ namespace UnitTestProject
 			this.cmd.Connection = conn;
 			this.parameters = parameters;
 
+			PrepareParameters(parameters);
+		}
+
+		private void PrepareParameters(object parameters)
+		{
 			if (parameters == null)
 				return;
 
+			if (parameters is string)
+			{
+				//The parameters could be JSON
+				return;
+			}
+
 			if (parameters is List<IDataParameter> list)
-				DecodeContext(list);
+				foreach (IDataParameter item in list)
+				{
+					object value = item.Value ?? DBNull.Value;
+					SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+					cmd.Parameters.Add(parameter);
+				}
+			else if (parameters is IDictionary<string, object> dict)
+				foreach (KeyValuePair<string, object> item in dict)
+				{
+					object value = item.Value ?? DBNull.Value;
+					SqlParameter parameter = NewParameter("@" + item.Key, value, ParameterDirection.Input);
+					cmd.Parameters.Add(parameter);
+				}
 			else
-			if (parameters is IDictionary<string, object> dict)
-				DecodeDictionary(dict);
-			else
-				DecodeObject(parameters);
+				foreach (var propertyInfo in parameters.GetType().GetProperties())
+				{
+					object value = propertyInfo.GetValue(parameters) ?? DBNull.Value;
+					SqlParameter parameter = NewParameter("@" + propertyInfo.Name, value, ParameterDirection.Input);
+					cmd.Parameters.Add(parameter);
+				}
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql)
-		{
-			this.cmd = new SqlCommand(sql);
-			this.conn = new SqlConnection(connectionString.ConnectionString);
-			this.cmd.Connection = conn;
-		}
 
-		private void DecodeContext(List<IDataParameter> list)
+		private void CompleteParameters()
 		{
-			foreach (IDataParameter item in list)
+			if (parameters == null)
+				return;
+
+			foreach (IDataParameter parameter in cmd.Parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				cmd.Parameters.Add(parameter);
+				//skip letter '@'
+				string parameterName = parameter.ParameterName.Substring(1);
+
+				if (parameter.Direction != ParameterDirection.Input)
+				{
+					if (parameters is List<IDataParameter> list)
+					{
+						var result = list.Find(x => x.ParameterName == parameterName);
+						if (result != null)
+							result.Value = parameter.Value;
+					}
+					else if (parameter is IDictionary<string, object> dict)
+					{
+						if (dict.ContainsKey(parameterName))
+						{
+							dict[parameterName] = parameter.Value;
+						}
+					}
+					else
+					{
+						var result = parameters.GetType().GetProperties().FirstOrDefault(property => property.Name == parameterName);
+						if (result != null)
+						{
+							result.SetValue(parameters, parameter.Value);
+						}
+					}
+				}
 			}
 		}
 
-		private void DecodeDictionary(IDictionary<string, object> dict)
-		{
-			foreach (KeyValuePair<string, object> item in dict)
-			{
-				object value = item.Value ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + item.Key, value, ParameterDirection.Input);
-				cmd.Parameters.Add(parameter);
-			}
-		}
-
-		private void DecodeObject(object args)
-		{
-			foreach (var propertyInfo in args.GetType().GetProperties())
-			{
-				object value = propertyInfo.GetValue(args) ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + propertyInfo.Name, value, ParameterDirection.Input);
-				cmd.Parameters.Add(parameter);
-			}
-		}
 
 
 		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
@@ -133,16 +160,7 @@ namespace UnitTestProject
 			{
 				conn.Open();
 				int n = cmd.ExecuteNonQuery();
-				if (parameters is List<IDataParameter> list)
-					foreach (IDataParameter parameter in cmd.Parameters)
-					{
-						if (parameter.Direction != ParameterDirection.Input)
-						{
-							var result = list.Find(x => x.ParameterName == parameter.ParameterName.Substring(1));
-							if (result != null)
-								result.Value = parameter.Value;
-						}
-					}
+				CompleteParameters();
 				return n;
 			}
 			finally
@@ -150,6 +168,7 @@ namespace UnitTestProject
 				conn.Close();
 			}
 		}
+
 
 		public override object ExecuteScalar()
 		{

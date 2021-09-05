@@ -31,6 +31,36 @@ namespace Sys.Data.Text
 		{
 		}
 
+		public ParameterContext(IDictionary<string, object> dict)
+		{
+			foreach (KeyValuePair<string, object> item in dict)
+			{
+				var parameter = new Parameter(item.Key, item.Value)
+				{
+					Direction = ParameterDirection.Input,
+				};
+
+				AddParameter(parameter);
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args">instance of property class</param>
+		public ParameterContext(object args)
+		{
+			foreach (var propertyInfo in args.GetType().GetProperties())
+			{
+				var parameter = new Parameter(propertyInfo.Name, propertyInfo.GetValue(args))
+				{
+					Direction = ParameterDirection.Input,
+				};
+
+				AddParameter(parameter);
+			}
+		}
+
 		public void Clear()
 		{
 			parameters.Clear();
