@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Data;
 
 namespace Sys.Data.Text
 {
@@ -56,10 +56,29 @@ namespace Sys.Data.Text
 		/// <param name="context"></param>
 		/// <param name="parameterName">name of parameter</param>
 		/// <param name="value">the value of parameter</param>
+		/// <param name="direction">the parameter directior: in,out,in/out,return</param>
 		/// <returns></returns>
-		public static Expression AsParameter(this ParameterContext context, string parameterName, object value = null)
+		public static Expression AsParameter(this ParameterContext context, string parameterName, object value = null, ParameterDirection direction = ParameterDirection.Input)
 		{
-			return new Expression(context.CreateParameter(parameterName, value));
+			var parameter = new Parameter(parameterName, value ?? DBNull.Value)
+			{
+				Direction = direction,
+			};
+
+			context.AddParameter(parameter);
+			return new Expression(new ParameterName(parameterName));
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="parameter"></param>
+		/// <returns></returns>
+		public static Expression AsParameter(this ParameterContext context, IDataParameter parameter)
+		{
+			context.AddParameter(parameter);
+			return new Expression(new ParameterName(parameter.ParameterName));
 		}
 
 		/// <summary>

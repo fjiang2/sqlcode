@@ -317,11 +317,15 @@ WHERE Products.[Discontinued] <> 1";
 			var dt1 = new SqlCmd(conn, SQL, new { Id = 7 }).FillDataTable();
 			Debug.Assert(dt1.Rows.Count >= 5);
 
-			//if you want to change value of parameter from 7 to 10
-			//context.Parameters["Id"] = 10;
-
 			var dt2 = new SqlCmd(conn, SQL, context.Parameters).FillDataTable();
 			Debug.Assert(dt2.Rows.Count >= 5);
+
+			//if you want to change value of parameter from 7 to 10
+			context["Id"].Value = 10;
+
+			dt2 = new SqlCmd(conn, SQL, context.Parameters).FillDataTable();
+			Debug.Assert(dt2.Rows.Count == 0);
+
 #endif
 
 		}
