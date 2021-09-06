@@ -110,6 +110,8 @@ namespace UnitTestProject
 				dbType = SqlDbType.SmallInt;
 			else if (value is long)
 				dbType = SqlDbType.BigInt;
+			else if (value is byte)
+				dbType = SqlDbType.TinyInt;
 			else if (value is DateTime)
 				dbType = SqlDbType.DateTime;
 			else if (value is double)
@@ -183,5 +185,33 @@ namespace UnitTestProject
 			}
 		}
 
+		public int ExecuteUniqueInsert()
+		{
+			if (!cmd.CommandText.StartsWith("INSERT INTO"))
+				return ExecuteNonQuery();
+
+			try
+			{
+				const string identity = "__IDENTITY__";
+				SqlParameter parameter = NewParameter($"@{identity}", 0, ParameterDirection.Output);
+				if (!cmd.Parameters.Contains(parameter))
+				{
+					cmd.Parameters.Add(parameter);
+					cmd.CommandText += $";SET @{identity}=@@IDENTITY";
+				}
+
+				conn.Open();
+				cmd.ExecuteNonQuery();
+
+				if (parameter.Value is DBNull)
+					return -1;
+
+				return Convert.ToInt32(parameter.Value);
+			}
+			finally
+			{
+				conn.Close();
+			}
+		}
 	}
 }

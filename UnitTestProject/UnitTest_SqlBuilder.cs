@@ -150,8 +150,10 @@ WHERE Products.[Discontinued] <> 1";
 
 			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = N'Electronics'");
 
+#if HAS_SQL_SERVER
 			int result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result >= 0);
+#endif
 
 			SQL = new SqlBuilder()
 				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
