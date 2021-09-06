@@ -189,7 +189,7 @@ namespace UnitTestProject
 
 		public int GetIdentity()
 		{
-			var cmd = new SqlCmd(this.connectionString, SqlTemplate.SetIdentity("@Identity"), null);
+			var cmd = new SqlCmd(this.connectionString, SqlTemplate.SetIdentityOutParameter("@Identity"), null);
 			SqlParameter parameter = cmd.NewParameter("@Identity", 0, ParameterDirection.Output);
 			cmd.command.Parameters.Add(parameter);
 			cmd.ExecuteNonQuery();

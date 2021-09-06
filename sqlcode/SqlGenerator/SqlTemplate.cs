@@ -74,7 +74,8 @@ namespace Sys.Data
 		public string InsertWithIdentityOff(string columns, string values)
 			=> $"SET IDENTITY_INSERT {formalName} ON; {Insert(columns, values)}; SET IDENTITY_INSERT {formalName} OFF";
 
-		public static string SetIdentity(string parameterName) => $"SET {parameterName}=@@IDENTITY";
+		public static string SetIdentityOutParameter(string parameterName) 
+			=> $"SET {parameterName}=@@IDENTITY";
 
 		public string Delete()
 			=> $"DELETE FROM {formalName}";

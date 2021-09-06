@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Data.SqlClient;
+using System.Data;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
@@ -159,7 +160,7 @@ WHERE Products.[Discontinued] <> 1";
 				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
 				.VALUES("Electronics", "Electronics and Computers", new byte[] { 0x15, 0xC2 })
 				.AppendLine()
-				.SET(context.AsOutParameter("CategoryId") == Expression.IDENTITY)
+				.SET(context.AsOutParameter("CategoryId", 0) == Expression.IDENTITY)
 				.ToString();
 
 

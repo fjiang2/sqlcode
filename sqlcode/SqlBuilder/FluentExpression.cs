@@ -69,21 +69,44 @@ namespace Sys.Data.Text
 		}
 
 		/// <summary>
-		/// Create out parameter which can be used to retrieve identity value
+		/// Create out parameter. Value is used to determine parameter type 
 		/// </summary>
 		/// <param name="context"></param>
 		/// <param name="parameterName"></param>
+		/// <param name="value">Used to determine parameter type</param>
 		/// <param name="columnName">default: columnName == parameterName</param>
 		/// <returns></returns>
-		public static Expression AsOutParameter(this ParameterContext context, string parameterName, string columnName = null)
+		public static Expression AsOutParameter(this ParameterContext context, string parameterName, object value, string columnName = null)
 		{
 			if (columnName == null)
 				columnName = parameterName;
 
-			var parameter = new Parameter(parameterName, 0)
+			var parameter = new Parameter(parameterName, value)
 			{
 				SourceColumn = columnName,
 				Direction = ParameterDirection.Output,
+			};
+
+			return AsParameter(context, parameter);
+		}
+
+		/// <summary>
+		/// Create ref parameter
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="parameterName"></param>
+		/// <param name="value"></param>
+		/// <param name="columnName"></param>
+		/// <returns></returns>
+		public static Expression AsRefParameter(this ParameterContext context, string parameterName, object value = null, string columnName = null)
+		{
+			if (columnName == null)
+				columnName = parameterName;
+
+			var parameter = new Parameter(parameterName, value)
+			{
+				SourceColumn = columnName,
+				Direction = ParameterDirection.InputOutput,
 			};
 
 			return AsParameter(context, parameter);
