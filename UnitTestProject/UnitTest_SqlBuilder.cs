@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Data.SqlClient;
+using System.Data;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
@@ -135,6 +136,44 @@ WHERE Products.[Discontinued] <> 1";
 				.ToString();
 
 			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
+		}
+
+
+		[TestMethod]
+		public void Test_INSERT_IDENTIY()
+		{
+			var context = new ParameterContext();
+
+			string SQL = new SqlBuilder()
+				.DELETE_FROM(Categories).WHERE("CategoryName".AsColumn() == "Electronics")
+				.ToString();
+
+
+			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = N'Electronics'");
+
+#if HAS_SQL_SERVER
+			int result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
+			Debug.Assert(result >= 0);
+#endif
+
+			SQL = new SqlBuilder()
+				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
+				.VALUES("Electronics", "Electronics and Computers", new byte[] { 0x15, 0xC2 })
+				.AppendLine()
+				.SET(context.AsOutParameter("CategoryId", 0) == Expression.IDENTITY)
+				.ToString();
+
+
+			Debug.Assert(SQL == @"INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Electronics', N'Electronics and Computers', 0x15C2)
+SET @CategoryId = @@IDENTITY");
+
+#if HAS_SQL_SERVER
+			result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
+			Debug.Assert(result == 1);
+			
+			int CategoryId = (int)context["CategoryId"].Value;
+			Debug.Assert(CategoryId > 8);
+#endif
 		}
 
 		[TestMethod]
@@ -345,6 +384,7 @@ WHERE Products.[Discontinued] <> 1";
 				"ShipCity".AsColumn() == "London",
 				"EmployeeID".AsColumn() == 7);
 
+			Debug.Assert(where1.ToString() == "[OrderDate] <= GETDATE() AND [ShipCity] = N'London' AND [EmployeeID] = 7");
 			Debug.Assert(where1.ToString() == where2.ToString());
 
 			var SQL = new SqlBuilder()
@@ -371,7 +411,7 @@ WHERE Products.[Discontinued] <> 1";
 		[TestMethod]
 		public void Test_Function()
 		{
-			var min_price = "MIN".Function("UnitPrice".AsColumn());
+			var min_price = "MIN".AsFunction("UnitPrice".AsColumn());
 			var where = ("CategoryId".AsColumn() == 5).AND("UnitsInStock".AsColumn() > 100);
 
 			var SQL = new SqlBuilder()
@@ -500,8 +540,16 @@ WHERE Products.[Discontinued] <> 1";
 				.FROM("Orders")
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT DATEDIFF(day,[OrderDate],[ShippedDate]) AS Day, CONVERT(INT,[Freight]) AS Freight, * FROM [Orders]");
+			Debug.Assert(SQL == "SELECT DATEDIFF(day, [OrderDate], [ShippedDate]) AS Day, CONVERT(INT, [Freight]) AS Freight, * FROM [Orders]");
 
+			var expr = "OrderDate".AsColumn().DATEADD(DateInterval.day, 5).ToString();
+			Debug.Assert(expr == "DATEADD(day, 5, [OrderDate])");
+
+			expr = "OrderDate".AsColumn().DATEPART(DateInterval.year).ToString();
+			Debug.Assert(expr == "DATEPART(year, [OrderDate])");
+
+			expr = "OrderDate".AsColumn().DATENAME(DateInterval.year).ToString();
+			Debug.Assert(expr == "DATENAME(year, [OrderDate])");
 		}
 
 

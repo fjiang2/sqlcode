@@ -13,64 +13,100 @@ namespace UnitTestProject
 {
 	public class SqlCmd : BaseDbCmd
 	{
-		private SqlCommand cmd;
-		private SqlConnection conn;
+		private SqlConnectionStringBuilder connectionString;
+		private SqlCommand command;
+		private SqlConnection connection;
+		private object parameters;
 
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object parameters)
 		{
-			this.cmd = new SqlCommand(sql);
-			this.conn = new SqlConnection(connectionString.ConnectionString);
-			this.cmd.Connection = conn;
+			this.connectionString = connectionString;
+			this.command = new SqlCommand(sql);
+			this.connection = new SqlConnection(connectionString.ConnectionString);
+			this.command.Connection = connection;
+			this.parameters = parameters;
 
+			PrepareParameters(parameters);
+		}
+
+		private void PrepareParameters(object parameters)
+		{
 			if (parameters == null)
 				return;
 
+			if (parameters is string)
+			{
+				//The parameters could be JSON
+				return;
+			}
+
 			if (parameters is List<IDataParameter> list)
-				DecodeContext(list);
+				foreach (IDataParameter item in list)
+				{
+					object value = item.Value ?? DBNull.Value;
+					SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+					command.Parameters.Add(parameter);
+				}
+			else if (parameters is IDictionary<string, object> dict)
+				foreach (KeyValuePair<string, object> item in dict)
+				{
+					object value = item.Value ?? DBNull.Value;
+					SqlParameter parameter = NewParameter("@" + item.Key, value, ParameterDirection.Input);
+					command.Parameters.Add(parameter);
+				}
 			else
-			if (parameters is IDictionary<string, object> dict)
-				DecodeDictionary(dict);
-			else
-				DecodeObject(parameters);
+				foreach (var propertyInfo in parameters.GetType().GetProperties())
+				{
+					object value = propertyInfo.GetValue(parameters) ?? DBNull.Value;
+					SqlParameter parameter = NewParameter("@" + propertyInfo.Name, value, ParameterDirection.Input);
+					command.Parameters.Add(parameter);
+				}
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql)
+		public void AddOutParameterOfIdentity(string parameterName)
 		{
-			this.cmd = new SqlCommand(sql);
-			this.conn = new SqlConnection(connectionString.ConnectionString);
-			this.cmd.Connection = conn;
+			SqlParameter parameter = NewParameter($"@{parameterName}", 0, ParameterDirection.Output);
+			command.Parameters.Add(parameter);
 		}
 
-		private void DecodeContext(List<IDataParameter> list)
+		private void CompleteParameters()
 		{
-			foreach (IDataParameter item in list)
+			if (parameters == null)
+				return;
+
+			foreach (IDataParameter parameter in command.Parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				cmd.Parameters.Add(parameter);
+				//skip letter '@'
+				string parameterName = parameter.ParameterName.Substring(1);
+
+				if (parameter.Direction != ParameterDirection.Input)
+				{
+					if (parameters is List<IDataParameter> list)
+					{
+						var result = list.Find(x => x.ParameterName == parameterName);
+						if (result != null)
+							result.Value = parameter.Value;
+					}
+					else if (parameter is IDictionary<string, object> dict)
+					{
+						if (dict.ContainsKey(parameterName))
+						{
+							dict[parameterName] = parameter.Value;
+						}
+					}
+					else
+					{
+						var result = parameters.GetType().GetProperties().FirstOrDefault(property => property.Name == parameterName);
+						if (result != null)
+						{
+							result.SetValue(parameters, parameter.Value);
+						}
+					}
+				}
 			}
 		}
 
-		private void DecodeDictionary(IDictionary<string, object> dict)
-		{
-			foreach (KeyValuePair<string, object> item in dict)
-			{
-				object value = item.Value ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + item.Key, value, ParameterDirection.Input);
-				cmd.Parameters.Add(parameter);
-			}
-		}
 
-		private void DecodeObject(object args)
-		{
-			foreach (var propertyInfo in args.GetType().GetProperties())
-			{
-				object value = propertyInfo.GetValue(args) ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + propertyInfo.Name, value, ParameterDirection.Input);
-				cmd.Parameters.Add(parameter);
-			}
-		}
-	
 
 		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
@@ -81,6 +117,8 @@ namespace UnitTestProject
 				dbType = SqlDbType.SmallInt;
 			else if (value is long)
 				dbType = SqlDbType.BigInt;
+			else if (value is byte)
+				dbType = SqlDbType.TinyInt;
 			else if (value is DateTime)
 				dbType = SqlDbType.DateTime;
 			else if (value is double)
@@ -114,14 +152,14 @@ namespace UnitTestProject
 		{
 			try
 			{
-				conn.Open();
-				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				connection.Open();
+				SqlDataAdapter adapter = new SqlDataAdapter(command);
 				adapter.Fill(ds);
 				return ds;
 			}
 			finally
 			{
-				conn.Close();
+				connection.Close();
 			}
 		}
 
@@ -129,26 +167,28 @@ namespace UnitTestProject
 		{
 			try
 			{
-				conn.Open();
-				int n = cmd.ExecuteNonQuery();
+				connection.Open();
+				int n = command.ExecuteNonQuery();
+				CompleteParameters();
 				return n;
 			}
 			finally
 			{
-				conn.Close();
+				connection.Close();
 			}
 		}
+
 
 		public override object ExecuteScalar()
 		{
 			try
 			{
-				conn.Open();
-				return cmd.ExecuteScalar();
+				connection.Open();
+				return command.ExecuteScalar();
 			}
 			finally
 			{
-				conn.Close();
+				connection.Close();
 			}
 		}
 

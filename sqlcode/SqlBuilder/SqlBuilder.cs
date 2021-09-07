@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Sys.Data.Text
 {
@@ -72,6 +73,13 @@ namespace Sys.Data.Text
 		public SqlBuilder AppendLine()
 		{
 			script.Add(Environment.NewLine);
+			return this;
+		}
+
+		public SqlBuilder Append(SqlBuilder builder)
+		{
+			AppendLine();
+			Append(builder.Script);
 			return this;
 		}
 
