@@ -177,6 +177,13 @@ namespace Sys.Data.Text
 			return columnName.AsColumn().LET(value);
 		}
 
+
+		/// <summary>
+		/// Create function call
+		/// </summary>
+		/// <param name="function"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		public static Expression AsFunction(this string function, params Expression[] args)
 		{
 			return Expression.Function(function, args);
@@ -213,17 +220,5 @@ namespace Sys.Data.Text
 		{
 			return Expression.EXISTS(select);
 		}
-
-		/// <summary>
-		/// Create function call
-		/// </summary>
-		/// <param name="func"></param>
-		/// <param name="args"></param>
-		/// <returns></returns>
-		public static Expression Function(this string func, params Expression[] args)
-		{
-			return Expression.Function(func, args);
-		}
-
 	}
 }

@@ -384,6 +384,7 @@ SET @CategoryId = @@IDENTITY");
 				"ShipCity".AsColumn() == "London",
 				"EmployeeID".AsColumn() == 7);
 
+			Debug.Assert(where1.ToString() == "[OrderDate] <= GETDATE() AND [ShipCity] = N'London' AND [EmployeeID] = 7");
 			Debug.Assert(where1.ToString() == where2.ToString());
 
 			var SQL = new SqlBuilder()
@@ -410,7 +411,7 @@ SET @CategoryId = @@IDENTITY");
 		[TestMethod]
 		public void Test_Function()
 		{
-			var min_price = "MIN".Function("UnitPrice".AsColumn());
+			var min_price = "MIN".AsFunction("UnitPrice".AsColumn());
 			var where = ("CategoryId".AsColumn() == 5).AND("UnitsInStock".AsColumn() > 100);
 
 			var SQL = new SqlBuilder()
@@ -539,8 +540,16 @@ SET @CategoryId = @@IDENTITY");
 				.FROM("Orders")
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT DATEDIFF(day,[OrderDate],[ShippedDate]) AS Day, CONVERT(INT,[Freight]) AS Freight, * FROM [Orders]");
+			Debug.Assert(SQL == "SELECT DATEDIFF(day, [OrderDate], [ShippedDate]) AS Day, CONVERT(INT, [Freight]) AS Freight, * FROM [Orders]");
 
+			var expr = "OrderDate".AsColumn().DATEADD(DateInterval.day, 5).ToString();
+			Debug.Assert(expr == "DATEADD(day, 5, [OrderDate])");
+
+			expr = "OrderDate".AsColumn().DATEPART(DateInterval.year).ToString();
+			Debug.Assert(expr == "DATEPART(year, [OrderDate])");
+
+			expr = "OrderDate".AsColumn().DATENAME(DateInterval.year).ToString();
+			Debug.Assert(expr == "DATENAME(year, [OrderDate])");
 		}
 
 
