@@ -63,6 +63,11 @@ namespace UnitTestProject
 				}
 		}
 
+		public void AddOutParameterOfIdentity(string parameterName)
+		{
+			SqlParameter parameter = NewParameter($"@{parameterName}", 0, ParameterDirection.Output);
+			command.Parameters.Add(parameter);
+		}
 
 		private void CompleteParameters()
 		{
@@ -187,13 +192,5 @@ namespace UnitTestProject
 			}
 		}
 
-		public int GetIdentity()
-		{
-			var cmd = new SqlCmd(this.connectionString, SqlTemplate.SetIdentityOutParameter("@Identity"), null);
-			SqlParameter parameter = cmd.NewParameter("@Identity", 0, ParameterDirection.Output);
-			cmd.command.Parameters.Add(parameter);
-			cmd.ExecuteNonQuery();
-			return Convert.ToInt32(parameter.Value);
-		}
 	}
 }

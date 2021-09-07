@@ -74,16 +74,11 @@ namespace Sys.Data.Text
 		/// <param name="context"></param>
 		/// <param name="parameterName"></param>
 		/// <param name="value">Used to determine parameter type</param>
-		/// <param name="columnName">default: columnName == parameterName</param>
 		/// <returns></returns>
-		public static Expression AsOutParameter(this ParameterContext context, string parameterName, object value, string columnName = null)
+		public static Expression AsOutParameter(this ParameterContext context, string parameterName, object value)
 		{
-			if (columnName == null)
-				columnName = parameterName;
-
 			var parameter = new Parameter(parameterName, value)
 			{
-				SourceColumn = columnName,
 				Direction = ParameterDirection.Output,
 			};
 
@@ -96,16 +91,11 @@ namespace Sys.Data.Text
 		/// <param name="context"></param>
 		/// <param name="parameterName"></param>
 		/// <param name="value"></param>
-		/// <param name="columnName"></param>
 		/// <returns></returns>
-		public static Expression AsRefParameter(this ParameterContext context, string parameterName, object value = null, string columnName = null)
+		public static Expression AsRefParameter(this ParameterContext context, string parameterName, object value)
 		{
-			if (columnName == null)
-				columnName = parameterName;
-
 			var parameter = new Parameter(parameterName, value)
 			{
-				SourceColumn = columnName,
 				Direction = ParameterDirection.InputOutput,
 			};
 
