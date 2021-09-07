@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Sys.Data.Text
 {
@@ -72,6 +73,13 @@ namespace Sys.Data.Text
 		public SqlBuilder AppendLine()
 		{
 			script.Add(Environment.NewLine);
+			return this;
+		}
+
+		public SqlBuilder Append(SqlBuilder builder)
+		{
+			AppendLine();
+			Append(builder.Script);
 			return this;
 		}
 
@@ -148,6 +156,14 @@ namespace Sys.Data.Text
 				return COLUMNS(JoinColumns(columns));
 		}
 
+		public SqlBuilder COLUMNS(IEnumerable<string> columns)
+		{
+			if (columns.Count() == 0)
+				return COLUMNS("*");
+			else
+				return COLUMNS(JoinColumns(columns));
+		}
+
 		#endregion
 
 		public SqlBuilder FROM(ITableName from, string alias = null) => FROM(from.FullName, alias);
@@ -160,7 +176,8 @@ namespace Sys.Data.Text
 			return WithTableName("UPDATE", tableName, alias);
 		}
 
-		public SqlBuilder SET(params Expression[] assignments) => AppendSpace("SET").AppendSpace(string.Join<Expression>(", ", assignments));
+		public SqlBuilder SET(IEnumerable<Expression> assignments) => AppendSpace("SET").AppendSpace(string.Join<Expression>(", ", assignments));
+		public SqlBuilder SET(params Expression[] assignments) => SET((IEnumerable<Expression>)assignments);
 
 		public SqlBuilder INSERT_INTO(ITableName tableName) => INSERT_INTO(tableName.FullName);
 		public SqlBuilder INSERT_INTO(string tableName)

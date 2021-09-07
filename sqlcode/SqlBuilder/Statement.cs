@@ -79,7 +79,7 @@ namespace Sys.Data.Text
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
+        /// <returns></returns>  
         public Statement SET(VariableName name, Expression value)
         {
             AppendLine($"SET @{name} = {value}");

@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Data;
 
 namespace Sys.Data.Text
 {
@@ -56,11 +56,64 @@ namespace Sys.Data.Text
 		/// <param name="context"></param>
 		/// <param name="parameterName">name of parameter</param>
 		/// <param name="value">the value of parameter</param>
+		/// <param name="direction">the parameter directior: in,out,in/out,return</param>
 		/// <returns></returns>
-		public static Expression AsParameter(this ParameterContext context, string parameterName, object value = null)
+		public static Expression AsParameter(this ParameterContext context, string parameterName, object value = null, ParameterDirection direction = ParameterDirection.Input)
 		{
-			return new Expression(context.CreateParameter(parameterName, value));
+			var parameter = new Parameter(parameterName, value ?? DBNull.Value)
+			{
+				Direction = direction,
+			};
+
+			return AsParameter(context, parameter);
 		}
+
+		/// <summary>
+		/// Create out parameter. Value is used to determine parameter type 
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="parameterName"></param>
+		/// <param name="value">Used to determine parameter type</param>
+		/// <returns></returns>
+		public static Expression AsOutParameter(this ParameterContext context, string parameterName, object value)
+		{
+			var parameter = new Parameter(parameterName, value)
+			{
+				Direction = ParameterDirection.Output,
+			};
+
+			return AsParameter(context, parameter);
+		}
+
+		/// <summary>
+		/// Create ref parameter
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="parameterName"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static Expression AsRefParameter(this ParameterContext context, string parameterName, object value)
+		{
+			var parameter = new Parameter(parameterName, value)
+			{
+				Direction = ParameterDirection.InputOutput,
+			};
+
+			return AsParameter(context, parameter);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="parameter"></param>
+		/// <returns></returns>
+		public static Expression AsParameter(this ParameterContext context, IDataParameter parameter)
+		{
+			context.AddParameter(parameter);
+			return new Expression(new ParameterName(parameter.ParameterName));
+		}
+
 
 		/// <summary>
 		/// Create expression of  column name: "name" -> [name]
@@ -114,6 +167,13 @@ namespace Sys.Data.Text
 			return columnName.AsColumn().LET(value);
 		}
 
+
+		/// <summary>
+		/// Create function call
+		/// </summary>
+		/// <param name="function"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		public static Expression AsFunction(this string function, params Expression[] args)
 		{
 			return Expression.Function(function, args);
@@ -150,17 +210,5 @@ namespace Sys.Data.Text
 		{
 			return Expression.EXISTS(select);
 		}
-
-		/// <summary>
-		/// Create function call
-		/// </summary>
-		/// <param name="func"></param>
-		/// <param name="args"></param>
-		/// <returns></returns>
-		public static Expression Function(this string func, params Expression[] args)
-		{
-			return Expression.Function(func, args);
-		}
-
 	}
 }

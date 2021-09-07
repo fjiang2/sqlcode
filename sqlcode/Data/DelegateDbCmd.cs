@@ -26,7 +26,7 @@ namespace Sys.Data
 
 		public override object ExecuteScalar()
 		{
-			return dbCommand(sql, args).ExecuteNonQuery();
+			return dbCommand(sql, args).ExecuteScalar();
 		}
 
 		public override DataSet FillDataSet(DataSet dataSet)

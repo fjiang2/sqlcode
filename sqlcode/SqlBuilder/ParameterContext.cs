@@ -18,31 +18,102 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 
 namespace Sys.Data.Text
 {
 	public class ParameterContext
 	{
-		//<parameter, column>
-		private readonly Dictionary<string, object> parameters = new Dictionary<string, object>();
+		//<name, parameter>
+		private readonly Dictionary<string, IDataParameter> parameters = new Dictionary<string, IDataParameter>();
 
 		public ParameterContext()
 		{
 		}
 
-		public IDictionary<string, object> Parameters => this.parameters;
-
-		public ParameterName CreateParameter(string parameterName, object value)
+		public ParameterContext(IDictionary<string, object> dict)
 		{
-			if (!parameters.ContainsKey(parameterName))
-				parameters.Add(parameterName, value);
+			foreach (KeyValuePair<string, object> item in dict)
+			{
+				var parameter = new Parameter(item.Key, item.Value)
+				{
+					Direction = ParameterDirection.Input,
+				};
 
-			return new ParameterName(parameterName);
+				AddParameter(parameter);
+			}
 		}
 
-		public ParameterName CreateParameter(string parameterName)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="args">instance of property class</param>
+		public ParameterContext(object args)
 		{
-			return CreateParameter(parameterName, null);
+			foreach (var propertyInfo in args.GetType().GetProperties())
+			{
+				var parameter = new Parameter(propertyInfo.Name, propertyInfo.GetValue(args))
+				{
+					Direction = ParameterDirection.Input,
+				};
+
+				AddParameter(parameter);
+			}
+		}
+
+		public void Clear()
+		{
+			parameters.Clear();
+		}
+
+		/// <summary>
+		/// A list of all parameters
+		/// </summary>
+		public List<IDataParameter> Parameters => this.parameters.Values.ToList();
+
+
+		public IDataParameter this[string parameterName]
+		{
+			get
+			{
+				if (!parameters.ContainsKey(parameterName))
+					throw new InvalidExpressionException("invalid parameter name");
+
+				return parameters[parameterName];
+			}
+			set
+			{
+				AddParameter(value);
+			}
+		}
+
+		/// <summary>
+		/// Add a parameter which can be SqlParameter, OleDbParameter
+		/// </summary>
+		/// <param name="parameter"></param>
+		/// <returns></returns>
+		public IDataParameter AddParameter(IDataParameter parameter)
+		{
+			if (parameters.ContainsKey(parameter.ParameterName))
+				parameters.Remove(parameter.ParameterName);
+
+			parameters.Add(parameter.ParameterName, parameter);
+
+			return parameter;
+		}
+
+		public IDataParameter GetParameter(string parameterName)
+		{
+			if (parameters.ContainsKey(parameterName))
+				return parameters[parameterName];
+
+			return null;
+		}
+
+		public void RemoveParameter(string parameterName)
+		{
+			if (parameters.ContainsKey(parameterName))
+				parameters.Remove(parameterName);
 		}
 
 		public override string ToString()

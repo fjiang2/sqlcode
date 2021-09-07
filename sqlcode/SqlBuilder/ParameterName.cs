@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    public class ParameterName
+    class ParameterName
 	{
 		private readonly string name;
 

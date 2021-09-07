@@ -59,6 +59,9 @@ namespace UnitTestProject
 			string SQL = gen.Insert();
 			Debug.Assert(SQL == "INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES(N'Drink',N'Water',0x0102030405060708)");
 
+			SQL = gen.InsertWithIdentityParameter();
+			Debug.Assert(SQL == "INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES(N'Drink',N'Water',0x0102030405060708); SET @CategoryID=@@IDENTITY");
+
 			SQL = gen.InsertOrUpdate();
 			Debug.Assert(SQL == "IF EXISTS(SELECT * FROM [Categories] WHERE [CategoryID] = 12) UPDATE [Categories] SET [CategoryName] = N'Drink',[Description] = N'Water',[Picture] = 0x0102030405060708 WHERE [CategoryID] = 12 ELSE INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES(N'Drink',N'Water',0x0102030405060708)");
 

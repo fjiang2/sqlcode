@@ -167,6 +167,10 @@ namespace Sys.Data
             return Join(pair => $"{pair.ColumnFormalName} = {pair.Value}", separator);
         }
 
+        internal IEnumerable<Text.BinaryExpression> Reduce(string method)
+		{
+            return ToList().Select(pair => pair.Reduce(method));
+        }
 
         public override string ToString()
         {

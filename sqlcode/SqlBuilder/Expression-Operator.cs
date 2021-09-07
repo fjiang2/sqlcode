@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    public sealed partial class Expression
+    public partial class Expression
     {
 
         #region implicit section
@@ -135,37 +135,37 @@ namespace Sys.Data.Text
 
         public static Expression operator -(Expression expr)
         {
-            return OPR("-", expr);
+            return new UnaryExpression("-", expr);
         }
 
         public static Expression operator +(Expression expr)
         {
-            return OPR("+", expr);
+            return new UnaryExpression("+", expr);
         }
 
         public static Expression operator +(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "+", expr2);
+            return new BinaryExpression(expr1, "+", expr2);
         }
 
         public static Expression operator -(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "-", expr2);
+            return new BinaryExpression(expr1, "-", expr2);
         }
 
         public static Expression operator *(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "*", expr2);
+            return new BinaryExpression(expr1, "*", expr2);
         }
 
         public static Expression operator /(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "/", expr2);
+            return new BinaryExpression(expr1, "/", expr2);
         }
 
         public static Expression operator %(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "%", expr2);
+            return new BinaryExpression(expr1, "%", expr2);
         }
 
 
@@ -176,7 +176,7 @@ namespace Sys.Data.Text
                 return new Expression(expr1).Append(" IS NULL");
             }
 
-            return OPR(expr1, "=", expr2);
+            return new BinaryExpression(expr1, "=", expr2);
         }
 
 
@@ -187,43 +187,43 @@ namespace Sys.Data.Text
                 return new Expression(expr1).Append(" IS NOT NULL");
             }
 
-            return OPR(expr1, "<>", expr2);
+            return new BinaryExpression(expr1, "<>", expr2);
         }
 
         public static Expression operator >(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, ">", expr2);
+            return new BinaryExpression(expr1, ">", expr2);
         }
 
         public static Expression operator <(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "<", expr2);
+            return new BinaryExpression(expr1, "<", expr2);
         }
 
         public static Expression operator >=(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, ">=", expr2);
+            return new BinaryExpression(expr1, ">=", expr2);
         }
 
         public static Expression operator <=(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "<=", expr2);
+            return new BinaryExpression(expr1, "<=", expr2);
         }
 
 
         public static Expression operator &(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "AND", expr2);
+            return new BinaryExpression(expr1, "AND", expr2);
         }
 
         public static Expression operator |(Expression expr1, Expression expr2)
         {
-            return OPR(expr1, "OR", expr2);
+            return new BinaryExpression(expr1, "OR", expr2);
         }
 
         public static Expression operator ~(Expression expr)
         {
-            return OPR("NOT", expr);
+            return new UnaryExpression("NOT", expr);
         }
         
         #endregion
