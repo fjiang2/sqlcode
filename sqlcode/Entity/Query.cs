@@ -35,6 +35,12 @@ namespace Sys.Data.Entity
 			}
 		}
 
+		/// <summary>
+		/// Operate a table and submit changes
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="action"></param>
+		/// <returns></returns>
 		public int Submit<TEntity>(Action<Table<TEntity>> action) where TEntity : class
 		{
 			return Invoke(db =>
@@ -79,6 +85,21 @@ namespace Sys.Data.Entity
 		public IEnumerable<TEntity> Select<TEntity>(string where = null) where TEntity : class
 		{
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
+		}
+
+		/// <summary>
+		/// Select single entity by primary key. Properties of primary key must have values
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public TEntity SelectRow<TEntity>(TEntity entity) where TEntity : class
+		{
+			return Invoke(db =>
+			{
+				var table = db.GetTable<TEntity>();
+				return table.Select(entity);
+			});
 		}
 
 		/// <summary>
@@ -175,6 +196,15 @@ namespace Sys.Data.Entity
 			=> Submit<TEntity>(table => table.InsertOnSubmit(entities));
 
 		/// <summary>
+		/// Insert a single row with entity
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public int InsertRow<TEntity>(TEntity entity) where TEntity : class
+			=> Submit<TEntity>(table => table.InsertOnSubmit(entity));
+
+		/// <summary>
 		/// UPDATE entity-table SET ...
 		/// </summary>
 		/// <typeparam name="TEntity"></typeparam>
@@ -183,6 +213,14 @@ namespace Sys.Data.Entity
 		public int Update<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.UpdateOnSubmit(entities));
 
+		/// <summary>
+		/// Update a single row with entity
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public int UpdateRow<TEntity>(TEntity entity) where TEntity : class
+			=> Submit<TEntity>(table => table.UpdateOnSubmit(entity));
 
 		/// <summary>
 		/// Update partial columns of entity, values of primary key requried
@@ -194,8 +232,18 @@ namespace Sys.Data.Entity
 		/// <param name="entities"></param>
 		/// <param name="throwException"></param>
 		/// <returns></returns>
-		public int PatialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class
+		public int PartialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entities, throwException));
+
+		/// <summary>
+		/// Update a single row with entity partially
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <param name="throwException"></param>
+		/// <returns></returns>
+		public int PartialUpdateRow<TEntity>(object entity, bool throwException = false) where TEntity : class
+			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, throwException));
 
 		/// <summary>
 		/// 
@@ -208,8 +256,23 @@ namespace Sys.Data.Entity
 		public int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, modifiedProperties, where));
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entities"></param>
+		/// <returns></returns>
 		public int InsertOrUpdate<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOrUpdateOnSubmit(entities));
+
+		/// <summary>
+		/// Insert or update a single row with entity
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public int InsertOrUpdateRow<TEntity>(TEntity entity) where TEntity : class
+			=> Submit<TEntity>(table => table.InsertOrUpdateOnSubmit(entity));
 
 		/// <summary>
 		/// Delete entities
@@ -220,6 +283,14 @@ namespace Sys.Data.Entity
 		public int Delete<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.DeleteOnSubmit(entities));
 
+		/// <summary>
+		/// Delete a single row with entity
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public int DeleteRow<TEntity>(TEntity entity) where TEntity : class
+			=> Submit<TEntity>(table => table.DeleteOnSubmit(entity));
 
 		/// <summary>
 		/// DELETE FROM entity-table WHERE ...
@@ -261,6 +332,44 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Invoke(db => db.Expand(entities));
+
+		/// <summary>
+		/// Support SqlCe and SQL server, use primary key to check row existence
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entity"></param>
+		/// <returns></returns>
+		public int UpsertRow<TEntity>(TEntity entity) where TEntity : class
+		{
+			return Submit<TEntity>(table =>
+			{
+				if (table.Select(entity) == null)
+					table.InsertOnSubmit(entity);
+				else
+					table.UpdateOnSubmit(entity);
+			});
+		}
+
+		/// <summary>
+		/// Support SqlCe and SQL server
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entities"></param>
+		/// <returns></returns>
+		public int Upsert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		{
+			return Submit<TEntity>(table =>
+			{
+				foreach (var entity in entities)
+				{
+					if (table.Select(entity) == null)
+						table.InsertOnSubmit(entity);
+					else
+						table.UpdateOnSubmit(entity);
+				}
+			});
+		}
+
 	}
-	
+
 }

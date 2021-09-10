@@ -25,6 +25,29 @@ namespace Sys.Data.Entity
             return ToList(dt);
         }
 
+        /// <summary>
+        /// Read single entity by primary key
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        public TEntity Select(TEntity where)
+        {
+            SqlGenerator gen = this.Generator;
+            Type type = typeof(TEntity);
+
+            foreach (string key in schema.PrimaryKeys)
+            {
+                object obj = type.GetProperty(key)?.GetValue(where);
+                gen.Add(key, obj);
+            }
+
+            string SQL = gen.SelectRows();
+            gen.Clear();
+
+            var dt = Context.FillDataTable(SQL);
+            return ToList(dt).FirstOrDefault();
+        }
+
         public void SelectOnSubmit(Expression<Func<TEntity, bool>> where)
         {
             var translator = new QueryTranslator();
