@@ -11,12 +11,12 @@ using Sys.Data.Text;
 
 namespace UnitTestProject
 {
-	public class SqlCmd : BaseDbCmd
+	public class SqlCmd : BaseDbCmd, IDbCmd
 	{
 		private SqlConnectionStringBuilder connectionString;
 		private SqlCommand command;
 		private SqlConnection connection;
-		private object parameters;
+		private IParameterFactory factory;
 
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object parameters)
 		{
@@ -24,7 +24,6 @@ namespace UnitTestProject
 			this.command = new SqlCommand(sql);
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
-			this.parameters = parameters;
 
 			PrepareParameters(parameters);
 		}
@@ -41,26 +40,19 @@ namespace UnitTestProject
 			}
 
 			if (parameters is List<IDataParameter> list)
-				foreach (IDataParameter item in list)
-				{
-					object value = item.Value ?? DBNull.Value;
-					SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-					command.Parameters.Add(parameter);
-				}
+				factory = new ListParameters(list);
 			else if (parameters is IDictionary<string, object> dict)
-				foreach (KeyValuePair<string, object> item in dict)
-				{
-					object value = item.Value ?? DBNull.Value;
-					SqlParameter parameter = NewParameter("@" + item.Key, value, ParameterDirection.Input);
-					command.Parameters.Add(parameter);
-				}
+				factory = new DictionaryParameters(dict);
 			else
-				foreach (var propertyInfo in parameters.GetType().GetProperties())
-				{
-					object value = propertyInfo.GetValue(parameters) ?? DBNull.Value;
-					SqlParameter parameter = NewParameter("@" + propertyInfo.Name, value, ParameterDirection.Input);
-					command.Parameters.Add(parameter);
-				}
+				factory = new ObjectParameters(parameters);
+
+			List<IDataParameter> items = factory.Create();
+			foreach (IDataParameter item in items)
+			{
+				object value = item.Value ?? DBNull.Value;
+				SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(parameter);
+			}
 		}
 
 		public void AddOutParameterOfIdentity(string parameterName)
@@ -71,39 +63,10 @@ namespace UnitTestProject
 
 		private void CompleteParameters()
 		{
-			if (parameters == null)
+			if (factory == null)
 				return;
 
-			foreach (IDataParameter parameter in command.Parameters)
-			{
-				//skip letter '@'
-				string parameterName = parameter.ParameterName.Substring(1);
-
-				if (parameter.Direction != ParameterDirection.Input)
-				{
-					if (parameters is List<IDataParameter> list)
-					{
-						var result = list.Find(x => x.ParameterName == parameterName);
-						if (result != null)
-							result.Value = parameter.Value;
-					}
-					else if (parameter is IDictionary<string, object> dict)
-					{
-						if (dict.ContainsKey(parameterName))
-						{
-							dict[parameterName] = parameter.Value;
-						}
-					}
-					else
-					{
-						var result = parameters.GetType().GetProperties().FirstOrDefault(property => property.Name == parameterName);
-						if (result != null)
-						{
-							result.SetValue(parameters, parameter.Value);
-						}
-					}
-				}
-			}
+			factory.Update(command.Parameters.Cast<IDataParameter>());
 		}
 
 

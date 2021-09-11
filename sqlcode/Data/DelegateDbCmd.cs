@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Sys.Data
 {
-	public class DelegateDbCmd : BaseDbCmd
+	public class DelegateDbCmd : BaseDbCmd, IDbCmd
 	{
 		private DbCmdFunc dbCommand;
 		private string sql;

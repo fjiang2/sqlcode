@@ -7,7 +7,7 @@ using Sys.Data;
 
 namespace sqlcode.SQLite
 {
-	public class SQLiteCmd : BaseDbCmd
+	public class SQLiteCmd : BaseDbCmd, IDbCmd
 	{
 		private SQLiteConnectionStringBuilder connectionString;
 		private SQLiteCommand command;

@@ -8,6 +8,14 @@ namespace Sys.Data.Linq
 {
 	public static class Iteration
 	{
+        public static IEnumerable<DataTable> AsEumerable(this DataSet ds)
+        {
+            foreach (DataTable dt in ds.Tables)
+            {
+                yield return dt;
+            }
+        }
+
         public static IEnumerable<DataRow> AsEumerable(this DataTable dt)
         {
             foreach (DataRow row in dt.Rows)
