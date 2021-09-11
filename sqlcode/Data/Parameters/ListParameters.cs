@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Sys.Data
 {
-	public class ListParameters : ParameterFactory
+	class ListParameters : ParameterFactory
 	{
 		private IEnumerable<IDataParameter> parameters;
 

@@ -5,7 +5,7 @@ using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	public class DictionaryParameters : ParameterFactory
+	class DictionaryParameters : ParameterFactory
 	{
 		private IDictionary<string, object> parameters;
 

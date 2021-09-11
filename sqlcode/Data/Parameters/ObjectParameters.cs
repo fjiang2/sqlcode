@@ -6,7 +6,7 @@ using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	public class ObjectParameters : ParameterFactory
+	class ObjectParameters : ParameterFactory
 	{
 		private object parameters;
 		public ObjectParameters(object parameters)
