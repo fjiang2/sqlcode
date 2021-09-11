@@ -22,92 +22,103 @@ using System.Text;
 
 namespace Sys.Data
 {
-    /// <summary>
-    /// a value can be used on SQL statement
-    /// </summary>
-    public class SqlValue
-    {
-        private const string DELIMETER = "'";
-        private const string NULL = "NULL";
+	/// <summary>
+	/// a value can be used on SQL statement
+	/// </summary>
+	public class SqlValue
+	{
+		private const string DELIMETER = "'";
+		private const string NULL = "NULL";
 
-        private readonly object value;
+		private readonly object value;
 
-        public SqlValue(object value)
-        {
-            if (value is SqlValue v)
-                this.value = v.value;
-            
-            this.value = value;
-        }
+		public static SqlStyle DefaultStyle = SqlStyle.SqlServer;
 
-        public object Value => value;
+		public SqlValue(object value)
+		{
+			if (value is SqlValue v)
+				this.value = v.value;
 
-        public bool IsNull => value == null || value == DBNull.Value;
+			this.value = value;
+		}
 
-        public string ToScript()
-        {
-            if (IsNull)
-                return NULL;
+		public object Value => value;
 
-            StringBuilder sb = new StringBuilder();
+		public bool IsNull => value == null || value == DBNull.Value;
 
-            if (value is string)
-            {
-                //N: used for SQL Type nvarchar
-                sb.Append("N")
-                  .Append(DELIMETER)
-                  .Append((value as string).Replace("'", "''"))
-                  .Append(DELIMETER);
-            }
-            else if (value is bool || value is bool?)
-            {
-                sb.Append((bool)value ? "1" : "0");
-            }
-            else if (value is DateTime || value is DateTime?)
-            {
-                DateTime time = (DateTime)value;
-                sb.Append(DELIMETER)
-                  .AppendFormat("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff"))
-                  .Append(DELIMETER);
-            }
-            else if (value is DateTimeOffset || value is DateTimeOffset?)
-            {
-                DateTimeOffset time = (DateTimeOffset)value;
-                var d = DELIMETER + string.Format("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff zzz"), time.Offset) + DELIMETER;
-                return d;
-            }
-            else if (value is char)
-            {
-                sb.Append(DELIMETER).Append(value).Append(DELIMETER);
-            }
-            else if (value is byte[])
-            {
-                sb.Append("0x" + BitConverter.ToString((byte[])value).Replace("-", ""));
-                //sb.Append("0x" + Comparison.ColumnValue.ByteArrayToHexString((byte[])value));
-            }
-            else if (value is Guid || value is Guid?)
-                sb.Append("N" + DELIMETER).Append(value).Append(DELIMETER);
-            else if (value is IEnumerable)
-            {
-                List<string> list = new List<string>();
-                foreach (var x in value as IEnumerable)
-                {
-                    list.Add(new SqlValue(x).ToScript());
-                }
-                return $"({string.Join(",", list)})";
-            }
-            else
-            {
-                sb.Append(value);
-            }
+		public string ToScript(SqlStyle style)
+		{
+			if (IsNull)
+				return NULL;
 
-            return sb.ToString();
-        }
+			StringBuilder sb = new StringBuilder();
 
-        public override string ToString()
-        {
-            return this.ToScript();
-        }
+			if (value is string)
+			{
+				//N: used for SQL Type nvarchar
+				if (style != SqlStyle.SQLite)
+					sb.Append("N");
 
-    }
+				sb.Append(DELIMETER)
+				.Append((value as string).Replace("'", "''"))
+				.Append(DELIMETER);
+			}
+			else if (value is bool || value is bool?)
+			{
+				sb.Append((bool)value ? "1" : "0");
+			}
+			else if (value is DateTime || value is DateTime?)
+			{
+				DateTime time = (DateTime)value;
+				sb.Append(DELIMETER)
+				  .AppendFormat("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff"))
+				  .Append(DELIMETER);
+			}
+			else if (value is DateTimeOffset || value is DateTimeOffset?)
+			{
+				DateTimeOffset time = (DateTimeOffset)value;
+				var d = DELIMETER + string.Format("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff zzz"), time.Offset) + DELIMETER;
+				return d;
+			}
+			else if (value is char)
+			{
+				sb.Append(DELIMETER).Append(value).Append(DELIMETER);
+			}
+			else if (value is byte[])
+			{
+				if (style != SqlStyle.SQLite)
+					sb.Append("0x").Append(BitConverter.ToString((byte[])value).Replace("-", ""));
+				else
+					sb.Append("x").Append(DELIMETER).Append(BitConverter.ToString((byte[])value).Replace("-", "")).Append(DELIMETER);
+			}
+			else if (value is Guid || value is Guid?)
+			{
+				if (style != SqlStyle.SQLite)
+					sb.Append("N" + DELIMETER).Append(value).Append(DELIMETER);
+				else
+					sb.Append(DELIMETER).Append(value).Append(DELIMETER);
+			}
+			else if (value is IEnumerable)
+			{
+				List<string> list = new List<string>();
+				foreach (var x in value as IEnumerable)
+				{
+					list.Add(new SqlValue(x).ToScript(style));
+				}
+				return $"({string.Join(",", list)})";
+			}
+			else
+			{
+				sb.Append(value);
+			}
+
+			return sb.ToString();
+		}
+
+		public override string ToString()
+		{
+			return this.ToScript(DefaultStyle);
+		}
+
+	}
 }

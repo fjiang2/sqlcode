@@ -12,7 +12,7 @@ namespace Sys.Data.Entity
 
         public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new QueryTranslator();
+            var translator = new QueryTranslator(Context.Option);
             string _where = translator.Translate(where);
             return Select(_where);
         }
@@ -50,7 +50,7 @@ namespace Sys.Data.Entity
 
         public void SelectOnSubmit(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new QueryTranslator();
+            var translator = new QueryTranslator(Context.Option);
             string _where = translator.Translate(where);
             SelectOnSubmit(_where);
         }

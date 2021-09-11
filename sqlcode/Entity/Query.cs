@@ -11,10 +11,11 @@ namespace Sys.Data.Entity
 	public class Query : IQuery
 	{
 		private DbCmdFunc command { get; set; }
-
-		public Query(DbCmdFunc cmd)
+		private SqlOption option { get; }
+		public Query(SqlOption option, DbCmdFunc cmd)
 		{
 			this.command = cmd;
+			this.option = option;
 		}
 
 		/// <summary>
@@ -29,7 +30,7 @@ namespace Sys.Data.Entity
 
 		private T Invoke<T>(Func<DataContext, T> func)
 		{
-			using (var db = new DataContext(command))
+			using (var db = new DataContext(command) { Option = option} )
 			{
 				return func(db);
 			}
@@ -142,7 +143,7 @@ namespace Sys.Data.Entity
 				var table = db.GetTable<TEntity>();
 
 				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
-				string _where = new QueryTranslator().Translate(where);
+				string _where = new QueryTranslator(db.Option).Translate(where);
 				string SQL = table.SelectFromWhere(_where, _columns);
 
 				var dt = db.FillDataTable(SQL);
@@ -171,7 +172,7 @@ namespace Sys.Data.Entity
 			where TEntity : class
 			where TResult : class
 		{
-			var translator = new QueryTranslator();
+			var translator = new QueryTranslator(option);
 			string _where = translator.Translate(where);
 			string _keySelector = translator.Translate(keySelector);
 			string _resultSelector = translator.Translate(resultSelector);

@@ -31,7 +31,7 @@ namespace Sys.Data.Entity
 		/// DataContext using extension class (dc1) or single class (dc2)
 		/// </summary>
 		public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
-
+		public SqlOption Option { get; set; } = SqlOption.DefaultOption;
 
 		public DataContext(DbCmdFunc cmd)
 		{

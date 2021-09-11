@@ -10,9 +10,11 @@ namespace Sys.Data.Entity
     class QueryTranslator : ExpressionVisitor
     {
         private readonly StringBuilder builder;
+        private SqlOption option;
 
-        public QueryTranslator()
+        public QueryTranslator(SqlOption option)
         {
+            this.option = option;
             this.builder = new StringBuilder();
         }
 
@@ -188,7 +190,7 @@ namespace Sys.Data.Entity
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", expr.Member.Name));
         }
 
-        private static object GetSqlConstant(object value)
+        private object GetSqlConstant(object value)
         {
             if (value == null)
                 return "NULL";
@@ -205,7 +207,7 @@ namespace Sys.Data.Entity
                     return $"'{value}'";
 
                 case TypeCode.Object:
-                    return new SqlValue(value).ToScript();
+                    return new SqlValue(value).ToScript(option.Style);
 
                 default:
                     return value;

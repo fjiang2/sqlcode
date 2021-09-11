@@ -135,7 +135,7 @@ namespace Sys.Data.Entity
             return Compare(a.OtherKey, entities.Select(entity => broker.ToDictionary(entity)[a.ThisKey]));
         }
 
-        private static string Compare(string column, object value)
+        private string Compare(string column, object value)
         {
             if (value == null)
             {
@@ -144,17 +144,18 @@ namespace Sys.Data.Entity
             else
             {
                 SqlValue svalue = new SqlValue(value);
-                return $"[{column}] = {svalue}";
+                string _value = svalue.ToScript(Context.Option.Style);
+                return $"[{column}] = {_value}";
             }
         }
 
-        private static string Compare(string column, IEnumerable<object> values)
+        private string Compare(string column, IEnumerable<object> values)
         {
             List<string> L = new List<string>();
             foreach (var value in values)
             {
                 SqlValue svalue = new SqlValue(value);
-                L.Add(svalue.ToString());
+                L.Add(svalue.ToScript(Context.Option.Style));
             }
 
             string X = string.Join(",", L);

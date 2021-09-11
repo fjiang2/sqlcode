@@ -33,6 +33,12 @@ namespace Sys.Data.Text
 		{
 		}
 
+		public SqlStyle Style
+		{
+			get => SqlValue.DefaultStyle;
+			set => SqlValue.DefaultStyle = value;
+		}
+
 		public string Script
 		{
 			get

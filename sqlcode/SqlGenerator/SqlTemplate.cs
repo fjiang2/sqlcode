@@ -11,10 +11,12 @@ namespace Sys.Data
 		private readonly string formalName;
 		private SqlTemplateFormat format = SqlTemplateFormat.SingleLine;
 		private string NewLine = string.Empty;
+		private SqlOption option;
 
-		public SqlTemplate(string formalName)
+		public SqlTemplate(string formalName, SqlOption option)
 		{
 			this.formalName = formalName;
+			this.option = option;
 		}
 
 
@@ -96,7 +98,7 @@ namespace Sys.Data
 
 		public string AddColumn(string column, object defaultValue)
 		{
-			string value = new SqlValue(defaultValue).ToScript();
+			string value = new SqlValue(defaultValue).ToScript(option.Style);
 			return $"ALTER TABLE {formalName} ADD {column} DEFAULT({value})";
 		}
 
