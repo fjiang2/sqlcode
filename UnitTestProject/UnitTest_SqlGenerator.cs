@@ -32,7 +32,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SELECT()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SqlServer};
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SqlServer};
 			gen.Clear();
 			gen.Add(_CATEGORYID, 1);
 
@@ -51,7 +51,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_INSERT()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SqlServer };
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SqlServer };
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -80,7 +80,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SQLite_INSERT()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SQLite };
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SQLite };
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -109,7 +109,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SQLite_UPDATE()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SQLite };
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SQLite };
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -135,7 +135,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_UPDATE()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SqlServer };
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SqlServer };
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -162,7 +162,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_DELETE()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SqlServer };
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SqlServer };
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 
@@ -176,7 +176,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_AddRange()
 		{
-			gen.Option = new SqlOption { Style = SqlStyle.SqlServer };
+			gen.Option = new SqlOption { Style = SqlCodeStyle.SqlServer };
 			gen.Clear();
 			gen.AddRange(new
 			{

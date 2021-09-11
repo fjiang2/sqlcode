@@ -13,7 +13,7 @@ namespace Sys.Data.Text
         public static readonly Statement CONTINUE = new Statement().AppendLine("CONTINUE");
         public static readonly Statement RETURN = new Statement().AppendLine("RETURN");
 
-        public SqlStyle Style { get; set; } = SqlStyle.SqlServer;
+        public SqlCodeStyle Style { get; set; } = SqlCodeStyle.SqlServer;
 
         public Statement()
         {
@@ -104,7 +104,7 @@ namespace Sys.Data.Text
             return this;
         }
 
-        public string ToScript(SqlStyle style)
+        public string ToScript(SqlCodeStyle style)
         {
             StringBuilder builder = new StringBuilder();
             foreach (string line in lines)

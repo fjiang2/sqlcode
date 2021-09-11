@@ -19,10 +19,10 @@ namespace Sys.Data
 {
 	public class SqlOption
 	{
-		public readonly static SqlOption DefaultOption = new SqlOption() { Style = DefaultStyle };
-		public readonly static SqlStyle DefaultStyle = SqlStyle.SqlServer;
+		public readonly static SqlOption DefaultOption = new SqlOption() { Style = DefaultCodeStyle };
+		public readonly static SqlCodeStyle DefaultCodeStyle = SqlCodeStyle.SqlServer;
 
-		public SqlStyle Style { get; set; }
+		public SqlCodeStyle Style { get; set; }
 
 		public override string ToString()
 		{

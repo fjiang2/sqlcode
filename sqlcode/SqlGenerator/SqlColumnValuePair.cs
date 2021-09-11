@@ -18,7 +18,7 @@ namespace Sys.Data
 
 		internal string ColumnFormalName => FormalName(ColumnName);
 
-		public string ToScript(SqlStyle style)
+		public string ToScript(SqlCodeStyle style)
 		{
 			return string.Format("[{0}] = {1}", ColumnName, Value.ToScript(style));
 		}

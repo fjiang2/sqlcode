@@ -17,7 +17,7 @@
 
 namespace Sys.Data
 {
-	public enum SqlStyle
+	public enum SqlCodeStyle
 	{
 		SqlServer,
 		SqlCe,

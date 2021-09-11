@@ -178,7 +178,7 @@ namespace Sys.Data.Text
 		public static Expression NOT(Expression expr) => new UnaryExpression("NOT", expr);
 		public Expression NOT() => NOT(this);
 
-		public string ToScript(SqlStyle style)
+		public string ToScript(SqlCodeStyle style)
 		{
 			StringBuilder x = new StringBuilder();
 			foreach (object item in script)
@@ -226,7 +226,7 @@ namespace Sys.Data.Text
 
 		public override string ToString()
 		{
-			return ToScript(SqlOption.DefaultStyle);
+			return ToScript(SqlOption.DefaultCodeStyle);
 		}
 	}
 }
