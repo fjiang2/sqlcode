@@ -29,7 +29,7 @@ namespace Sys.Data
 			return dbCommand(sql, args).ExecuteScalar();
 		}
 
-		public override DataSet FillDataSet(DataSet dataSet)
+		public override int FillDataSet(DataSet dataSet)
 		{
 			return dbCommand(sql, args).FillDataSet(dataSet);
 		}

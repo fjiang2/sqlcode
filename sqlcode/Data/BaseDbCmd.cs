@@ -16,7 +16,7 @@ namespace Sys.Data
 		{
 		}
 
-		public abstract DataSet FillDataSet(DataSet dataSet);
+		public abstract int FillDataSet(DataSet dataSet);
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
 

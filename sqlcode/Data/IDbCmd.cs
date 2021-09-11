@@ -24,6 +24,6 @@ namespace Sys.Data
     {
         int ExecuteNonQuery();
         object ExecuteScalar();
-        DataSet FillDataSet(DataSet dataSet);
+        int FillDataSet(DataSet dataSet);
     }
 }

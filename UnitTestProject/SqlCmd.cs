@@ -1,35 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
-using Sys.Data;
-using Sys.Data.Text;
 
-namespace UnitTestProject
+namespace Sys.Data
 {
 	public class SqlCmd : BaseDbCmd, IDbCmd
 	{
-		private SqlConnectionStringBuilder connectionString;
 		private SqlCommand command;
 		private SqlConnection connection;
 		private IParameterFactory parameters;
 
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
 		{
-			this.connectionString = connectionString;
 			this.command = new SqlCommand(sql);
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
-			PrepareParameters(args);
-		}
-
-		private void PrepareParameters(object args)
-		{
 			if (args == null)
 				return;
 
@@ -96,14 +84,13 @@ namespace UnitTestProject
 		}
 
 
-		public override DataSet FillDataSet(DataSet ds)
+		public override int FillDataSet(DataSet ds)
 		{
 			try
 			{
 				connection.Open();
 				SqlDataAdapter adapter = new SqlDataAdapter(command);
-				adapter.Fill(ds);
-				return ds;
+				return adapter.Fill(ds);
 			}
 			finally
 			{

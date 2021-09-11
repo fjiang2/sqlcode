@@ -3,28 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.Data.SQLite;
-using Sys.Data;
 
-namespace sqlcode.SQLite
+namespace Sys.Data
 {
 	public class SQLiteCmd : BaseDbCmd, IDbCmd
 	{
-		private SQLiteConnectionStringBuilder connectionString;
 		private SQLiteCommand command;
 		private SQLiteConnection connection;
 		private IParameterFactory parameters;
 
 		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
 		{
-			this.connectionString = connectionString;
 			this.command = new SQLiteCommand(sql);
 			this.connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
-			PrepareParameters(args);
-		}
 
-		private void PrepareParameters(object args)
-		{
 			if (args == null)
 				return;
 
@@ -91,14 +84,13 @@ namespace sqlcode.SQLite
 		}
 
 
-		public override DataSet FillDataSet(DataSet ds)
+		public override int FillDataSet(DataSet ds)
 		{
 			try
 			{
 				connection.Open();
 				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-				adapter.Fill(ds);
-				return ds;
+				return adapter.Fill(ds);
 			}
 			finally
 			{

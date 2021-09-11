@@ -95,7 +95,8 @@ namespace Sys.Data.Entity
 		{
 			var cmd = sqlCommand(query, args: null);
 			var ds = new DataSet();
-			return cmd.FillDataSet(ds);
+			cmd.FillDataSet(ds);
+			return ds;
 		}
 
 		public IQueryResultReader SumbitQueries()

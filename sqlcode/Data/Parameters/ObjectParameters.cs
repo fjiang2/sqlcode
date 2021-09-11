@@ -17,11 +17,16 @@ namespace Sys.Data
 		public override List<IDataParameter> CreateParameters()
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
+
 			foreach (var propertyInfo in parameters.GetType().GetProperties())
 			{
 				object value = propertyInfo.GetValue(parameters) ?? DBNull.Value;
-				var p = new Parameter(propertyInfo.Name, value);
-				list.Add(p);
+				var parameter = new Parameter(propertyInfo.Name, value)
+				{
+					Direction = ParameterDirection.Input,
+				};
+
+				list.Add(parameter);
 			}
 
 			return list;
