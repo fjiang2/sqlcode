@@ -4,9 +4,9 @@ using System.Data;
 
 namespace Sys.Data
 {
-	static class Extension
+	public static class Extension
 	{
-		public static T IsNull<T>(this object value, T defaultValue = default(T))
+		internal static T IsNull<T>(this object value, T defaultValue = default(T))
 		{
 			if (value == null || value == DBNull.Value)
 				return defaultValue;

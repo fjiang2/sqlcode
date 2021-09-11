@@ -20,7 +20,7 @@ namespace Sys.Data
 
 			foreach (KeyValuePair<string, object> item in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
+				object value = item.Value;
 				var parameter = new Parameter(item.Key, value)
 				{
 					Direction = ParameterDirection.Input,

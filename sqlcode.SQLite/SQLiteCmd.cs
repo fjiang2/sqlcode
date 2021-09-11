@@ -38,12 +38,6 @@ namespace Sys.Data
 			}
 		}
 
-		public void AddOutParameterOfIdentity(string parameterName)
-		{
-			SQLiteParameter parameter = NewParameter($"@{parameterName}", 0, ParameterDirection.Output);
-			command.Parameters.Add(parameter);
-		}
-
 		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;

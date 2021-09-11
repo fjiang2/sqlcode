@@ -20,7 +20,7 @@ namespace Sys.Data
 
 			foreach (var propertyInfo in parameters.GetType().GetProperties())
 			{
-				object value = propertyInfo.GetValue(parameters) ?? DBNull.Value;
+				object value = propertyInfo.GetValue(parameters);
 				var parameter = new Parameter(propertyInfo.Name, value)
 				{
 					Direction = ParameterDirection.Input,

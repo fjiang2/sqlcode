@@ -41,12 +41,6 @@ namespace Sys.Data
 			}
 		}
 
-		public void AddOutParameterOfIdentity(string parameterName)
-		{
-			SqlParameter parameter = NewParameter($"@{parameterName}", 0, ParameterDirection.Output);
-			command.Parameters.Add(parameter);
-		}
-
 		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			SqlDbType dbType = SqlDbType.NVarChar;
