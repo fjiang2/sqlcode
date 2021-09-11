@@ -5,7 +5,7 @@ using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	public class DictionaryParameters : IParameterFactory
+	public class DictionaryParameters : ParameterFactory
 	{
 		private IDictionary<string, object> parameters;
 
@@ -14,7 +14,7 @@ namespace Sys.Data
 			this.parameters = parameters;
 		}
 
-		public List<IDataParameter> Create()
+		public override List<IDataParameter> CreateParameters()
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
 			foreach (KeyValuePair<string, object> item in parameters)
@@ -27,14 +27,11 @@ namespace Sys.Data
 			return list;
 		}
 
-
-		public void Update(IEnumerable<IDataParameter> result)
+		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
 			foreach (IDataParameter parameter in result)
 			{
-				string parameterName = parameter.ParameterName;
-				if (parameterName.StartsWith("@"))
-					parameterName = parameterName.Substring(1);
+				string parameterName = GetParameterName(parameter);
 
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;

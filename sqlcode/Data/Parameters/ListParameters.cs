@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Sys.Data
 {
-	public class ListParameters : IParameterFactory
+	public class ListParameters : ParameterFactory
 	{
 		private List<IDataParameter> parameters;
 
@@ -16,18 +16,13 @@ namespace Sys.Data
 				this.parameters = parameters.ToList();
 		}
 
-		public List<IDataParameter> Create()
-		{
-			return parameters;
-		}
+		public override List<IDataParameter> CreateParameters() => parameters;
 
-		public void Update(IEnumerable<IDataParameter> result)
+		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
 			foreach (IDataParameter parameter in result)
 			{
-				string parameterName = parameter.ParameterName;
-				if (parameterName.StartsWith("@"))
-					parameterName = parameterName.Substring(1);
+				string parameterName = GetParameterName(parameter);
 
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;

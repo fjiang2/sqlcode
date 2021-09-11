@@ -6,7 +6,7 @@ using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	public class ObjectParameters : IParameterFactory
+	public class ObjectParameters : ParameterFactory
 	{
 		private object parameters;
 		public ObjectParameters(object parameters)
@@ -14,7 +14,7 @@ namespace Sys.Data
 			this.parameters = parameters;
 		}
 
-		public List<IDataParameter> Create()
+		public override List<IDataParameter> CreateParameters()
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
 			foreach (var propertyInfo in parameters.GetType().GetProperties())
@@ -27,14 +27,13 @@ namespace Sys.Data
 			return list;
 		}
 
-		public void Update(IEnumerable<IDataParameter> result)
+
+		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
 			var properties = parameters.GetType().GetProperties();
 			foreach (IDataParameter parameter in result)
 			{
-				string parameterName = parameter.ParameterName;
-				if (parameterName.StartsWith("@"))
-					parameterName = parameterName.Substring(1);
+				string parameterName = GetParameterName(parameter);
 
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;

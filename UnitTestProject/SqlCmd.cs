@@ -16,37 +16,32 @@ namespace UnitTestProject
 		private SqlConnectionStringBuilder connectionString;
 		private SqlCommand command;
 		private SqlConnection connection;
-		private IParameterFactory factory;
+		private IParameterFactory parameters;
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object parameters)
+		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
 		{
 			this.connectionString = connectionString;
 			this.command = new SqlCommand(sql);
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
-			PrepareParameters(parameters);
+			PrepareParameters(args);
 		}
 
-		private void PrepareParameters(object parameters)
+		private void PrepareParameters(object args)
 		{
-			if (parameters == null)
+			if (args == null)
 				return;
 
-			if (parameters is string)
+			if (args is string)
 			{
 				//The parameters could be JSON
 				return;
 			}
 
-			if (parameters is List<IDataParameter> list)
-				factory = new ListParameters(list);
-			else if (parameters is IDictionary<string, object> dict)
-				factory = new DictionaryParameters(dict);
-			else
-				factory = new ObjectParameters(parameters);
+			this.parameters = ParameterFactory.Create(args);
 
-			List<IDataParameter> items = factory.Create();
+			List<IDataParameter> items = this.parameters.CreateParameters();
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
@@ -60,16 +55,6 @@ namespace UnitTestProject
 			SqlParameter parameter = NewParameter($"@{parameterName}", 0, ParameterDirection.Output);
 			command.Parameters.Add(parameter);
 		}
-
-		private void CompleteParameters()
-		{
-			if (factory == null)
-				return;
-
-			factory.Update(command.Parameters.Cast<IDataParameter>());
-		}
-
-
 
 		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
@@ -132,7 +117,7 @@ namespace UnitTestProject
 			{
 				connection.Open();
 				int n = command.ExecuteNonQuery();
-				CompleteParameters();
+				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				return n;
 			}
 			finally

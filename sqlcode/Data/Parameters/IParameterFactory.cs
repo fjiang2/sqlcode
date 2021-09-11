@@ -5,7 +5,7 @@ namespace Sys.Data
 {
 	public interface IParameterFactory
 	{
-		List<IDataParameter> Create();
-		void Update(IEnumerable<IDataParameter> result);
+		List<IDataParameter> CreateParameters();
+		void UpdateResult(IEnumerable<IDataParameter> result);
 	}
 }

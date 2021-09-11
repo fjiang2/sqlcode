@@ -12,51 +12,37 @@ namespace sqlcode.SQLite
 		private SQLiteConnectionStringBuilder connectionString;
 		private SQLiteCommand command;
 		private SQLiteConnection connection;
-		private object parameters;
+		private IParameterFactory parameters;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object parameters)
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
 		{
 			this.connectionString = connectionString;
 			this.command = new SQLiteCommand(sql);
 			this.connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
-			this.parameters = parameters;
-
-			PrepareParameters(parameters);
+			PrepareParameters(args);
 		}
 
-		private void PrepareParameters(object parameters)
+		private void PrepareParameters(object args)
 		{
-			if (parameters == null)
+			if (args == null)
 				return;
 
-			if (parameters is string)
+			if (args is string)
 			{
 				//The parameters could be JSON
 				return;
 			}
 
-			if (parameters is List<IDataParameter> list)
-				foreach (IDataParameter item in list)
-				{
-					object value = item.Value ?? DBNull.Value;
-					SQLiteParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-					command.Parameters.Add(parameter);
-				}
-			else if (parameters is IDictionary<string, object> dict)
-				foreach (KeyValuePair<string, object> item in dict)
-				{
-					object value = item.Value ?? DBNull.Value;
-					SQLiteParameter parameter = NewParameter("@" + item.Key, value, ParameterDirection.Input);
-					command.Parameters.Add(parameter);
-				}
-			else
-				foreach (var propertyInfo in parameters.GetType().GetProperties())
-				{
-					object value = propertyInfo.GetValue(parameters) ?? DBNull.Value;
-					SQLiteParameter parameter = NewParameter("@" + propertyInfo.Name, value, ParameterDirection.Input);
-					command.Parameters.Add(parameter);
-				}
+			this.parameters = ParameterFactory.Create(args);
+
+			List<IDataParameter> items = this.parameters.CreateParameters();
+			foreach (IDataParameter item in items)
+			{
+				object value = item.Value ?? DBNull.Value;
+				SQLiteParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(parameter);
+			}
 		}
 
 		public void AddOutParameterOfIdentity(string parameterName)
@@ -64,45 +50,6 @@ namespace sqlcode.SQLite
 			SQLiteParameter parameter = NewParameter($"@{parameterName}", 0, ParameterDirection.Output);
 			command.Parameters.Add(parameter);
 		}
-
-		private void CompleteParameters()
-		{
-			if (parameters == null)
-				return;
-
-			foreach (IDataParameter parameter in command.Parameters)
-			{
-				//skip letter '@'
-				string parameterName = parameter.ParameterName.Substring(1);
-
-				if (parameter.Direction != ParameterDirection.Input)
-				{
-					if (parameters is List<IDataParameter> list)
-					{
-						var result = list.Find(x => x.ParameterName == parameterName);
-						if (result != null)
-							result.Value = parameter.Value;
-					}
-					else if (parameter is IDictionary<string, object> dict)
-					{
-						if (dict.ContainsKey(parameterName))
-						{
-							dict[parameterName] = parameter.Value;
-						}
-					}
-					else
-					{
-						var result = parameters.GetType().GetProperties().FirstOrDefault(property => property.Name == parameterName);
-						if (result != null)
-						{
-							result.SetValue(parameters, parameter.Value);
-						}
-					}
-				}
-			}
-		}
-
-
 
 		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
@@ -165,7 +112,7 @@ namespace sqlcode.SQLite
 			{
 				connection.Open();
 				int n = command.ExecuteNonQuery();
-				CompleteParameters();
+				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				return n;
 			}
 			finally
