@@ -14,16 +14,19 @@ namespace Sys.Data
 
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
 		{
-			this.command = new SqlCommand(sql);
 			this.connection = new SqlConnection(connectionString.ConnectionString);
+
+			this.command = new SqlCommand(sql);
 			this.command.Connection = connection;
+			if (!sql.Contains(' '))
+				command.CommandType = CommandType.StoredProcedure;
 
 			if (args == null)
 				return;
 
 			if (args is string)
 			{
-				//The parameters could be JSON
+				//The parameters could be JSON or XML
 				return;
 			}
 
@@ -97,7 +100,7 @@ namespace Sys.Data
 				connection.Close();
 			}
 		}
-		
+
 		public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
 		{
 			try

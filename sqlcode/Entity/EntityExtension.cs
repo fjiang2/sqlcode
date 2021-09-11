@@ -20,17 +20,5 @@ namespace Sys.Data.Entity
 			}
 			return list;
 		}
-
-		public static List<T> ToList<T>(this DataTable dt, Func<DataRow, T> select)
-		{
-			List<T> list = new List<T>();
-			foreach (DataRow row in dt.Rows)
-			{
-				list.Add(select(row));
-			}
-
-			return list;
-		}
-
 	}
 }
