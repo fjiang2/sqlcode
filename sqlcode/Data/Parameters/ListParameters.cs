@@ -6,17 +6,14 @@ namespace Sys.Data
 {
 	public class ListParameters : ParameterFactory
 	{
-		private List<IDataParameter> parameters;
+		private IEnumerable<IDataParameter> parameters;
 
 		public ListParameters(IEnumerable<IDataParameter> parameters)
 		{
-			if (parameters is List<IDataParameter> list)
-				this.parameters = list;
-			else
-				this.parameters = parameters.ToList();
+			this.parameters = parameters;
 		}
 
-		public override List<IDataParameter> CreateParameters() => parameters;
+		public override List<IDataParameter> CreateParameters() => parameters.ToList();
 
 		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
@@ -27,7 +24,7 @@ namespace Sys.Data
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;
 
-				var found = parameters.Find(x => x.ParameterName == parameterName);
+				var found = parameters.FirstOrDefault(x => x.ParameterName == parameterName);
 				if (found != null)
 					found.Value = parameter.Value;
 			}

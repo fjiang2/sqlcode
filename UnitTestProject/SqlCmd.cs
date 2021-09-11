@@ -84,19 +84,34 @@ namespace Sys.Data
 		}
 
 
-		public override int FillDataSet(DataSet ds)
+		public override int FillDataSet(DataSet dataSet)
 		{
 			try
 			{
 				connection.Open();
 				SqlDataAdapter adapter = new SqlDataAdapter(command);
-				return adapter.Fill(ds);
+				return adapter.Fill(dataSet);
 			}
 			finally
 			{
 				connection.Close();
 			}
 		}
+		
+		public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
+		{
+			try
+			{
+				connection.Open();
+				SqlDataAdapter adapter = new SqlDataAdapter(command);
+				return adapter.Fill(startRecord, maxRecords, dataTable);
+			}
+			finally
+			{
+				connection.Close();
+			}
+		}
+
 
 		public override int ExecuteNonQuery()
 		{

@@ -33,5 +33,10 @@ namespace Sys.Data
 		{
 			return dbCommand(sql, args).FillDataSet(dataSet);
 		}
+
+		public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
+		{
+			return dbCommand(sql, args).FillDataTable(dataTable, startRecord, maxRecords);
+		}
 	}
 }

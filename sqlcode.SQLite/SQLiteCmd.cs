@@ -84,13 +84,27 @@ namespace Sys.Data
 		}
 
 
-		public override int FillDataSet(DataSet ds)
+		public override int FillDataSet(DataSet dataSet)
 		{
 			try
 			{
 				connection.Open();
 				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-				return adapter.Fill(ds);
+				return adapter.Fill(dataSet);
+			}
+			finally
+			{
+				connection.Close();
+			}
+		}
+
+		public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
+		{
+			try
+			{
+				connection.Open();
+				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
 			finally
 			{

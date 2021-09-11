@@ -17,16 +17,14 @@ namespace Sys.Data
 		}
 
 		public abstract int FillDataSet(DataSet dataSet);
+		public abstract int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
 
 		public DataSet FillDataSet()
 		{
 			DataSet ds = new DataSet();
-
-			if (FillDataSet(ds) == null)
-				return null;
-
+			FillDataSet(ds);
 			return ds;
 		}
 
@@ -110,7 +108,7 @@ namespace Sys.Data
 			return Convert<T>(obj);
 		}
 
-	
+
 		private static T Convert<T>(object obj)
 		{
 			if (obj != null && obj != DBNull.Value)
