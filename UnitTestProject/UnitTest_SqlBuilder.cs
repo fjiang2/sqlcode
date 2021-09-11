@@ -142,7 +142,7 @@ WHERE Products.[Discontinued] <> 1";
 		[TestMethod]
 		public void Test_SQLite_INSERT()
 		{
-			string SQL = new SqlBuilder() { Style = SqlCodeStyle.SQLite }
+			string SQL = new SqlBuilder() { Style = DbProviderStyle.SQLite }
 				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
 				.VALUES("Seafood", "Seaweed and fish", new byte[] { 0x15, 0xC2 })
 				.ToString();
@@ -232,7 +232,7 @@ SET @CategoryId = @@IDENTITY");
 		public void Test_SQLite_UPDATE2()
 		{
 			string sql = "UPDATE [Products] SET [ProductName] = 'Apple', [UnitPrice] = 20 WHERE [ProductId] BETWEEN 10 AND 30";
-			string query = new SqlBuilder() { Style = SqlCodeStyle.SQLite }
+			string query = new SqlBuilder() { Style = DbProviderStyle.SQLite }
 				.UPDATE(Products)
 				.SET("ProductName".AsColumn() == "Apple", "UnitPrice".AsColumn() == 20)
 				.WHERE(ProductId.BETWEEN(10, 30))

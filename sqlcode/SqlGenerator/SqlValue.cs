@@ -44,7 +44,7 @@ namespace Sys.Data
 
 		public bool IsNull => value == null || value == DBNull.Value;
 
-		public string ToScript(SqlCodeStyle style)
+		public string ToScript(DbProviderStyle style)
 		{
 			if (IsNull)
 				return NULL;
@@ -54,7 +54,7 @@ namespace Sys.Data
 			if (value is string)
 			{
 				//N: used for SQL Type nvarchar
-				if (style != SqlCodeStyle.SQLite)
+				if (style != DbProviderStyle.SQLite)
 					sb.Append("N");
 
 				sb.Append(DELIMETER)
@@ -84,14 +84,14 @@ namespace Sys.Data
 			}
 			else if (value is byte[])
 			{
-				if (style != SqlCodeStyle.SQLite)
+				if (style != DbProviderStyle.SQLite)
 					sb.Append("0x").Append(BitConverter.ToString((byte[])value).Replace("-", ""));
 				else
 					sb.Append("x").Append(DELIMETER).Append(BitConverter.ToString((byte[])value).Replace("-", "")).Append(DELIMETER);
 			}
 			else if (value is Guid || value is Guid?)
 			{
-				if (style != SqlCodeStyle.SQLite)
+				if (style != DbProviderStyle.SQLite)
 					sb.Append("N" + DELIMETER).Append(value).Append(DELIMETER);
 				else
 					sb.Append(DELIMETER).Append(value).Append(DELIMETER);
@@ -115,7 +115,7 @@ namespace Sys.Data
 
 		public override string ToString()
 		{
-			return this.ToScript(SqlOption.DefaultCodeStyle);
+			return this.ToScript(DbProviderOption.DefaultCodeStyle);
 		}
 
 	}

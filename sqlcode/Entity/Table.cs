@@ -46,7 +46,7 @@ namespace Sys.Data.Entity
 
         public void DeleteOnSubmit(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new QueryTranslator(Context.Option);
+            var translator = new QueryTranslator(Context.Option.Style);
             string _where = translator.Translate(where);
             DeleteOnSubmit(_where);
         }
@@ -184,7 +184,7 @@ namespace Sys.Data.Entity
                 throw new ArgumentNullException($"argument {nameof(entity)} cannot be null");
 
             List<string> names = new PropertyTranslator().Translate(modifiedProperties);
-            string _where = new QueryTranslator(Context.Option).Translate(where);
+            string _where = new QueryTranslator(Context.Option.Style).Translate(where);
 
             var gen = new SqlColumnValuePairCollection();
             foreach (var propertyInfo in entity.GetType().GetProperties())
@@ -196,7 +196,7 @@ namespace Sys.Data.Entity
                 gen.Add(propertyInfo.Name, value);
             }
 
-            SqlTemplate template = new SqlTemplate(formalName, Context.Option);
+            SqlTemplate template = new SqlTemplate(formalName, Context.Option.Style);
             string update = template.Update(gen.Join(","), _where);
 
             Append(update, RowOperation.PartialUpdate, gen.ToDictionary());

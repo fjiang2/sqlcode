@@ -31,11 +31,12 @@ namespace Sys.Data.Entity
 		/// DataContext using extension class (dc1) or single class (dc2)
 		/// </summary>
 		public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
-		public SqlOption Option { get; set; } = SqlOption.DefaultOption;
+		public DbProviderOption Option { get; }
 
-		public DataContext(DbCmdFunc cmd)
+		public DataContext(IDbProvider provider)
 		{
-			this.sqlCommand = cmd;
+			this.sqlCommand = provider.Function;
+			this.Option = provider.Option;
 			this.Description = "SQL command handler";
 		}
 

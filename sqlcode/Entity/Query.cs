@@ -11,11 +11,13 @@ namespace Sys.Data.Entity
 	public class Query : IQuery
 	{
 		private DbCmdFunc command { get; set; }
-		private SqlOption option { get; }
-		public Query(SqlOption option, DbCmdFunc cmd)
+		private DbProviderOption option { get; }
+		private IDbProvider provider;
+		public Query(IDbProvider provider)
 		{
-			this.command = cmd;
-			this.option = option;
+			this.provider = provider;
+			this.command = provider.Function;
+			this.option = provider.Option;
 		}
 
 		/// <summary>
@@ -25,12 +27,12 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public BaseDbCmd NewDbCmd(string sql, object args)
 		{
-			return new DelegateDbCmd(command, sql, args);
+			return new DelegateDbCmd(provider, sql, args);
 		}
 
 		private T Invoke<T>(Func<DataContext, T> func)
 		{
-			using (var db = new DataContext(command) { Option = option} )
+			using (var db = new DataContext(provider))
 			{
 				return func(db);
 			}
@@ -143,7 +145,7 @@ namespace Sys.Data.Entity
 				var table = db.GetTable<TEntity>();
 
 				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
-				string _where = new QueryTranslator(db.Option).Translate(where);
+				string _where = new QueryTranslator(db.Option.Style).Translate(where);
 				string SQL = table.SelectFromWhere(_where, _columns);
 
 				var dt = db.FillDataTable(SQL);
@@ -172,7 +174,7 @@ namespace Sys.Data.Entity
 			where TEntity : class
 			where TResult : class
 		{
-			var translator = new QueryTranslator(option);
+			var translator = new QueryTranslator(option.Style);
 			string _where = translator.Translate(where);
 			string _keySelector = translator.Translate(keySelector);
 			string _resultSelector = translator.Translate(resultSelector);

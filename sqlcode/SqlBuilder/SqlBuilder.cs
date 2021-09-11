@@ -28,13 +28,13 @@ namespace Sys.Data.Text
 	public sealed class SqlBuilder : IQueryScript
 	{
 		private readonly List<object> script = new List<object>();
-		public SqlCodeStyle Style { get; set; } = SqlCodeStyle.SqlServer;
+		public DbProviderStyle Style { get; set; } = DbProviderStyle.SqlServer;
 
 		public SqlBuilder()
 		{
 		}
 
-		public string ToScript(SqlCodeStyle style)
+		public string ToScript(DbProviderStyle style)
 		{
 			List<string> lines = new List<string>();
 			StringBuilder builder = new StringBuilder();

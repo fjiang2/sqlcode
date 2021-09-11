@@ -18,36 +18,36 @@ using System.Data;
 
 namespace Sys.Data
 {
-    public delegate IDbCmd DbCmdFunc(string sql, object args);
+	public delegate IDbCmd DbCmdFunc(string sql, object args);
 
-    public interface IDbCmd
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        int ExecuteNonQuery();
+	public interface IDbCmd
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		int ExecuteNonQuery();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        object ExecuteScalar();
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		object ExecuteScalar();
 
-        /// <summary>
-        /// Retrieve data set
-        /// </summary>
-        /// <param name="dataSet"></param>
-        /// <returns> The number of rows successfully added to or refreshed in the System.Data.DataSet.</returns>
-        int FillDataSet(DataSet dataSet);
+		/// <summary>
+		/// Retrieve data set
+		/// </summary>
+		/// <param name="dataSet"></param>
+		/// <returns> The number of rows successfully added to or refreshed in the System.Data.DataSet.</returns>
+		int FillDataSet(DataSet dataSet);
 
-        /// <summary>
-        /// Retrieve data table
-        /// </summary>
-        /// <param name="dataTable">The System.Data.DataTable objects to fill from the data source.</param>
-        /// <param name="startRecord">The zero-based record number to start with.</param>
-        /// <param name="maxRecords">The maximum number of records to retrieve.</param>
-        /// <returns></returns>
-        int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
-    }
+		/// <summary>
+		/// Retrieve data table
+		/// </summary>
+		/// <param name="dataTable">The System.Data.DataTable objects to fill from the data source.</param>
+		/// <param name="startRecord">The zero-based record number to start with.</param>
+		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
+		/// <returns></returns>
+		int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
+	}
 }

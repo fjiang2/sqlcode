@@ -17,16 +17,12 @@
 
 namespace Sys.Data
 {
-	public class SqlOption
+	public interface IDbProvider
 	{
-		public readonly static SqlOption DefaultOption = new SqlOption() { Style = DefaultCodeStyle };
-		public readonly static SqlCodeStyle DefaultCodeStyle = SqlCodeStyle.SqlServer;
-
-		public SqlCodeStyle Style { get; set; }
-
-		public override string ToString()
-		{
-			return $"Style:{Style}";
-		}
+		DbProviderOption Option { get; }
+		DbCmdFunc Function { get; }
 	}
+
+	
+
 }

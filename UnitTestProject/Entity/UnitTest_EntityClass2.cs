@@ -25,7 +25,8 @@ namespace UnitTestProject
 		public UnitTest_EntityClass2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query(SqlOption.DefaultOption, (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
+			var provider = DbProvider.Create(DbProviderStyle.SqlServer, (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
+			Query = new Query(provider);
 		}
 
 

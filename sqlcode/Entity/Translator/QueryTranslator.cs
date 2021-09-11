@@ -10,11 +10,11 @@ namespace Sys.Data.Entity
     class QueryTranslator : ExpressionVisitor
     {
         private readonly StringBuilder builder;
-        private SqlOption option;
+        private DbProviderStyle style;
 
-        public QueryTranslator(SqlOption option)
+        public QueryTranslator(DbProviderStyle style)
         {
-            this.option = option;
+            this.style = style;
             this.builder = new StringBuilder();
         }
 
@@ -207,7 +207,7 @@ namespace Sys.Data.Entity
                     return $"'{value}'";
 
                 case TypeCode.Object:
-                    return new SqlValue(value).ToScript(option.Style);
+                    return new SqlValue(value).ToScript(style);
 
                 default:
                     return value;
