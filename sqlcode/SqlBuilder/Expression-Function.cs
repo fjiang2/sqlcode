@@ -17,7 +17,7 @@ namespace Sys.Data.Text
 		{
 			Expression expr = new Expression(func)
 				.Append("(")
-				.Append(string.Join<Expression>(", ", args))
+				.Append(args)
 				.Append(")");
 
 			return expr;

@@ -27,42 +27,43 @@ namespace Sys.Data.Text
 	/// </summary>
 	public sealed class SqlBuilder : IQueryScript
 	{
-		private readonly List<string> script = new List<string>();
+		private readonly List<object> script = new List<object>();
+		public SqlStyle Style { get; set; } = SqlStyle.SqlServer;
 
 		public SqlBuilder()
 		{
 		}
 
-		public SqlStyle Style
+		public string ToScript(SqlStyle style)
 		{
-			get => SqlValue.DefaultStyle;
-			set => SqlValue.DefaultStyle = value;
-		}
+			List<string> lines = new List<string>();
+			StringBuilder builder = new StringBuilder();
 
-		public string Script
-		{
-			get
+			foreach (object item in script)
 			{
-				List<string> lines = new List<string>();
-				StringBuilder builder = new StringBuilder();
-
-				foreach (string item in script)
+				if (item is Expression expr)
 				{
-					if (item == Environment.NewLine)
+					builder.Append(expr.ToScript(style));
+				}
+				else if (item is string str)
+				{
+					if (str == Environment.NewLine)
 					{
 						//remove extra space letter on each line
 						lines.Add(builder.ToString().Trim());
 						builder.Clear();
 					}
 
-					builder.Append(item);
+					builder.Append(str);
 				}
-
-				if (builder.Length > 0)
-					lines.Add(builder.ToString().Trim());
-
-				return string.Join(Environment.NewLine, lines);
+				else
+					throw new Exception();
 			}
+
+			if (builder.Length > 0)
+				lines.Add(builder.ToString().Trim());
+
+			return string.Join(Environment.NewLine, lines);
 		}
 
 		/// <summary>
@@ -85,13 +86,25 @@ namespace Sys.Data.Text
 		public SqlBuilder Append(SqlBuilder builder)
 		{
 			AppendLine();
-			Append(builder.Script);
+			Append(builder.ToScript(Style));
+			return this;
+		}
+
+		public SqlBuilder Append(Expression expr)
+		{
+			script.Add(expr);
 			return this;
 		}
 
 		private SqlBuilder AppendSpace(string text)
 		{
 			script.Add(text + " ");
+			return this;
+		}
+
+		private SqlBuilder AppendSpace()
+		{
+			script.Add(" ");
 			return this;
 		}
 
@@ -182,7 +195,7 @@ namespace Sys.Data.Text
 			return WithTableName("UPDATE", tableName, alias);
 		}
 
-		public SqlBuilder SET(IEnumerable<Expression> assignments) => AppendSpace("SET").AppendSpace(string.Join<Expression>(", ", assignments));
+		public SqlBuilder SET(IEnumerable<Expression> assignments) => AppendSpace("SET").Append(new Expression(assignments)).Append(" ");
 		public SqlBuilder SET(params Expression[] assignments) => SET((IEnumerable<Expression>)assignments);
 
 		public SqlBuilder INSERT_INTO(ITableName tableName) => INSERT_INTO(tableName.FullName);
@@ -216,7 +229,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder VALUES(params Expression[] values)
 		{
-			return AppendSpace($"VALUES ({string.Join<Expression>(", ", values)})");
+			return Append("VALUES (").Append(new Expression(values)).Append(")");
 		}
 
 		public SqlBuilder VALUES(params object[] values)
@@ -246,7 +259,7 @@ namespace Sys.Data.Text
 			if (expr is null)
 				return this;
 
-			return WHERE(expr.Script);
+			return WHERE(expr.ToScript(Style));
 		}
 
 		public SqlBuilder WHERE(ILocator locator)
@@ -287,7 +300,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder ON(Expression expr)
 		{
-			AppendSpace($"ON {expr}");
+			AppendSpace("ON").Append(expr).AppendSpace();
 			return this;
 		}
 
@@ -314,7 +327,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder HAVING(Expression condition)
 		{
-			return AppendSpace($"HAVING {condition}");
+			return AppendSpace($"HAVING").Append(condition).AppendSpace();
 		}
 
 		#endregion
@@ -348,9 +361,9 @@ namespace Sys.Data.Text
 		public SqlBuilder CREATE() => AppendSpace("CREATE");
 		public SqlBuilder DROP() => AppendSpace("DROP");
 
-		private static string JoinColumns(IEnumerable<Expression> columns)
+		private string JoinColumns(IEnumerable<Expression> columns)
 		{
-			return string.Join(", ", columns.Select(x => x.ToString()));
+			return string.Join(", ", columns.Select(x => x.ToScript(Style)));
 		}
 
 		private static string JoinColumns(IEnumerable<string> columns)
@@ -361,10 +374,13 @@ namespace Sys.Data.Text
 
 		public static explicit operator string(SqlBuilder sql)
 		{
-			return sql.Script;
+			return sql.ToScript(sql.Style);
 		}
 
 
-		public override string ToString() => Script;
+		public override string ToString()
+		{
+			return ToScript(Style);
+		}
 	}
 }

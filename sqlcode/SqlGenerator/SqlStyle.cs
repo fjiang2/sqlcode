@@ -23,11 +23,4 @@ namespace Sys.Data
 		SqlCe,
 		SQLite,
 	}
-
-	public class SqlOption
-	{
-		public readonly static SqlOption DefaultOption = new SqlOption() { Style = SqlStyle.SqlServer };
-
-		public SqlStyle Style { get; set; }
-	}
 }

@@ -16,7 +16,6 @@
 //--------------------------------------------------------------------------------------------------//
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Sys.Data.Text
 {
@@ -32,31 +31,32 @@ namespace Sys.Data.Text
 			this.Right = right;
 			this.Method = method;
 
-			base.Append($"{Expr2Str(Left)} {Method} {Expr2Str(Right)}");
-			Compound = true;
+			Expr2Str(Left);
+			Append($" {Method} ");
+			Expr2Str(Right);
+
+			Compound = true; // left.Compound || right.Compound;
 		}
 
 		public BinaryExpression(string method, IEnumerable<Expression> exprList)
 		{
 			this.Method = method;
-			base.Append(string.Join($" {Method} ", exprList));
+			exprList.ForEach(x => Expr2Str(x), _ => Append($" {Method} "));
 			base.Compound = true;
 		}
 
-		public Expression Reduce()
+		private void Expr2Str(Expression expr)
 		{
-			Expression expr = new Expression($"{Expr2Str(Left)} {Method} {Expr2Str(Right)}")
+			if (expr.Compound)
 			{
-				Compound = true
-			};
-
-			return expr;
+				Append("(");
+				Append(expr);
+				Append(")");
+			}
+			else
+			{
+				Append(expr);
+			}
 		}
-
-		private static string Expr2Str(Expression expr)
-		{
-			return expr.Compound ? $"({expr})" : expr.ToString();
-		}
-
 	}
 }

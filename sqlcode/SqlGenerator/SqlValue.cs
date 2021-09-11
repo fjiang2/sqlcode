@@ -32,8 +32,6 @@ namespace Sys.Data
 
 		private readonly object value;
 
-		public static SqlStyle DefaultStyle = SqlStyle.SqlServer;
-
 		public SqlValue(object value)
 		{
 			if (value is SqlValue v)
@@ -117,7 +115,7 @@ namespace Sys.Data
 
 		public override string ToString()
 		{
-			return this.ToScript(DefaultStyle);
+			return this.ToScript(SqlOption.DefaultStyle);
 		}
 
 	}

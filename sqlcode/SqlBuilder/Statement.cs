@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    public class Statement
+    public class Statement : IQueryScript
     {
         private readonly List<string> lines = new List<string>();
         protected bool compound = false;
@@ -12,6 +12,8 @@ namespace Sys.Data.Text
         public static readonly Statement BREAK = new Statement().AppendLine("BREAK");
         public static readonly Statement CONTINUE = new Statement().AppendLine("CONTINUE");
         public static readonly Statement RETURN = new Statement().AppendLine("RETURN");
+
+        public SqlStyle Style { get; set; } = SqlStyle.SqlServer;
 
         public Statement()
         {
@@ -102,18 +104,23 @@ namespace Sys.Data.Text
             return this;
         }
 
-        public static implicit operator Statement(SqlBuilder sql)
-        {
-            return new Statement().AppendLine(sql.Script);
-        }
-
-        public override string ToString()
+        public string ToScript(SqlStyle style)
         {
             StringBuilder builder = new StringBuilder();
             foreach (string line in lines)
                 builder.Append(line);
 
             return builder.ToString().Trim();
+        }
+
+        public static implicit operator Statement(SqlBuilder sql)
+        {
+            return new Statement().AppendLine(sql.ToScript(sql.Style));
+        }
+
+        public override string ToString()
+        {
+            return ToScript(Style);
         }
     }
 }

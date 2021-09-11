@@ -14,15 +14,19 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Sys.Data.Text
+namespace Sys.Data
 {
-    public interface IQueryScript
-    {
-        string ToScript(SqlStyle style);
-    }
+	public class SqlOption
+	{
+		public readonly static SqlOption DefaultOption = new SqlOption() { Style = DefaultStyle };
+		public readonly static SqlStyle DefaultStyle = SqlStyle.SqlServer;
+
+		public SqlStyle Style { get; set; }
+
+		public override string ToString()
+		{
+			return $"Style:{Style}";
+		}
+	}
 }

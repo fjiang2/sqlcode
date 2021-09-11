@@ -26,6 +26,20 @@ namespace Sys.Data
 			}
 		}
 
+		public static void ForEach<TSource>(this IEnumerable<TSource> items, Action<TSource> action, Action<TSource> delimiter)
+		{
+			bool first = true;
+
+			foreach (var item in items)
+			{
+				if (!first)
+					delimiter(item);
+
+				first = false;
+				action(item);
+			}
+		}
+
 		public static List<T> ToList<T>(this DataTable dt, Func<DataRow, T> select)
 		{
 			List<T> list = new List<T>();
