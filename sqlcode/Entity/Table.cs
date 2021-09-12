@@ -196,7 +196,7 @@ namespace Sys.Data.Entity
                 gen.Add(propertyInfo.Name, value);
             }
 
-            SqlTemplate template = new SqlTemplate(formalName, Context.Option.Style);
+            SqlTemplate template = new SqlTemplate(formalName) { Style = Context.Option.Style };
             string update = template.Update(gen.Join(","), _where);
 
             Append(update, RowOperation.PartialUpdate, gen.ToDictionary());

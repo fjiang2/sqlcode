@@ -44,7 +44,7 @@ namespace Sys.Data
 			get
 			{
 				if (_template == null)
-					_template = new SqlTemplate(TableName, Option.Style);
+					_template = new SqlTemplate(TableName) { Style = Option.Style };
 
 				return _template;
 			}
