@@ -38,14 +38,19 @@ namespace Sys.Data
 
 		public bool IsNull => value == null || value == DBNull.Value;
 
+		public string ToScript(DbAgentStyle style)
+		{
+			return Facade.ToScript(this, style);
+		}
+
 		public string ToString(DbAgentStyle style)
 		{
-			return this.ToScript(style);
+			return ToScript(style);
 		}
 
 		public override string ToString()
 		{
-			return ToString(DbAgentOption.DefaultStyle);
+			return ToScript(DbAgentOption.DefaultStyle);
 		}
 	}
 }
