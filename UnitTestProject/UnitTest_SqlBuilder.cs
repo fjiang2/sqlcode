@@ -18,7 +18,7 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlBuilder
 	{
-		private readonly DbProviderStyle SQLite = DbProviderStyle.SQLite;
+		private readonly DbAgentStyle SQLite = DbAgentStyle.SQLite;
 		private readonly SqlConnectionStringBuilder conn;
 
 		private readonly Expression ProductId = "ProductId".AsColumn();

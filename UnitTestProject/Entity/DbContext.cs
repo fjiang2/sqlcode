@@ -11,7 +11,7 @@ namespace UnitTestProject
 	public class DbContext : DataContext
 	{
 		public DbContext(string connectionString)
-			: base(DbProvider.Create(DbProviderStyle.SqlServer, (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args)))
+			: base(DbAgent.Create(DbAgentStyle.SqlServer, (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args)))
 		{
 		}
 	}

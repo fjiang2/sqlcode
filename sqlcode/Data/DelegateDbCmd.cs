@@ -7,17 +7,17 @@ namespace Sys.Data
 {
 	class DelegateDbCmd : BaseDbCmd, IDbCmd
 	{
-		private readonly IDbProvider provider;
+		private readonly IDbAgent agent;
 		private readonly IDbCmd command;
 
-		public DelegateDbCmd(IDbProvider provider, string sql, object args)
+		public DelegateDbCmd(IDbAgent agent, string sql, object args)
 		{
 			this.Description = "delegate DbCmd";
-			this.provider = provider;
-			this.command = provider.Function(sql, args);
+			this.agent = agent;
+			this.command = agent.Function(sql, args);
 		}
 
-		public IDbProvider Provider => provider;
+		public IDbAgent Provider => agent;
 		public override int ExecuteNonQuery() => command.ExecuteNonQuery();
 		public override object ExecuteScalar() => command.ExecuteScalar();
 		public override int FillDataSet(DataSet dataSet) => command.FillDataSet(dataSet);

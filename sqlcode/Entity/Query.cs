@@ -10,11 +10,11 @@ namespace Sys.Data.Entity
 {
 	public class Query : IQuery
 	{
-		private readonly IDbProvider provider;
+		private readonly IDbAgent agent;
 
-		public Query(IDbProvider provider)
+		public Query(IDbAgent agent)
 		{
-			this.provider = provider;
+			this.agent = agent;
 		}
 
 		/// <summary>
@@ -24,12 +24,12 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public BaseDbCmd NewDbCmd(string sql, object args)
 		{
-			return new DelegateDbCmd(provider, sql, args);
+			return new DelegateDbCmd(agent, sql, args);
 		}
 
 		private T Invoke<T>(Func<DataContext, T> func)
 		{
-			using (var db = new DataContext(provider))
+			using (var db = new DataContext(agent))
 			{
 				return func(db);
 			}
@@ -171,7 +171,7 @@ namespace Sys.Data.Entity
 			where TEntity : class
 			where TResult : class
 		{
-			var translator = new QueryTranslator(provider.Option.Style);
+			var translator = new QueryTranslator(agent.Option.Style);
 			string _where = translator.Translate(where);
 			string _keySelector = translator.Translate(keySelector);
 			string _resultSelector = translator.Translate(resultSelector);

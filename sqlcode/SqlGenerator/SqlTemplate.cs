@@ -11,9 +11,9 @@ namespace Sys.Data
 		private readonly string formalName;
 		private SqlTemplateFormat format = SqlTemplateFormat.SingleLine;
 		private string NewLine = string.Empty;
-		private readonly DbProviderStyle style;
+		private readonly DbAgentStyle style;
 
-		public SqlTemplate(string formalName, DbProviderStyle style)
+		public SqlTemplate(string formalName, DbAgentStyle style)
 		{
 			this.formalName = formalName;
 			this.style = style;

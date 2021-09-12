@@ -23,6 +23,6 @@ namespace Sys.Data.Text
 {
     public interface IQueryScript
     {
-        string ToScript(DbProviderStyle style);
+        string ToScript(DbAgentStyle style);
     }
 }

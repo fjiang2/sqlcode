@@ -178,7 +178,7 @@ namespace Sys.Data.Text
 		public static Expression NOT(Expression expr) => new UnaryExpression("NOT", expr);
 		public Expression NOT() => NOT(this);
 
-		public string ToScript(DbProviderStyle style)
+		public string ToScript(DbAgentStyle style)
 		{
 			StringBuilder x = new StringBuilder();
 			foreach (object item in script)
@@ -228,14 +228,14 @@ namespace Sys.Data.Text
 			return script.GetHashCode();
 		}
 
-		public string ToString(DbProviderStyle style)
+		public string ToString(DbAgentStyle style)
 		{
 			return ToScript(style);
 		}
 
 		public override string ToString()
 		{
-			return ToScript(DbProviderOption.DefaultStyle);
+			return ToScript(DbAgentOption.DefaultStyle);
 		}
 	}
 }

@@ -17,20 +17,24 @@
 
 namespace Sys.Data
 {
-	public class DbProviderOption
+	public abstract class DbAgent : IDbAgent
 	{
-		public readonly static DbProviderOption DefaultOption = new DbProviderOption() { Style = DefaultStyle };
-		public readonly static DbProviderStyle DefaultStyle = DbProviderStyle.SqlServer;
-
-		public DbProviderStyle Style { get; set; }
-
-		public DbProviderOption()
+		protected DbAgent()
 		{
 		}
 
+		public abstract DbAgentOption Option { get; }
+
+		public abstract DbCmdFunc Function { get; }
+
 		public override string ToString()
 		{
-			return $"{Style}";
+			return Option.ToString();
+		}
+
+		public static IDbAgent Create(DbAgentStyle style, DbCmdFunc function)
+		{
+			return new DbAgentImpl(style, function);
 		}
 	}
 }

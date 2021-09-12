@@ -32,7 +32,7 @@ namespace Sys.Data.Text
 		{
 		}
 
-		public string ToScript(DbProviderStyle style)
+		public string ToScript(DbAgentStyle style)
 		{
 			return block.ToScript(style);
 		}
@@ -352,14 +352,14 @@ namespace Sys.Data.Text
 			return string.Join(", ", columns.Select(x => new ColumnName(x)));
 		}
 
-		public string ToString(DbProviderStyle style)
+		public string ToString(DbAgentStyle style)
 		{
 			return ToScript(style);
 		}
 
 		public override string ToString()
 		{
-			return ToScript(DbProviderOption.DefaultStyle);
+			return ToScript(DbAgentOption.DefaultStyle);
 		}
 	}
 }

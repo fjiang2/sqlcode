@@ -78,7 +78,7 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		public string ToScript(DbProviderStyle style)
+		public string ToScript(DbAgentStyle style)
 		{
 			List<string> lines = new List<string>();
 			StringBuilder builder = new StringBuilder();

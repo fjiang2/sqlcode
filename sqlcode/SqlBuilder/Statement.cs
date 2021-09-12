@@ -109,7 +109,7 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		public string ToScript(DbProviderStyle style)
+		public string ToScript(DbAgentStyle style)
 		{
 			return block.ToScript(style);
 		}
@@ -121,7 +121,7 @@ namespace Sys.Data.Text
 
 		public override string ToString()
 		{
-			return ToScript(DbProviderOption.DefaultStyle);
+			return ToScript(DbAgentOption.DefaultStyle);
 		}
 	}
 }

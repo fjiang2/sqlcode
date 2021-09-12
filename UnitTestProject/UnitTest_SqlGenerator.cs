@@ -13,8 +13,8 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlGenerator
 	{
-		private static readonly DbProviderOption SqlServer = new DbProviderOption { Style = DbProviderStyle.SqlServer };
-		private static readonly DbProviderOption SqlLite = new DbProviderOption { Style = DbProviderStyle.SQLite };
+		private static readonly DbAgentOption SqlServer = new DbAgentOption { Style = DbAgentStyle.SqlServer };
+		private static readonly DbAgentOption SqlLite = new DbAgentOption { Style = DbAgentStyle.SQLite };
 
 		private readonly SqlGenerator gen;
 
