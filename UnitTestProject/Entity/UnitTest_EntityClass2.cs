@@ -7,7 +7,7 @@ using System.Linq;
 using System.Data.SqlClient;
 
 using UnitTestProject.Northwind.dc2;
-using Sys;
+using UnitTestProject.SqlServer;
 using Sys.Data.Entity;
 using Sys.Data;
 

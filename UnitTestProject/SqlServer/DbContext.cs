@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data;
 
-namespace UnitTestProject
+namespace UnitTestProject.SqlServer
 {
 	public class DbContext : DataContext
 	{
