@@ -18,15 +18,12 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlBuilder
 	{
-		private SqlConnectionStringBuilder conn;
+		private readonly DbProviderStyle SQLite = DbProviderStyle.SQLite;
+		private readonly SqlConnectionStringBuilder conn;
 
 		private readonly Expression ProductId = "ProductId".AsColumn();
-
-		//private readonly ITableName Products = "Products".AsTableName();
 		private readonly string Products = "Products";
-
 		private readonly ITableName Categories = "Categories".AsTableName();
-		//private readonly string Categories = "Categories";
 
 		public UnitTest_SqlBuilder()
 		{
@@ -136,8 +133,19 @@ WHERE Products.[Discontinued] <> 1";
 				.ToString();
 
 			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
+
 		}
 
+		[TestMethod]
+		public void Test_SQLite_INSERT()
+		{
+			string SQL = new SqlBuilder()
+				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
+				.VALUES("Seafood", "Seaweed and fish", new byte[] { 0x15, 0xC2 })
+				.ToString(SQLite);
+
+			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES ('Seafood', 'Seaweed and fish', x'15C2')");
+		}
 
 		[TestMethod]
 		public void Test_INSERT_IDENTIY()
@@ -170,7 +178,7 @@ SET @CategoryId = @@IDENTITY");
 #if HAS_SQL_SERVER
 			result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result == 1);
-			
+
 			int CategoryId = (int)context["CategoryId"].Value;
 			Debug.Assert(CategoryId > 8);
 #endif
@@ -213,6 +221,19 @@ SET @CategoryId = @@IDENTITY");
 				.SET("ProductName".AsColumn() == "Apple", "UnitPrice".AsColumn() == 20)
 				.WHERE(ProductId.BETWEEN(10, 30))
 				.ToString();
+
+			Debug.Assert(sql == query);
+		}
+
+		[TestMethod]
+		public void Test_SQLite_UPDATE2()
+		{
+			string sql = "UPDATE [Products] SET [ProductName] = 'Apple', [UnitPrice] = 20 WHERE [ProductId] BETWEEN 10 AND 30";
+			string query = new SqlBuilder()
+				.UPDATE(Products)
+				.SET("ProductName".AsColumn() == "Apple", "UnitPrice".AsColumn() == 20)
+				.WHERE(ProductId.BETWEEN(10, 30))
+				.ToString(SQLite);
 
 			Debug.Assert(sql == query);
 		}
@@ -384,7 +405,7 @@ SET @CategoryId = @@IDENTITY");
 				"ShipCity".AsColumn() == "London",
 				"EmployeeID".AsColumn() == 7);
 
-			Debug.Assert(where1.ToString() == "[OrderDate] <= GETDATE() AND [ShipCity] = N'London' AND [EmployeeID] = 7");
+			Debug.Assert(where1.ToString() == "([OrderDate] <= GETDATE()) AND ([ShipCity] = N'London') AND ([EmployeeID] = 7)");
 			Debug.Assert(where1.ToString() == where2.ToString());
 
 			var SQL = new SqlBuilder()
@@ -399,7 +420,7 @@ SET @CategoryId = @@IDENTITY");
 			}.AND())
 			.ToString();
 
-			Debug.Assert(SQL == "SELECT * FROM [Orders] WHERE [OrderDate] <= GETDATE() AND [ShipCity] = N'London' AND [EmployeeID] = 7");
+			Debug.Assert(SQL == "SELECT * FROM [Orders] WHERE ([OrderDate] <= GETDATE()) AND ([ShipCity] = N'London') AND ([EmployeeID] = 7)");
 
 			var _and = ("OrderDate".AsColumn() <= Expression.GETDATE).AND("EmployeeID".AsColumn() == 7);
 			Debug.Assert(_and.ToString() == "([OrderDate] <= GETDATE()) AND ([EmployeeID] = 7)");

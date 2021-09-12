@@ -14,15 +14,25 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Sys.Data.Text
+namespace Sys.Data
 {
-    public interface IQueryScript
-    {
-        string ToScript(DbProviderStyle style);
-    }
+	class DbProvoderImpl : DbProvider
+	{
+		private readonly DbProviderStyle style;
+		private readonly DbCmdFunc function;
+
+		public DbProvoderImpl(DbProviderStyle style, DbCmdFunc function)
+		{
+			this.style = style;
+			this.function = function;
+		}
+
+		public override DbProviderOption Option => new DbProviderOption
+		{
+			Style = style
+		};
+
+		public override DbCmdFunc Function => function;
+	}
 }

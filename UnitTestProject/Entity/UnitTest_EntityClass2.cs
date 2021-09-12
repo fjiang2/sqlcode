@@ -20,12 +20,13 @@ namespace UnitTestProject
 	public class UnitTest_EntityClass2
 	{
 		private readonly string connectionString = Setting.ConnectionString;
-		private Query Query;
+		private readonly Query Query;
 
 		public UnitTest_EntityClass2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query((query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
+			var provider = DbProvider.Create(DbProviderStyle.SqlServer, (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
+			Query = new Query(provider);
 		}
 
 

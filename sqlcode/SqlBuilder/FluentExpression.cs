@@ -60,7 +60,7 @@ namespace Sys.Data.Text
 		/// <returns></returns>
 		public static Expression AsParameter(this ParameterContext context, string parameterName, object value = null, ParameterDirection direction = ParameterDirection.Input)
 		{
-			var parameter = new Parameter(parameterName, value ?? DBNull.Value)
+			var parameter = new Parameter(parameterName, value)
 			{
 				Direction = direction,
 			};

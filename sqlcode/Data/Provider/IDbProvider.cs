@@ -14,15 +14,12 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Sys.Data.Text
+namespace Sys.Data
 {
-    public interface IQueryScript
-    {
-        string ToScript(DbProviderStyle style);
-    }
+	public interface IDbProvider
+	{
+		DbProviderOption Option { get; }
+		DbCmdFunc Function { get; }
+	}
 }

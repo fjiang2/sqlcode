@@ -27,23 +27,24 @@ namespace Sys.Data.Text
 			this.Operand = operand;
 			this.Method = method;
 
-			base.Append($"{Method} {Expr2Str(Operand)}");
+			base.Append($"{Method} ");
+			Expr2Str(Operand);
+			
 			base.Compound = true;
 		}
 
-		public Expression Reduce()
+		private void Expr2Str(Expression expr)
 		{
-			Expression expr = new Expression(string.Format("{0} {1}", Method, Expr2Str(Operand)))
+			if (expr.Compound)
 			{
-				Compound = true
-			};
-
-			return expr;
-		}
-
-		private static string Expr2Str(Expression expr)
-		{
-			return expr.Compound ? $"({expr})" : expr.ToString();
+				Append("(");
+				Append(expr);
+				Append(")");
+			}
+			else
+			{
+				Append(expr);
+			}
 		}
 	}
 }

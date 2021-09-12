@@ -30,7 +30,7 @@ namespace Sys.Data.Text
 		public static readonly Expression ERROR = new Expression("@@ERROR");
 
 
-		private readonly StringBuilder script = new StringBuilder();
+		private readonly List<object> script = new List<object>();
 
 		/// <summary>
 		/// Compound expression
@@ -43,61 +43,72 @@ namespace Sys.Data.Text
 
 		internal Expression(VariableName name)
 		{
-			script.Append(name);
+			script.Add(name);
 		}
 
 		internal Expression(ColumnName name)
 		{
-			script.Append(name);
+			script.Add(name);
 		}
 
 		internal Expression(ParameterName name)
 		{
-			script.Append(name);
+			script.Add(name);
 		}
 
 		internal Expression(SqlValue value)
 		{
-			script.Append(value);
+			script.Add(value);
 		}
 
 		private Expression(Expression expr)
 		{
-			this.Append(expr.script.ToString());
+			script.AddRange(expr.script);
 			this.Compound = expr.Compound;
 		}
 
-		private Expression(IEnumerable<Expression> exprList)
+		internal Expression(IEnumerable<Expression> exprList)
 		{
-			Append($"({string.Join(", ", exprList)})");
+			Append(exprList);
 		}
 
 		private Expression(string text)
 		{
-			script.Append(text);
+			script.Add(text);
 		}
 
-
-		public string Script => script.ToString();
 		public Expression this[Expression expr] => this.Append("[").Append(expr).Append("]");
+
+		private Expression Append(IEnumerable<Expression> list)
+		{
+			list.ForEach(x => Append(x), _ => Append(", "));
+			return this;
+		}
 
 		private Expression Append(Expression expr)
 		{
-			script.Append(expr);
+			script.Add(expr);
 			return this;
 		}
 
 		private Expression Append(VariableName name)
 		{
-			script.Append(name);
+			script.Add(name);
 			return this;
 		}
 
 		protected Expression Append(string text)
 		{
-			script.Append(text);
+			script.Add(text);
 			return this;
 		}
+
+		protected Expression Append(object obj)
+		{
+			script.Add(obj);
+			return this;
+		}
+
 
 		private Expression AppendSpace(string text) => Append(text).AppendSpace();
 		private Expression WrapSpace(string text) => AppendSpace().Append(text).AppendSpace();
@@ -111,21 +122,28 @@ namespace Sys.Data.Text
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public static Expression LET(Expression name, Expression value) => new BinaryExpression(name, "=", value);
-		public static Expression LET(Expression name, object value) => LET(name, new Expression(new SqlValue(value)));
+		public static Expression LET(Expression name, object value)
+		{
+			if (value is Expression expr)
+				return LET(name, expr);
+			else
+				return LET(name, new Expression(new SqlValue(value)));
+		}
+
 		public Expression LET(object value) => LET(this, value);
 		public Expression LET() => new Expression(this).WrapSpace("=");
 
 		public Expression AS(VariableName name) => new Expression(this).WrapSpace("AS").Append(name);
 
-		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace($"IN ({select.Script})");
-		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace($"NOT IN ({select.Script})");
+		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace("IN").Append("(").Append(select).Append(")");
+		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace("NOT IN").Append("(").Append(select).Append(")");
 
 		private static Expression IN__NOT_IN(Expression expr, string opr, IEnumerable<Expression> collection)
 		{
 			if (collection == null || collection.Count() == 0)
 				return expr;
 
-			return new BinaryExpression(expr, opr, new Expression(collection));
+			return new BinaryExpression(expr, opr, new Expression(collection) { Compound = true });
 		}
 
 		public Expression IN(params Expression[] collection) => IN__NOT_IN(this, "IN", collection);
@@ -143,7 +161,7 @@ namespace Sys.Data.Text
 		public Expression IS_NOT_NULL() => new Expression(this).AffixSpace("IS NOT NULL");
 
 
-		public static Expression EXISTS(SqlBuilder select) => new Expression($"EXISTS ({select})");
+		public static Expression EXISTS(SqlBuilder select) => new Expression().Append("EXISTS (").Append(select).Append(")");
 
 
 		public static Expression LIKE(Expression expr, Expression pattern) => new BinaryExpression(expr, "LIKE", pattern);
@@ -160,6 +178,45 @@ namespace Sys.Data.Text
 		public static Expression NOT(Expression expr) => new UnaryExpression("NOT", expr);
 		public Expression NOT() => NOT(this);
 
+		public string ToScript(DbProviderStyle style)
+		{
+			StringBuilder x = new StringBuilder();
+			foreach (object item in script)
+			{
+				if (item is SqlValue value)
+				{
+					x.Append(value.ToScript(style));
+				}
+				else if (item is Expression expr)
+				{
+					x.Append(expr.ToScript(style));
+				}
+				else if (item is SqlBuilder sql)
+				{
+					x.Append(sql.ToScript(style));
+				}
+				else
+				{
+					x.Append(item);
+				}
+			}
+
+			return x.ToString();
+		}
+
+		private bool IsNULL()
+		{
+			var x = script.SingleOrDefault();
+			if (x == null)
+				return false;
+
+			if (x is SqlValue value)
+			{
+				return value.IsNull;
+			}
+
+			return false;
+		}
 
 		public override bool Equals(object obj)
 		{
@@ -171,9 +228,14 @@ namespace Sys.Data.Text
 			return script.GetHashCode();
 		}
 
+		public string ToString(DbProviderStyle style)
+		{
+			return ToScript(style);
+		}
+
 		public override string ToString()
 		{
-			return script.ToString();
+			return ToScript(DbProviderOption.DefaultStyle);
 		}
 	}
 }

@@ -5,33 +5,22 @@ using System.Text;
 
 namespace Sys.Data
 {
-	public class DelegateDbCmd : BaseDbCmd
+	class DelegateDbCmd : BaseDbCmd, IDbCmd
 	{
-		private DbCmdFunc dbCommand;
-		private string sql;
-		private object args;
+		private readonly IDbProvider provider;
+		private readonly IDbCmd command;
 
-		public DelegateDbCmd(DbCmdFunc cmd, string sql, object args)
+		public DelegateDbCmd(IDbProvider provider, string sql, object args)
 		{
 			this.Description = "delegate DbCmd";
-			this.dbCommand = cmd;
-			this.sql = sql;
-			this.args = args;
+			this.provider = provider;
+			this.command = provider.Function(sql, args);
 		}
 
-		public override int ExecuteNonQuery()
-		{
-			return dbCommand(sql, args).ExecuteNonQuery();
-		}
-
-		public override object ExecuteScalar()
-		{
-			return dbCommand(sql, args).ExecuteScalar();
-		}
-
-		public override DataSet FillDataSet(DataSet dataSet)
-		{
-			return dbCommand(sql, args).FillDataSet(dataSet);
-		}
+		public IDbProvider Provider => provider;
+		public override int ExecuteNonQuery() => command.ExecuteNonQuery();
+		public override object ExecuteScalar() => command.ExecuteScalar();
+		public override int FillDataSet(DataSet dataSet) => command.FillDataSet(dataSet);
+		public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords) => command.FillDataTable(dataTable, startRecord, maxRecords);
 	}
 }

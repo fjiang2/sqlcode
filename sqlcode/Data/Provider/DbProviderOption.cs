@@ -14,15 +14,23 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Sys.Data.Text
+namespace Sys.Data
 {
-    public interface IQueryScript
-    {
-        string ToScript(DbProviderStyle style);
-    }
+	public class DbProviderOption
+	{
+		public readonly static DbProviderOption DefaultOption = new DbProviderOption() { Style = DefaultStyle };
+		public readonly static DbProviderStyle DefaultStyle = DbProviderStyle.SqlServer;
+
+		public DbProviderStyle Style { get; set; }
+
+		public DbProviderOption()
+		{
+		}
+
+		public override string ToString()
+		{
+			return $"{Style}";
+		}
+	}
 }
