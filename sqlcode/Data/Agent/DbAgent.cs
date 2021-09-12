@@ -32,9 +32,6 @@ namespace Sys.Data
 			return Option.ToString();
 		}
 
-		public static IDbAgent Create(DbAgentStyle style, DbCmdFunction function)
-		{
-			return new DbAgentImpl(style, function);
-		}
+		
 	}
 }
