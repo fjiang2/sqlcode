@@ -107,7 +107,7 @@ namespace Sys.Data.Entity
                     break;
             }
 
-            if (sql == null)
+            if (string.IsNullOrEmpty(sql))
                 return;
 
             Append(sql, operation, gen.ToDictionary());

@@ -451,10 +451,10 @@ namespace UnitTestProject
 				 }
 			});
 
-			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT").First().CustomerDesc;
+			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT        ").First().CustomerDesc;
 			Debug.Assert(desc == "Computer Science");
 
-			var customer = Query.Select<CustomerCustomerDemo>(row => row.CustomerTypeID == "IT").First();
+			var customer = Query.Select<CustomerCustomerDemo>(row => row.CustomerTypeID == "IT        ").First();
 			Debug.Assert(customer.CustomerID == "ALFKI");
 		}
 
@@ -479,11 +479,11 @@ namespace UnitTestProject
 				{
 					var evt = args.Events.First();
 					Debug.Assert(evt.TypeName == "CustomerDemographics");
-					Debug.Assert(evt.Operation == RowOperation.InsertOrUpdate);
+					Debug.Assert(evt.Operation == RowOperation.Update);
 				};
 
 				var table = db.GetTable<CustomerDemographics>();
-				table.InsertOrUpdateOnSubmit(new CustomerDemographics { CustomerTypeID = "IT", CustomerDesc = "Computer Science" });
+				table.UpdateOnSubmit(new CustomerDemographics { CustomerTypeID = "IT", CustomerDesc = "Computer Science" });
 
 				db.SubmitChanges();
 			}
