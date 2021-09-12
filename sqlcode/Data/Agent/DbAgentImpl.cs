@@ -20,9 +20,9 @@ namespace Sys.Data
 	class DbAgentImpl : DbAgent
 	{
 		private readonly DbAgentStyle style;
-		private readonly DbCmdFunc function;
+		private readonly DbCmdFunction function;
 
-		public DbAgentImpl(DbAgentStyle style, DbCmdFunc function)
+		public DbAgentImpl(DbAgentStyle style, DbCmdFunction function)
 		{
 			this.style = style;
 			this.function = function;
@@ -33,6 +33,6 @@ namespace Sys.Data
 			Style = style
 		};
 
-		public override DbCmdFunc Function => function;
+		public override DbCmdFunction Function => function;
 	}
 }

@@ -20,6 +20,6 @@ namespace Sys.Data
 	public interface IDbAgent
 	{
 		DbAgentOption Option { get; }
-		DbCmdFunc Function { get; }
+		DbCmdFunction Function { get; }
 	}
 }
