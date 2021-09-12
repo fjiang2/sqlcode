@@ -17,7 +17,7 @@
 
 namespace Sys.Data
 {
-	public enum DbProviderStyle
+	public enum DbAgentStyle
 	{
 		SqlServer,
 		SqlCe,

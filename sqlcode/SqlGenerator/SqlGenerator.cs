@@ -31,7 +31,7 @@ namespace Sys.Data
 		/// Use primary-keys as search condition if this property is not empty.
 		/// </summary>
 		public string Where { get; set; } = string.Empty;
-		public DbProviderOption Option { get; set; } = DbProviderOption.DefaultOption;
+		public DbAgentOption Option { get; set; } = DbAgentOption.DefaultOption;
 
 		public SqlGenerator(string formalName)
 		{
@@ -44,7 +44,7 @@ namespace Sys.Data
 			get
 			{
 				if (_template == null)
-					_template = new SqlTemplate(TableName, Option.Style);
+					_template = new SqlTemplate(TableName) { Style = Option.Style };
 
 				return _template;
 			}

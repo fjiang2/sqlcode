@@ -11,12 +11,11 @@ namespace Sys.Data
 		private readonly string formalName;
 		private SqlTemplateFormat format = SqlTemplateFormat.SingleLine;
 		private string NewLine = string.Empty;
-		private readonly DbProviderStyle style;
+		public DbAgentStyle Style { get; set; } = DbAgentStyle.SqlServer;
 
-		public SqlTemplate(string formalName, DbProviderStyle style)
+		public SqlTemplate(string formalName)
 		{
 			this.formalName = formalName;
-			this.style = style;
 		}
 
 
@@ -98,7 +97,7 @@ namespace Sys.Data
 
 		public string AddColumn(string column, object defaultValue)
 		{
-			string value = new SqlValue(defaultValue).ToScript(style);
+			string value = new SqlValue(defaultValue).ToScript(Style);
 			return $"ALTER TABLE {formalName} ADD {column} DEFAULT({value})";
 		}
 

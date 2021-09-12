@@ -18,7 +18,7 @@ namespace Sys.Data
 
 		internal string ColumnFormalName => FormalName(ColumnName);
 
-		public string ToScript(DbProviderStyle style)
+		public string ToScript(DbAgentStyle style)
 		{
 			return string.Format("[{0}] = {1}", ColumnName, Value.ToScript(style));
 		}

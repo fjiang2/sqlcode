@@ -62,6 +62,19 @@ namespace Sys.Data
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="version"></param>
+        public void AddRange(DataRow row, DataRowVersion version)
+        {
+            foreach (DataColumn column in row.Table.Columns)
+            {
+                Add(column.ColumnName, row[column, version]);
+            }
+        }
+
+        /// <summary>
         /// Add col0,col1,... 
         /// </summary>
         /// <typeparam name="T"></typeparam>

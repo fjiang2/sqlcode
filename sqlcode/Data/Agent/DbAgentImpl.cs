@@ -17,9 +17,22 @@
 
 namespace Sys.Data
 {
-	public interface IDbProvider
+	class DbAgentImpl : DbAgent
 	{
-		DbProviderOption Option { get; }
-		DbCmdFunc Function { get; }
+		private readonly DbAgentStyle style;
+		private readonly DbCmdFunc function;
+
+		public DbAgentImpl(DbAgentStyle style, DbCmdFunc function)
+		{
+			this.style = style;
+			this.function = function;
+		}
+
+		public override DbAgentOption Option => new DbAgentOption
+		{
+			Style = style
+		};
+
+		public override DbCmdFunc Function => function;
 	}
 }
