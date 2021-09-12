@@ -18,7 +18,7 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlBuilder
 	{
-		private readonly DbProviderOption SQLite = new DbProviderOption { Style = DbProviderStyle.SQLite };
+		private readonly DbProviderStyle SQLite = DbProviderStyle.SQLite;
 		private readonly SqlConnectionStringBuilder conn;
 
 		private readonly Expression ProductId = "ProductId".AsColumn();
@@ -139,10 +139,10 @@ WHERE Products.[Discontinued] <> 1";
 		[TestMethod]
 		public void Test_SQLite_INSERT()
 		{
-			string SQL = new SqlBuilder() { Option = SQLite }
+			string SQL = new SqlBuilder()
 				.INSERT_INTO("Categories", new string[] { "CategoryName", "Description", "Picture" })
 				.VALUES("Seafood", "Seaweed and fish", new byte[] { 0x15, 0xC2 })
-				.ToString();
+				.ToString(SQLite);
 
 			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES ('Seafood', 'Seaweed and fish', x'15C2')");
 		}
@@ -229,11 +229,11 @@ SET @CategoryId = @@IDENTITY");
 		public void Test_SQLite_UPDATE2()
 		{
 			string sql = "UPDATE [Products] SET [ProductName] = 'Apple', [UnitPrice] = 20 WHERE [ProductId] BETWEEN 10 AND 30";
-			string query = new SqlBuilder() { Option = SQLite }
+			string query = new SqlBuilder()
 				.UPDATE(Products)
 				.SET("ProductName".AsColumn() == "Apple", "UnitPrice".AsColumn() == 20)
 				.WHERE(ProductId.BETWEEN(10, 30))
-				.ToString();
+				.ToString(SQLite);
 
 			Debug.Assert(sql == query);
 		}

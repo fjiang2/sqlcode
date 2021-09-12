@@ -14,58 +14,27 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Data;
 
 namespace Sys.Data.Text
 {
+
 	/// <summary>
 	/// SQL clauses builder
 	/// </summary>
 	public sealed class SqlBuilder : IQueryScript
 	{
-		private readonly List<object> script = new List<object>();
-		public DbProviderOption Option { get; set; } = DbProviderOption.DefaultOption;
 
+		CodeBlock block = new CodeBlock();
 		public SqlBuilder()
 		{
 		}
 
-		public DbProviderStyle Style => Option.Style;
-
 		public string ToScript(DbProviderStyle style)
 		{
-			List<string> lines = new List<string>();
-			StringBuilder builder = new StringBuilder();
-
-			foreach (object item in script)
-			{
-				if (item is Expression expr)
-				{
-					builder.Append(expr.ToScript(style));
-				}
-				else if (item is string str)
-				{
-					if (str == Environment.NewLine)
-					{
-						//remove extra space letter on each line
-						lines.Add(builder.ToString().Trim());
-						builder.Clear();
-					}
-
-					builder.Append(str);
-				}
-				else
-					throw new Exception();
-			}
-
-			if (builder.Length > 0)
-				lines.Add(builder.ToString().Trim());
-
-			return string.Join(Environment.NewLine, lines);
+			return block.ToScript(style);
 		}
 
 		/// <summary>
@@ -75,38 +44,37 @@ namespace Sys.Data.Text
 		/// <returns></returns>
 		public SqlBuilder Append(string text)
 		{
-			script.Add(text);
+			block.Append(text);
 			return this;
 		}
 
 		public SqlBuilder AppendLine()
 		{
-			script.Add(Environment.NewLine);
+			block.AppendLine();
 			return this;
 		}
 
 		public SqlBuilder Append(SqlBuilder builder)
 		{
-			AppendLine();
-			Append(builder.ToScript(Style));
+			block.Append(builder);
 			return this;
 		}
 
 		public SqlBuilder Append(Expression expr)
 		{
-			script.Add(expr);
+			block.Append(expr);
 			return this;
 		}
 
 		private SqlBuilder AppendSpace(string text)
 		{
-			script.Add(text + " ");
+			block.AppendSpace(text);
 			return this;
 		}
 
 		private SqlBuilder AppendSpace()
 		{
-			script.Add(" ");
+			block.AppendSpace();
 			return this;
 		}
 
@@ -149,6 +117,22 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public SqlBuilder LIMIT(int n)
+		{
+			if (n > 0)
+				return AppendSpace($"LIMIT {n}");
+
+			return this;
+		}
+
+		public SqlBuilder OFFSET(int n)
+		{
+			if (n > 0)
+				return AppendSpace($"OFFSET {n}");
+
+			return this;
+		}
+
 		/// <summary>
 		/// Any columns
 		/// </summary>
@@ -174,7 +158,7 @@ namespace Sys.Data.Text
 			if (columns.Count() == 0)
 				return COLUMNS("*");
 			else
-				return COLUMNS(JoinColumns(columns));
+				return Append(new Expression(columns)).AppendSpace();
 		}
 
 		public SqlBuilder COLUMNS(IEnumerable<string> columns)
@@ -213,7 +197,7 @@ namespace Sys.Data.Text
 			WithTableName("INSERT INTO", tableName, null);
 
 			if (columns.Count() > 0)
-				AppendSpace($"({JoinColumns(columns)})");
+				Append("(").Append(new Expression(columns)).AppendSpace(")");
 
 			return this;
 		}
@@ -261,7 +245,7 @@ namespace Sys.Data.Text
 			if (expr is null)
 				return this;
 
-			return WHERE(expr.ToScript(Style));
+			return AppendSpace("WHERE").Append(expr).AppendSpace();
 		}
 
 		public SqlBuilder WHERE(ILocator locator)
@@ -316,7 +300,7 @@ namespace Sys.Data.Text
 			if (columns == null || columns.Length == 0)
 				return this;
 
-			return AppendSpace($"GROUP BY {JoinColumns(columns)}");
+			return AppendSpace("GROUP BY").Append(new Expression(columns)).AppendSpace();
 		}
 
 		public SqlBuilder GROUP_BY(params string[] columns)
@@ -341,7 +325,7 @@ namespace Sys.Data.Text
 			if (columns == null || columns.Length == 0)
 				return this;
 
-			return AppendSpace($"ORDER BY {JoinColumns(columns)}");
+			return AppendSpace("ORDER BY").Append(new Expression(columns)).AppendSpace(); 
 		}
 
 		public SqlBuilder ORDER_BY(params string[] columns)
@@ -363,26 +347,19 @@ namespace Sys.Data.Text
 		public SqlBuilder CREATE() => AppendSpace("CREATE");
 		public SqlBuilder DROP() => AppendSpace("DROP");
 
-		private string JoinColumns(IEnumerable<Expression> columns)
-		{
-			return string.Join(", ", columns.Select(x => x.ToScript(Style)));
-		}
-
 		private static string JoinColumns(IEnumerable<string> columns)
 		{
 			return string.Join(", ", columns.Select(x => new ColumnName(x)));
 		}
 
-
-		public static explicit operator string(SqlBuilder sql)
+		public string ToString(DbProviderStyle style)
 		{
-			return sql.ToScript(sql.Style);
+			return ToScript(style);
 		}
-
 
 		public override string ToString()
 		{
-			return ToScript(Style);
+			return ToScript(DbProviderOption.DefaultStyle);
 		}
 	}
 }

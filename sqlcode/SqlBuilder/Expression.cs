@@ -135,8 +135,8 @@ namespace Sys.Data.Text
 
 		public Expression AS(VariableName name) => new Expression(this).WrapSpace("AS").Append(name);
 
-		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace($"IN ({select.ToScript(select.Style)})");
-		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace($"NOT IN ({select.ToScript(select.Style)})");
+		public Expression IN(SqlBuilder select) => new Expression(this).WrapSpace("IN").Append("(").Append(select).Append(")");
+		public Expression NOT_IN(SqlBuilder select) => new Expression(this).WrapSpace("NOT IN").Append("(").Append(select).Append(")");
 
 		private static Expression IN__NOT_IN(Expression expr, string opr, IEnumerable<Expression> collection)
 		{
@@ -161,7 +161,7 @@ namespace Sys.Data.Text
 		public Expression IS_NOT_NULL() => new Expression(this).AffixSpace("IS NOT NULL");
 
 
-		public static Expression EXISTS(SqlBuilder select) => new Expression($"EXISTS ({select})");
+		public static Expression EXISTS(SqlBuilder select) => new Expression().Append("EXISTS (").Append(select).Append(")");
 
 
 		public static Expression LIKE(Expression expr, Expression pattern) => new BinaryExpression(expr, "LIKE", pattern);
@@ -190,6 +190,10 @@ namespace Sys.Data.Text
 				else if (item is Expression expr)
 				{
 					x.Append(expr.ToScript(style));
+				}
+				else if (item is SqlBuilder sql)
+				{
+					x.Append(sql.ToScript(style));
 				}
 				else
 				{
@@ -222,6 +226,11 @@ namespace Sys.Data.Text
 		public override int GetHashCode()
 		{
 			return script.GetHashCode();
+		}
+
+		public string ToString(DbProviderStyle style)
+		{
+			return ToScript(style);
 		}
 
 		public override string ToString()
