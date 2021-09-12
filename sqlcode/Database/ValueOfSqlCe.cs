@@ -19,17 +19,17 @@ using System.Text;
 
 namespace Sys.Data
 {
-	public class SQLiteValue : SqlValue
+	public class ValueOfSqlCe : ValueOfScript
 	{
-		public SQLiteValue(object value)
+		public ValueOfSqlCe(object value)
 			: base(value)
 		{
-
 		}
 
 		protected override string ToScript(string value)
 		{
 			return new StringBuilder()
+			.Append("N")
 			.Append(DELIMETER)
 			.Append(value.Replace("'", "''"))
 			.Append(DELIMETER)
@@ -39,16 +39,15 @@ namespace Sys.Data
 		protected override string ToScript(byte[] data)
 		{
 			return new StringBuilder()
-			.Append("x")
-			.Append(DELIMETER)
+			.Append("0x")
 			.Append(BitConverter.ToString(data).Replace("-", ""))
-			.Append(DELIMETER)
 			.ToString();
 		}
 
 		protected override string ToScript(Guid value)
 		{
 			return new StringBuilder()
+			.Append("N")
 			.Append(DELIMETER)
 			.Append(value)
 			.Append(DELIMETER)

@@ -15,37 +15,44 @@
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
 using System;
-using System.Linq;
+using System.Text;
 
 namespace Sys.Data
 {
-	/// <summary>
-	/// a value can be used on SQL statement
-	/// </summary>
-	public class SqlValue
+	public class ValueOfSQLite : ValueOfScript
 	{
-		private readonly object value;
-
-		public SqlValue(object value)
+		public ValueOfSQLite(object value)
+			: base(value)
 		{
-			if (value is SqlValue v)
-				this.value = v.value;
 
-			this.value = value;
 		}
 
-		public object Value => value;
-
-		public bool IsNull => value == null || value == DBNull.Value;
-
-		public string ToString(DbAgentStyle style)
+		protected override string ToScript(string value)
 		{
-			return this.ToScript(style);
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.Append(value.Replace("'", "''"))
+			.Append(DELIMETER)
+			.ToString();
 		}
 
-		public override string ToString()
+		protected override string ToScript(byte[] data)
 		{
-			return ToString(DbAgentOption.DefaultStyle);
+			return new StringBuilder()
+			.Append("x")
+			.Append(DELIMETER)
+			.Append(BitConverter.ToString(data).Replace("-", ""))
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected override string ToScript(Guid value)
+		{
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.Append(value)
+			.Append(DELIMETER)
+			.ToString();
 		}
 	}
 }
