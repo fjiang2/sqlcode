@@ -440,9 +440,9 @@ namespace UnitTestProject
 				new CustomerDemographics { CustomerTypeID = "EE",  CustomerDesc = "Electrical Engineering" },
 			};
 
-			Query.InsertOrUpdate(demographics);
+			Query.Upsert(demographics);
 
-			Query.InsertOrUpdate(new CustomerCustomerDemo[]
+			Query.Upsert(new CustomerCustomerDemo[]
 			{
 				new CustomerCustomerDemo
 				 {

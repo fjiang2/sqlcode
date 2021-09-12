@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlServerCe;
 
 namespace Sys.Data
 {
 
-	public class SQLiteCmd : BaseDbCmd, IDbCmd
+	public class SqlCeCmd : BaseDbCmd, IDbCmd
 	{
-		private SQLiteCommand command;
-		private SQLiteConnection connection;
+		private SqlCeCommand command;
+		private SqlCeConnection connection;
 		private IParameterFactory parameters;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, string sql, object args)
 		{
-			this.command = new SQLiteCommand(sql);
-			this.connection = new SQLiteConnection(connectionString.ConnectionString);
+			this.command = new SqlCeCommand(sql);
+			this.connection = new SqlCeConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
 			if (args == null)
@@ -34,12 +34,12 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SQLiteParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				SqlCeParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
 				command.Parameters.Add(parameter);
 			}
 		}
 
-		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;
 			if (value is int)
@@ -69,7 +69,7 @@ namespace Sys.Data
 			else if (value is Guid)
 				dbType = DbType.Guid;
 
-			SQLiteParameter param = new SQLiteParameter(parameterName, dbType)
+			SqlCeParameter param = new SqlCeParameter(parameterName, dbType)
 			{
 				Value = value,
 				Direction = direction,
@@ -84,7 +84,7 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
 				return adapter.Fill(dataSet);
 			}
 			finally
@@ -98,7 +98,7 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
 			finally
