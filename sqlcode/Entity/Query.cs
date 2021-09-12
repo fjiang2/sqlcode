@@ -10,14 +10,11 @@ namespace Sys.Data.Entity
 {
 	public class Query : IQuery
 	{
-		private DbCmdFunc command { get; set; }
-		private DbProviderOption option { get; }
-		private IDbProvider provider;
+		private readonly IDbProvider provider;
+
 		public Query(IDbProvider provider)
 		{
 			this.provider = provider;
-			this.command = provider.Function;
-			this.option = provider.Option;
 		}
 
 		/// <summary>
@@ -174,7 +171,7 @@ namespace Sys.Data.Entity
 			where TEntity : class
 			where TResult : class
 		{
-			var translator = new QueryTranslator(option.Style);
+			var translator = new QueryTranslator(provider.Option.Style);
 			string _where = translator.Translate(where);
 			string _keySelector = translator.Translate(keySelector);
 			string _resultSelector = translator.Translate(resultSelector);

@@ -226,7 +226,7 @@ namespace Sys.Data.Text
 
 		public override string ToString()
 		{
-			return ToScript(DbProviderOption.DefaultCodeStyle);
+			return ToScript(DbProviderOption.DefaultStyle);
 		}
 	}
 }

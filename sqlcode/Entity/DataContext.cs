@@ -10,7 +10,7 @@ namespace Sys.Data.Entity
 	public partial class DataContext : IDisposable
 	{
 		private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
-		private readonly DbCmdFunc sqlCommand;
+		private readonly DbCmdFunc function;
 
 		internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
 		internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
@@ -35,7 +35,7 @@ namespace Sys.Data.Entity
 
 		public DataContext(IDbProvider provider)
 		{
-			this.sqlCommand = provider.Function;
+			this.function = provider.Function;
 			this.Option = provider.Option;
 			this.Description = "SQL command handler";
 		}
@@ -94,7 +94,7 @@ namespace Sys.Data.Entity
 
 		private DataSet FillDataSet(string query)
 		{
-			var cmd = sqlCommand(query, args: null);
+			var cmd = function(query, args: null);
 			var ds = new DataSet();
 			cmd.FillDataSet(ds);
 			return ds;
@@ -120,7 +120,7 @@ namespace Sys.Data.Entity
 
 			OnRowChanging(RowEvents);
 
-			var cmd = sqlCommand(CodeBlock.GetNonQuery(), args: null);
+			var cmd = function(CodeBlock.GetNonQuery(), args: null);
 			int count = cmd.ExecuteNonQuery();
 			CodeBlock.Clear();
 

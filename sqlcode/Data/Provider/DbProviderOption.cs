@@ -19,8 +19,8 @@ namespace Sys.Data
 {
 	public class DbProviderOption
 	{
-		public readonly static DbProviderOption DefaultOption = new DbProviderOption() { Style = DefaultCodeStyle };
-		public readonly static DbProviderStyle DefaultCodeStyle = DbProviderStyle.SqlServer;
+		public readonly static DbProviderOption DefaultOption = new DbProviderOption() { Style = DefaultStyle };
+		public readonly static DbProviderStyle DefaultStyle = DbProviderStyle.SqlServer;
 
 		public DbProviderStyle Style { get; set; }
 

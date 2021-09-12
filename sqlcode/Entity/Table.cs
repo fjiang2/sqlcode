@@ -136,9 +136,9 @@ namespace Sys.Data.Entity
             var gen = this.Generator;
             List<string> names = typeof(TEntity).GetProperties().Select(x => x.Name).ToList();
 
-            if (entity is IDictionary<string, object>)
+            if (entity is IDictionary<string, object> dict)
             {
-                foreach (var kvp in (IDictionary<string, object>)entity)
+                foreach (var kvp in dict)
                 {
                     if (names.IndexOf(kvp.Key) == -1)
                     {

@@ -10,7 +10,7 @@ namespace Sys.Data.Entity
     class QueryTranslator : ExpressionVisitor
     {
         private readonly StringBuilder builder;
-        private DbProviderStyle style;
+        private readonly DbProviderStyle style;
 
         public QueryTranslator(DbProviderStyle style)
         {

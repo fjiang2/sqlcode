@@ -7,8 +7,8 @@ namespace Sys.Data
 {
 	class DelegateDbCmd : BaseDbCmd, IDbCmd
 	{
-		private IDbProvider provider;
-		private IDbCmd command;
+		private readonly IDbProvider provider;
+		private readonly IDbCmd command;
 
 		public DelegateDbCmd(IDbProvider provider, string sql, object args)
 		{
@@ -17,7 +17,7 @@ namespace Sys.Data
 			this.command = provider.Function(sql, args);
 		}
 
-		public DbProviderOption Option => provider.Option;
+		public IDbProvider Provider => provider;
 		public override int ExecuteNonQuery() => command.ExecuteNonQuery();
 		public override object ExecuteScalar() => command.ExecuteScalar();
 		public override int FillDataSet(DataSet dataSet) => command.FillDataSet(dataSet);

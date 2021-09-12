@@ -10,7 +10,7 @@ namespace Sys.Data
 {
 	class DataLand
 	{
-		private DataSet dataSet;
+		private readonly DataSet dataSet;
 		public DataLand(DataSet dataSet)
 		{
 			this.dataSet = dataSet;

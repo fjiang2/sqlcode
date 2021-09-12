@@ -13,7 +13,10 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlGenerator
 	{
-		private SqlGenerator gen;
+		private static readonly DbProviderOption SqlServer = new DbProviderOption { Style = DbProviderStyle.SqlServer };
+		private static readonly DbProviderOption SqlLite = new DbProviderOption { Style = DbProviderStyle.SQLite };
+
+		private readonly SqlGenerator gen;
 
 		public const string _CATEGORYID = "CategoryID";
 		public const string _CATEGORYNAME = "CategoryName";
@@ -32,7 +35,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SELECT()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SqlServer};
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 1);
 
@@ -51,7 +54,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_INSERT()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SqlServer };
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -80,7 +83,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SQLite_INSERT()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SQLite };
+			gen.Option = SqlLite;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -109,7 +112,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SQLite_UPDATE()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SQLite };
+			gen.Option = SqlLite;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -135,7 +138,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_UPDATE()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SqlServer };
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -162,7 +165,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_DELETE()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SqlServer };
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 
@@ -176,7 +179,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_AddRange()
 		{
-			gen.Option = new DbProviderOption { Style = DbProviderStyle.SqlServer };
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.AddRange(new
 			{

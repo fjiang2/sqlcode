@@ -20,7 +20,7 @@ namespace UnitTestProject
 	public class UnitTest_EntityClass2
 	{
 		private readonly string connectionString = Setting.ConnectionString;
-		private Query Query;
+		private readonly Query Query;
 
 		public UnitTest_EntityClass2()
 		{

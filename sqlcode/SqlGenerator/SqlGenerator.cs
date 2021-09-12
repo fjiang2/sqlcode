@@ -60,7 +60,7 @@ namespace Sys.Data
 			return pair;
 		}
 
-		private string[] notUpdateColumns => columns.Where(p => !p.Column.Saved).Select(p => p.Column.Name).ToArray();
+		private string[] NotUpdateColumns => columns.Where(p => !p.Column.Saved).Select(p => p.Column.Name).ToArray();
 
 		/// <summary>
 		/// SELECT * FROM Table WHERE condition
@@ -125,7 +125,7 @@ namespace Sys.Data
 				throw new InvalidOperationException("WHERE is blank");
 			}
 
-			if (PrimaryKeys.Length + notUpdateColumns.Length == columns.Count)
+			if (PrimaryKeys.Length + NotUpdateColumns.Length == columns.Count)
 			{
 				return template.IfNotExistsInsert(where, Insert());
 			}
@@ -204,7 +204,7 @@ namespace Sys.Data
 		/// <returns></returns>
 		public string Update()
 		{
-			var C2 = columns.Where(c => !PrimaryKeys.Contains(c.ColumnName) && !notUpdateColumns.Contains(c.ColumnName));
+			var C2 = columns.Where(c => !PrimaryKeys.Contains(c.ColumnName) && !NotUpdateColumns.Contains(c.ColumnName));
 			var L2 = string.Join(",", C2.Select(c => c.ToScript(Option.Style)));
 
 			if (C2.Count() == 0)

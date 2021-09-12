@@ -19,8 +19,8 @@ namespace Sys.Data
 {
 	class DbProvoderImpl : DbProvider
 	{
-		DbProviderStyle style;
-		DbCmdFunc function;
+		private readonly DbProviderStyle style;
+		private readonly DbCmdFunc function;
 
 		public DbProvoderImpl(DbProviderStyle style, DbCmdFunc function)
 		{
@@ -28,7 +28,10 @@ namespace Sys.Data
 			this.function = function;
 		}
 
-		public override DbProviderOption Option => new DbProviderOption { Style = style };
+		public override DbProviderOption Option => new DbProviderOption
+		{
+			Style = style
+		};
 
 		public override DbCmdFunc Function => function;
 	}

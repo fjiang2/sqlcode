@@ -22,7 +22,4 @@ namespace Sys.Data
 		DbProviderOption Option { get; }
 		DbCmdFunc Function { get; }
 	}
-
-	
-
 }

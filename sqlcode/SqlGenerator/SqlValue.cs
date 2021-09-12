@@ -115,7 +115,7 @@ namespace Sys.Data
 
 		public override string ToString()
 		{
-			return this.ToScript(DbProviderOption.DefaultCodeStyle);
+			return this.ToScript(DbProviderOption.DefaultStyle);
 		}
 
 	}
