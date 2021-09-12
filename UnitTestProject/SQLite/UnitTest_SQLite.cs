@@ -19,18 +19,19 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SQLite
 	{
+		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
 		private readonly Query Query;
 
 		public UnitTest_SQLite()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(new SQLiteAgent("..\\..\\..\\db\\Northwind.db"));
+			Query = new Query(new SQLiteAgent(Path.Combine(PATH_PROJECT, "db\\Northwind.db")));
 		}
 
 		//[TestMethod]
 		public void InsertAllRows()
 		{
-			string[] lines = File.ReadAllLines("..\\..\\..\\db\\sqlite-northwind-insert.sql");
+			string[] lines = File.ReadAllLines(Path.Combine(PATH_PROJECT, "db\\sqlite-northwind-insert.sql"));
 			foreach (string line in lines)
 			{
 				if (line == "GO")
