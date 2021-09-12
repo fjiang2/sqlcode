@@ -59,7 +59,7 @@ namespace UnitTestProject
 				.WHERE("CategoryName".AsColumn("C") == "Dairy Products")
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT C.[CategoryName], P.* FROM [Products] P INNER JOIN [Categories] C ON C.[CategoryID] = P.[CategoryID] WHERE C.[CategoryName] = N'Dairy Products'");
+			Debug.Assert(SQL == "SELECT C.[CategoryName], P.* FROM [Products] P INNER JOIN [Categories] C ON C.[CategoryID] = P.[CategoryID] WHERE C.[CategoryName] = 'Dairy Products'");
 
 		}
 
@@ -132,7 +132,7 @@ WHERE Products.[Discontinued] <> 1";
 				.VALUES("Seafood", "Seaweed and fish", new byte[] { 0x15, 0xC2 })
 				.ToString();
 
-			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
+			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES ('Seafood', 'Seaweed and fish', 0x15C2)");
 
 		}
 
@@ -157,7 +157,7 @@ WHERE Products.[Discontinued] <> 1";
 				.ToString();
 
 
-			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = N'Electronics'");
+			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = 'Electronics'");
 
 #if HAS_SQL_SERVER
 			int result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
@@ -172,7 +172,7 @@ WHERE Products.[Discontinued] <> 1";
 				.ToString();
 
 
-			Debug.Assert(SQL == @"INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Electronics', N'Electronics and Computers', 0x15C2)
+			Debug.Assert(SQL == @"INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES ('Electronics', 'Electronics and Computers', 0x15C2)
 SET @CategoryId = @@IDENTITY");
 
 #if HAS_SQL_SERVER
@@ -197,7 +197,7 @@ SET @CategoryId = @@IDENTITY");
 				.WHERE("CategoryID".AsColumn() == 8)
 				.ToString();
 
-			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = N'Seafood', [Description] = N'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
+			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = 'Seafood', [Description] = 'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
 
 			SQL = new SqlBuilder()
 				.UPDATE("Categories")
@@ -209,13 +209,13 @@ SET @CategoryId = @@IDENTITY");
 				.WHERE("CategoryID".AsColumn() == 8)
 				.ToString();
 
-			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = N'Seafood', [Description] = N'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
+			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = 'Seafood', [Description] = 'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
 		}
 
 		[TestMethod]
 		public void Test_UPDATE2()
 		{
-			string sql = "UPDATE [Products] SET [ProductName] = N'Apple', [UnitPrice] = 20 WHERE [ProductId] BETWEEN 10 AND 30";
+			string sql = "UPDATE [Products] SET [ProductName] = 'Apple', [UnitPrice] = 20 WHERE [ProductId] BETWEEN 10 AND 30";
 			string query = new SqlBuilder()
 				.UPDATE(Products)
 				.SET("ProductName".AsColumn() == "Apple", "UnitPrice".AsColumn() == 20)
@@ -277,13 +277,13 @@ SET @CategoryId = @@IDENTITY");
 				.IF(select.EXISTS().NOT(), insert, update)
 				.ToString();
 
-			Debug.Assert(SQL == "IF NOT EXISTS (SELECT * FROM [Categories] WHERE [CategoryID] = 8) INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2) ELSE UPDATE [Categories] SET [CategoryName] = N'Seafood', [Description] = N'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
+			Debug.Assert(SQL == "IF NOT EXISTS (SELECT * FROM [Categories] WHERE [CategoryID] = 8) INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES ('Seafood', 'Seaweed and fish', 0x15C2) ELSE UPDATE [Categories] SET [CategoryName] = 'Seafood', [Description] = 'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
 
 			SQL = new Statement()
 				.IF(select.EXISTS(), insert, update)
 				.ToString();
 
-			Debug.Assert(SQL == "IF EXISTS (SELECT * FROM [Categories] WHERE [CategoryID] = 8) INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2) ELSE UPDATE [Categories] SET [CategoryName] = N'Seafood', [Description] = N'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
+			Debug.Assert(SQL == "IF EXISTS (SELECT * FROM [Categories] WHERE [CategoryID] = 8) INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES ('Seafood', 'Seaweed and fish', 0x15C2) ELSE UPDATE [Categories] SET [CategoryName] = 'Seafood', [Description] = 'Seaweed and fish', [Picture] = 0x15C2 WHERE [CategoryID] = 8");
 
 		}
 
@@ -336,7 +336,7 @@ SET @CategoryId = @@IDENTITY");
 				.ORDER_BY("ProductID")
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT TOP 10 [ProductID], [Category] = CASE [CategoryID] WHEN 1 THEN N'Road' WHEN 2 THEN N'Mountain' WHEN 3 THEN N'Touring' WHEN 4 THEN N'Other sale items' ELSE N'Not for sale' END, [ProductName] FROM [Products] ORDER BY [ProductID]");
+			Debug.Assert(SQL == "SELECT TOP 10 [ProductID], [Category] = CASE [CategoryID] WHEN 1 THEN 'Road' WHEN 2 THEN 'Mountain' WHEN 3 THEN 'Touring' WHEN 4 THEN 'Other sale items' ELSE 'Not for sale' END, [ProductName] FROM [Products] ORDER BY [ProductID]");
 
 			SQL = new SqlBuilder()
 				.SELECT().TOP(10)
@@ -356,7 +356,7 @@ SET @CategoryId = @@IDENTITY");
 				.ORDER_BY("ProductID")
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT TOP 10 [ProductID], [Category] = CASE [CategoryID] WHEN 1 THEN N'Road' WHEN 2 THEN N'Mountain' WHEN 3 THEN N'Touring' WHEN 4 THEN N'Other sale items' ELSE N'Not for sale' END, [ProductName] FROM [Products] ORDER BY [ProductID]");
+			Debug.Assert(SQL == "SELECT TOP 10 [ProductID], [Category] = CASE [CategoryID] WHEN 1 THEN 'Road' WHEN 2 THEN 'Mountain' WHEN 3 THEN 'Touring' WHEN 4 THEN 'Other sale items' ELSE 'Not for sale' END, [ProductName] FROM [Products] ORDER BY [ProductID]");
 		}
 
 		[TestMethod]
@@ -370,7 +370,7 @@ SET @CategoryId = @@IDENTITY");
 				.WHERE("OrderDate".AsColumn() <= Expression.GETDATE & "ShipCity".AsColumn() == "London" & "EmployeeID".AsColumn() == context.AsParameter("Id", value: 7))
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT * FROM [Orders] WHERE (([OrderDate] <= GETDATE()) AND ([ShipCity] = N'London')) AND ([EmployeeID] = @Id)");
+			Debug.Assert(SQL == "SELECT * FROM [Orders] WHERE (([OrderDate] <= GETDATE()) AND ([ShipCity] = 'London')) AND ([EmployeeID] = @Id)");
 
 #if HAS_SQL_SERVER
 
@@ -405,7 +405,7 @@ SET @CategoryId = @@IDENTITY");
 				"ShipCity".AsColumn() == "London",
 				"EmployeeID".AsColumn() == 7);
 
-			Debug.Assert(where1.ToString() == "([OrderDate] <= GETDATE()) AND ([ShipCity] = N'London') AND ([EmployeeID] = 7)");
+			Debug.Assert(where1.ToString() == "([OrderDate] <= GETDATE()) AND ([ShipCity] = 'London') AND ([EmployeeID] = 7)");
 			Debug.Assert(where1.ToString() == where2.ToString());
 
 			var SQL = new SqlBuilder()
@@ -420,7 +420,7 @@ SET @CategoryId = @@IDENTITY");
 			}.AND())
 			.ToString();
 
-			Debug.Assert(SQL == "SELECT * FROM [Orders] WHERE ([OrderDate] <= GETDATE()) AND ([ShipCity] = N'London') AND ([EmployeeID] = 7)");
+			Debug.Assert(SQL == "SELECT * FROM [Orders] WHERE ([OrderDate] <= GETDATE()) AND ([ShipCity] = 'London') AND ([EmployeeID] = 7)");
 
 			var _and = ("OrderDate".AsColumn() <= Expression.GETDATE).AND("EmployeeID".AsColumn() == 7);
 			Debug.Assert(_and.ToString() == "([OrderDate] <= GETDATE()) AND ([EmployeeID] = 7)");
@@ -602,7 +602,7 @@ SET @CategoryId = @@IDENTITY");
 
 			Debug.Assert(sql == query);
 
-			sql = "SELECT COUNT(*), MAX([ProductId]) FROM [Products] WHERE [ProductId] NOT BETWEEN N'apple' AND N'pear'";
+			sql = "SELECT COUNT(*), MAX([ProductId]) FROM [Products] WHERE [ProductId] NOT BETWEEN 'apple' AND 'pear'";
 			query = new SqlBuilder().SELECT().COLUMNS(Expression.COUNT_STAR, ProductId.MAX()).FROM(Products).WHERE(ProductId.NOT_BETWEEN("apple", "pear")).ToString();
 
 			Debug.Assert(sql == query);

@@ -26,6 +26,7 @@ namespace Sys.Data.Entity
 
             this.Generator = new SqlGenerator(formalName)
             {
+                Option = context.Option,
                 PrimaryKeys = schema.PrimaryKeys,
                 IdentityKeys = schema.IdentityKeys,
             };
