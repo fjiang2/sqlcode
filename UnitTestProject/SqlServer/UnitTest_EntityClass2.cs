@@ -124,7 +124,7 @@ namespace UnitTestProject
 				};
 				table.PartialUpdateOnSubmit(prod, row => new { row.ProductID, row.ProductName }, row => row.ProductID == 1);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200,[ProductName] = N'iPhone' WHERE (ProductID = 1)"));
+				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200, [ProductName] = N'iPhone' WHERE (ProductID = 1)"));
 			}
 		}
 

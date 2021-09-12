@@ -83,9 +83,26 @@ namespace Sys.Data
 		{
 			try
 			{
+				int count = 0;
 				connection.Open();
-				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-				return adapter.Fill(dataSet);
+				if (command.CommandText.Contains(Environment.NewLine))
+				{
+					string[] statements = command.CommandText.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+					foreach (string statement in statements)
+					{
+						command.CommandText = statement;
+						SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+						DataTable dt = new DataTable();
+						count += adapter.Fill(dt);
+						dataSet.Tables.Add(dt);
+					}
+				}
+				else
+				{
+					SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+					count = adapter.Fill(dataSet);
+				}
+				return count;
 			}
 			finally
 			{
@@ -111,10 +128,26 @@ namespace Sys.Data
 		{
 			try
 			{
+				int count = 0;
 				connection.Open();
-				int n = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-				return n;
+
+				if (command.CommandText.Contains(Environment.NewLine))
+				{
+					string[] statements = command.CommandText.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+					foreach (string statement in statements)
+					{
+						command.CommandText = statement;
+						count += command.ExecuteNonQuery();
+						parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+					}
+				}
+				else
+				{
+					count = command.ExecuteNonQuery();
+					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				}
+
+				return count;
 			}
 			finally
 			{
