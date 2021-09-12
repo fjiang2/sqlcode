@@ -27,7 +27,7 @@ namespace Sys.Data
 	/// </summary>
 	public class SqlValue
 	{
-		private const string DELIMETER = "'";
+		protected const string DELIMETER = "'";
 		private const string NULL = "NULL";
 
 		private readonly object value;
@@ -44,73 +44,116 @@ namespace Sys.Data
 
 		public bool IsNull => value == null || value == DBNull.Value;
 
-		public string ToScript(DbAgentStyle style)
+		protected virtual string ToScript(string value)
+		{
+			return new StringBuilder()
+			.Append("N")
+			.Append(DELIMETER)
+			.Append(value.Replace("'", "''"))
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected virtual string ToScript(bool value)
+		{
+			return new StringBuilder()
+			.Append(value ? "1" : "0")
+			.ToString();
+		}
+
+		protected virtual string ToScript(char value)
+		{
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.Append(value)
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected virtual string ToScript(DateTime time)
+		{
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.AppendFormat("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff"))
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected virtual string ToScript(DateTimeOffset time)
+		{
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.AppendFormat("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff zzz"), time.Offset)
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected virtual string ToScript(byte[] data)
+		{
+			return new StringBuilder()
+			.Append("0x")
+			.Append(BitConverter.ToString((byte[])value).Replace("-", ""))
+			.ToString();
+		}
+
+		protected virtual string ToScript(Guid value)
+		{
+			return new StringBuilder()
+			.Append("N")
+			.Append(DELIMETER)
+			.Append(value)
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected virtual string ToScript(IEnumerable value)
+		{
+			List<string> list = new List<string>();
+			foreach (var x in value)
+			{
+				list.Add(new SqlValue(x).ToScript());
+			}
+			return $"({string.Join(",", list)})";
+		}
+
+		internal virtual string ToScript()
 		{
 			if (IsNull)
 				return NULL;
 
-			StringBuilder sb = new StringBuilder();
+			if (value is string str)
+				return ToScript(str);
 
-			if (value is string)
-			{
-				//N: used for SQL Type nvarchar
-				if (style != DbAgentStyle.SQLite)
-					sb.Append("N");
+			if (value is bool || value is bool?)
+				return ToScript((bool)value);
 
-				sb.Append(DELIMETER)
-				.Append((value as string).Replace("'", "''"))
-				.Append(DELIMETER);
-			}
-			else if (value is bool || value is bool?)
-			{
-				sb.Append((bool)value ? "1" : "0");
-			}
-			else if (value is DateTime || value is DateTime?)
-			{
-				DateTime time = (DateTime)value;
-				sb.Append(DELIMETER)
-				  .AppendFormat("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff"))
-				  .Append(DELIMETER);
-			}
-			else if (value is DateTimeOffset || value is DateTimeOffset?)
-			{
-				DateTimeOffset time = (DateTimeOffset)value;
-				var d = DELIMETER + string.Format("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff zzz"), time.Offset) + DELIMETER;
-				return d;
-			}
-			else if (value is char)
-			{
-				sb.Append(DELIMETER).Append(value).Append(DELIMETER);
-			}
-			else if (value is byte[])
-			{
-				if (style != DbAgentStyle.SQLite)
-					sb.Append("0x").Append(BitConverter.ToString((byte[])value).Replace("-", ""));
-				else
-					sb.Append("x").Append(DELIMETER).Append(BitConverter.ToString((byte[])value).Replace("-", "")).Append(DELIMETER);
-			}
-			else if (value is Guid || value is Guid?)
-			{
-				if (style != DbAgentStyle.SQLite)
-					sb.Append("N" + DELIMETER).Append(value).Append(DELIMETER);
-				else
-					sb.Append(DELIMETER).Append(value).Append(DELIMETER);
-			}
-			else if (value is IEnumerable)
-			{
-				List<string> list = new List<string>();
-				foreach (var x in value as IEnumerable)
-				{
-					list.Add(new SqlValue(x).ToScript(style));
-				}
-				return $"({string.Join(",", list)})";
-			}
-			else
-			{
-				sb.Append(value);
-			}
+			if (value is DateTime || value is DateTime?)
+				return ToScript((DateTime)value);
 
-			return sb.ToString();
+			if (value is DateTimeOffset || value is DateTimeOffset?)
+				return ToScript((DateTimeOffset)value);
+
+			if (value is char ch)
+				return ToScript(ch);
+
+			if (value is byte[] data)
+				return ToScript(data);
+
+			if (value is Guid || value is Guid?)
+				return ToScript((Guid)value);
+
+			if (value is IEnumerable list)
+				return ToScript(list);
+
+			return new StringBuilder().Append(value).ToString();
+		}
+
+		public string ToScript(DbAgentStyle style)
+		{
+			if (style == DbAgentStyle.SQLite)
+				return new SQLiteValue(value).ToScript();
+
+			return ToScript();
 		}
 
 		public override string ToString()

@@ -6,10 +6,10 @@ namespace Sys.Data
 {
 	static class Extension
 	{
-		public static T IsNull<T>(this object value, T defaultValue = default(T))
+		public static T IsNull<T>(this object value)
 		{
 			if (value == null || value == DBNull.Value)
-				return defaultValue;
+				return default(T);
 
 			if (value is T)
 				return (T)value;
@@ -17,12 +17,12 @@ namespace Sys.Data
 			throw new Exception($"{value} is not type of {typeof(T)}");
 		}
 
-		public static T GetField<T>(this DataRow row, string columnName, T defaultValue = default(T))
-		{
-			if (!row.Table.Columns.Contains(columnName))
-				return defaultValue;
-
-			return IsNull<T>(row[columnName], defaultValue);
-		}
+		//public static string ToScript(this SqlValue value, DbAgentStyle style)
+		//{
+		//	if (style == DbAgentStyle.SQLite)
+		//		return new SQLiteValue(value.Value).ToScript();
+		//	else
+		//		return value.ToScript();
+		//}
 	}
 }
