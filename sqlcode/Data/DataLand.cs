@@ -48,7 +48,7 @@ namespace Sys.Data
 			foreach (DataRow row in _table.Rows)
 			{
 				object obj = row[column];
-				list.Add(obj.IsNull<T>());
+				list.Add(IsNull<T>(obj));
 			}
 
 			return list;
@@ -67,7 +67,7 @@ namespace Sys.Data
 			foreach (DataRow row in _table.Rows)
 			{
 				object obj = row[columnName];
-				list.Add(obj.IsNull<T>());
+				list.Add(IsNull<T>(obj));
 			}
 
 			return list;
@@ -101,7 +101,18 @@ namespace Sys.Data
 
 			var obj = GetCell(column, row, table);
 
-			return obj.IsNull<T>();
+			return IsNull<T>(obj);
+		}
+
+		private static T IsNull<T>(object value)
+		{
+			if (value == null || value == DBNull.Value)
+				return default(T);
+
+			if (value is T)
+				return (T)value;
+
+			throw new Exception($"{value} is not type of {typeof(T)}");
 		}
 
 	}

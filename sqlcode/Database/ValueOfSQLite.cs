@@ -14,40 +14,45 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System.Data;
+using System;
+using System.Text;
 
 namespace Sys.Data
 {
-	public delegate IDbCmd DbCmdFunction(string sql, object args);
-
-	public interface IDbCmd
+	public class ValueOfSQLite : ValueOfScript
 	{
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		int ExecuteNonQuery();
+		public ValueOfSQLite(object value)
+			: base(value)
+		{
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		object ExecuteScalar();
+		}
 
-		/// <summary>
-		/// Retrieve data set
-		/// </summary>
-		/// <param name="dataSet"></param>
-		/// <returns> The number of rows successfully added to or refreshed in the System.Data.DataSet.</returns>
-		int FillDataSet(DataSet dataSet);
+		protected override string ToScript(string value)
+		{
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.Append(value.Replace("'", "''"))
+			.Append(DELIMETER)
+			.ToString();
+		}
 
-		/// <summary>
-		/// Retrieve data table
-		/// </summary>
-		/// <param name="dataTable">The System.Data.DataTable objects to fill from the data source.</param>
-		/// <param name="startRecord">The zero-based record number to start with.</param>
-		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
-		/// <returns></returns>
-		int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
+		protected override string ToScript(byte[] data)
+		{
+			return new StringBuilder()
+			.Append("x")
+			.Append(DELIMETER)
+			.Append(BitConverter.ToString(data).Replace("-", ""))
+			.Append(DELIMETER)
+			.ToString();
+		}
+
+		protected override string ToScript(Guid value)
+		{
+			return new StringBuilder()
+			.Append(DELIMETER)
+			.Append(value)
+			.Append(DELIMETER)
+			.ToString();
+		}
 	}
 }

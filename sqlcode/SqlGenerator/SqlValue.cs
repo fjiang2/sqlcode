@@ -15,10 +15,7 @@
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Sys.Data
 {
@@ -27,9 +24,6 @@ namespace Sys.Data
 	/// </summary>
 	public class SqlValue
 	{
-		private const string DELIMETER = "'";
-		private const string NULL = "NULL";
-
 		private readonly object value;
 
 		public SqlValue(object value)
@@ -46,77 +40,17 @@ namespace Sys.Data
 
 		public string ToScript(DbAgentStyle style)
 		{
-			if (IsNull)
-				return NULL;
+			return Facade.ToScript(this, style);
+		}
 
-			StringBuilder sb = new StringBuilder();
-
-			if (value is string)
-			{
-				//N: used for SQL Type nvarchar
-				if (style != DbAgentStyle.SQLite)
-					sb.Append("N");
-
-				sb.Append(DELIMETER)
-				.Append((value as string).Replace("'", "''"))
-				.Append(DELIMETER);
-			}
-			else if (value is bool || value is bool?)
-			{
-				sb.Append((bool)value ? "1" : "0");
-			}
-			else if (value is DateTime || value is DateTime?)
-			{
-				DateTime time = (DateTime)value;
-				sb.Append(DELIMETER)
-				  .AppendFormat("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff"))
-				  .Append(DELIMETER);
-			}
-			else if (value is DateTimeOffset || value is DateTimeOffset?)
-			{
-				DateTimeOffset time = (DateTimeOffset)value;
-				var d = DELIMETER + string.Format("{0} {1}", time.ToString("d"), time.ToString("HH:mm:ss.fff zzz"), time.Offset) + DELIMETER;
-				return d;
-			}
-			else if (value is char)
-			{
-				sb.Append(DELIMETER).Append(value).Append(DELIMETER);
-			}
-			else if (value is byte[])
-			{
-				if (style != DbAgentStyle.SQLite)
-					sb.Append("0x").Append(BitConverter.ToString((byte[])value).Replace("-", ""));
-				else
-					sb.Append("x").Append(DELIMETER).Append(BitConverter.ToString((byte[])value).Replace("-", "")).Append(DELIMETER);
-			}
-			else if (value is Guid || value is Guid?)
-			{
-				if (style != DbAgentStyle.SQLite)
-					sb.Append("N" + DELIMETER).Append(value).Append(DELIMETER);
-				else
-					sb.Append(DELIMETER).Append(value).Append(DELIMETER);
-			}
-			else if (value is IEnumerable)
-			{
-				List<string> list = new List<string>();
-				foreach (var x in value as IEnumerable)
-				{
-					list.Add(new SqlValue(x).ToScript(style));
-				}
-				return $"({string.Join(",", list)})";
-			}
-			else
-			{
-				sb.Append(value);
-			}
-
-			return sb.ToString();
+		public string ToString(DbAgentStyle style)
+		{
+			return ToScript(style);
 		}
 
 		public override string ToString()
 		{
-			return this.ToScript(DbAgentOption.DefaultStyle);
+			return ToScript(DbAgentOption.DefaultStyle);
 		}
-
 	}
 }

@@ -14,25 +14,44 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
+using System;
+using System.Text;
 
 namespace Sys.Data
 {
-	class DbAgentImpl : DbAgent
+	public class ValueOfSqlCe : ValueOfScript
 	{
-		private readonly DbAgentStyle style;
-		private readonly DbCmdFunc function;
-
-		public DbAgentImpl(DbAgentStyle style, DbCmdFunc function)
+		public ValueOfSqlCe(object value)
+			: base(value)
 		{
-			this.style = style;
-			this.function = function;
 		}
 
-		public override DbAgentOption Option => new DbAgentOption
+		protected override string ToScript(string value)
 		{
-			Style = style
-		};
+			return new StringBuilder()
+			.Append("N")
+			.Append(DELIMETER)
+			.Append(value.Replace("'", "''"))
+			.Append(DELIMETER)
+			.ToString();
+		}
 
-		public override DbCmdFunc Function => function;
+		protected override string ToScript(byte[] data)
+		{
+			return new StringBuilder()
+			.Append("0x")
+			.Append(BitConverter.ToString(data).Replace("-", ""))
+			.ToString();
+		}
+
+		protected override string ToScript(Guid value)
+		{
+			return new StringBuilder()
+			.Append("N")
+			.Append(DELIMETER)
+			.Append(value)
+			.Append(DELIMETER)
+			.ToString();
+		}
 	}
 }

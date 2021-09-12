@@ -2,28 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 
 namespace Sys.Data
 {
-	public class SQLiteCmd : BaseDbCmd, IDbCmd
+
+	public class SqlCmd : BaseDbCmd, IDbCmd
 	{
-		private SQLiteCommand command;
-		private SQLiteConnection connection;
+		private SqlCommand command;
+		private SqlConnection connection;
 		private IParameterFactory parameters;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
 		{
-			this.command = new SQLiteCommand(sql);
-			this.connection = new SQLiteConnection(connectionString.ConnectionString);
+			this.connection = new SqlConnection(connectionString.ConnectionString);
+
+			this.command = new SqlCommand(sql);
 			this.command.Connection = connection;
+			if (!sql.Contains(' '))
+				command.CommandType = CommandType.StoredProcedure;
 
 			if (args == null)
 				return;
 
 			if (args is string)
 			{
-				//The parameters could be JSON
+				//The parameters could be JSON or XML
 				return;
 			}
 
@@ -33,42 +37,42 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SQLiteParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
 				command.Parameters.Add(parameter);
 			}
 		}
 
-		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
-			DbType dbType = DbType.AnsiString;
+			SqlDbType dbType = SqlDbType.NVarChar;
 			if (value is int)
-				dbType = DbType.Int32;
+				dbType = SqlDbType.Int;
 			else if (value is short)
-				dbType = DbType.Int16;
+				dbType = SqlDbType.SmallInt;
 			else if (value is long)
-				dbType = DbType.Int64;
+				dbType = SqlDbType.BigInt;
 			else if (value is byte)
-				dbType = DbType.Byte;
+				dbType = SqlDbType.TinyInt;
 			else if (value is DateTime)
-				dbType = DbType.DateTime;
+				dbType = SqlDbType.DateTime;
 			else if (value is double)
-				dbType = DbType.Double;
+				dbType = SqlDbType.Float;
 			else if (value is float)
-				dbType = DbType.Single;
+				dbType = SqlDbType.Float;
 			else if (value is decimal)
-				dbType = DbType.Decimal;
+				dbType = SqlDbType.Decimal;
 			else if (value is bool)
-				dbType = DbType.Boolean;
+				dbType = SqlDbType.Bit;
 			else if (value is string && ((string)value).Length > 4000)
-				dbType = DbType.AnsiString;
+				dbType = SqlDbType.NText;
 			else if (value is string)
-				dbType = DbType.String;
+				dbType = SqlDbType.NVarChar;
 			else if (value is byte[])
-				dbType = DbType.Binary;
+				dbType = SqlDbType.Binary;
 			else if (value is Guid)
-				dbType = DbType.Guid;
+				dbType = SqlDbType.UniqueIdentifier;
 
-			SQLiteParameter param = new SQLiteParameter(parameterName, dbType)
+			SqlParameter param = new SqlParameter(parameterName, dbType)
 			{
 				Value = value,
 				Direction = direction,
@@ -83,7 +87,7 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+				SqlDataAdapter adapter = new SqlDataAdapter(command);
 				return adapter.Fill(dataSet);
 			}
 			finally
@@ -97,7 +101,7 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+				SqlDataAdapter adapter = new SqlDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
 			finally
@@ -105,6 +109,7 @@ namespace Sys.Data
 				connection.Close();
 			}
 		}
+
 
 		public override int ExecuteNonQuery()
 		{

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
@@ -26,6 +27,7 @@ namespace Sys.Data.Entity
 
             this.Generator = new SqlGenerator(formalName)
             {
+                Option = context.Option,
                 PrimaryKeys = schema.PrimaryKeys,
                 IdentityKeys = schema.IdentityKeys,
             };
@@ -105,7 +107,7 @@ namespace Sys.Data.Entity
                     break;
             }
 
-            if (sql == null)
+            if (string.IsNullOrEmpty(sql))
                 return;
 
             Append(sql, operation, gen.ToDictionary());
@@ -183,24 +185,28 @@ namespace Sys.Data.Entity
             if (entity == null)
                 throw new ArgumentNullException($"argument {nameof(entity)} cannot be null");
 
+            var style = Context.Option.Style;
             List<string> names = new PropertyTranslator().Translate(modifiedProperties);
-            string _where = new QueryTranslator(Context.Option.Style).Translate(where);
+            string _where = new QueryTranslator(style).Translate(where);
 
-            var gen = new SqlColumnValuePairCollection();
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+            List<Text.Expression> list = new List<Text.Expression>();
             foreach (var propertyInfo in entity.GetType().GetProperties())
             {
                 if (names.IndexOf(propertyInfo.Name) == -1)
                     continue;
 
                 object value = propertyInfo.GetValue(entity);
-                gen.Add(propertyInfo.Name, value);
+                string key = propertyInfo.Name;
+
+                dict.Add(key, value);
+                list.Add(key.AssignColumn(value));
             }
 
-            SqlTemplate template = new SqlTemplate(formalName) { Style = Context.Option.Style };
-            string update = template.Update(gen.Join(","), _where);
+            SqlTemplate template = new SqlTemplate(formalName) { Style = style };
+            string update = template.Update(new Text.Expression(list).ToScript(style), _where);
 
-            Append(update, RowOperation.PartialUpdate, gen.ToDictionary());
-            gen.Clear();
+            Append(update, RowOperation.PartialUpdate, dict);
         }
 
         private void Append(string sql, RowOperation operation, IDictionary<string, object> row)

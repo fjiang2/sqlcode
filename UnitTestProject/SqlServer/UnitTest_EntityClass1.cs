@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Data.SqlClient;
 
-using UnitTestProject.Northwind.dc2;
-using Sys;
+using UnitTestProject.Northwind.dc1;
+using UnitTestProject.SqlServer;
 using Sys.Data.Entity;
 using Sys.Data;
 
@@ -17,16 +17,15 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTest_EntityClass2
+	public class UnitTest_EntityClass1
 	{
 		private readonly string connectionString = Setting.ConnectionString;
 		private readonly Query Query;
 
-		public UnitTest_EntityClass2()
+		public UnitTest_EntityClass1()
 		{
-			DataContext.EntityClassType = EntityClassType.SingleClass;
-			var agent = DbAgent.Create(DbAgentStyle.SqlServer, (query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
-			Query = new Query(agent);
+			DataContext.EntityClassType = EntityClassType.ExtensionClass;
+			Query = new Query(new SqlServerAgent(connectionString));
 		}
 
 
@@ -125,7 +124,7 @@ namespace UnitTestProject
 				};
 				table.PartialUpdateOnSubmit(prod, row => new { row.ProductID, row.ProductName }, row => row.ProductID == 1);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200,[ProductName] = N'iPhone' WHERE (ProductID = 1)"));
+				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200, [ProductName] = N'iPhone' WHERE (ProductID = 1)"));
 			}
 		}
 
@@ -450,13 +449,13 @@ namespace UnitTestProject
 			Query.InsertOrUpdate(demographics);
 
 			Query.InsertOrUpdate(new CustomerCustomerDemo[]
-				{
-					new CustomerCustomerDemo
-					 {
-						 CustomerID = "ALFKI",
-						 CustomerTypeID = "IT",
-					 }
-				});
+			{
+				new CustomerCustomerDemo
+				 {
+					 CustomerID = "ALFKI",
+					 CustomerTypeID = "IT",
+				 }
+			});
 
 			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT").First().CustomerDesc;
 			Debug.Assert(desc == "Computer Science");
@@ -542,6 +541,8 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
+			Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
+
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"

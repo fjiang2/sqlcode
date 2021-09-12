@@ -131,7 +131,7 @@ namespace Sys.Data.Entity
 				foreach (var property in properties)
 				{
 					if (columns.Contains(property.Name))
-						property.SetValue(entity, row.GetField<object>(property.Name));
+						property.SetValue(entity, Convert.ChangeType(row[property.Name], property.PropertyType));
 				}
 
 				return entity;
