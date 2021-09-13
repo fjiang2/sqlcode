@@ -144,7 +144,7 @@ namespace Sys.Data.Entity
             else
             {
                 SqlValue svalue = new SqlValue(value);
-                string _value = svalue.ToScript(Context.Option.Style);
+                string _value = svalue.ToScript(Context.Style);
                 return $"[{column}] = {_value}";
             }
         }
@@ -155,7 +155,7 @@ namespace Sys.Data.Entity
             foreach (var value in values)
             {
                 SqlValue svalue = new SqlValue(value);
-                L.Add(svalue.ToScript(Context.Option.Style));
+                L.Add(svalue.ToScript(Context.Style));
             }
 
             string X = string.Join(",", L);

@@ -14,11 +14,8 @@ namespace Sys.Data
 		public string ConnectionString
 			=> $"Data Source={fileName};Max Buffer Size=1024;Persist Security Info=False;";
 
-		public IDbCmd Command(string sql, object args)
-			=> new SqlCeCmd(new SqlCeConnectionStringBuilder(ConnectionString), sql, args);
-
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
-		public DbCmdFunction Function => Command;
+		public IDbCmd Proxy(SqlUnit unit) => new SqlCeCmd(new SqlCeConnectionStringBuilder(ConnectionString), unit);
 
 	}
 }

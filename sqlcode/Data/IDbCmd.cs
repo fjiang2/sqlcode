@@ -18,8 +18,6 @@ using System.Data;
 
 namespace Sys.Data
 {
-	public delegate IDbCmd DbCmdFunction(string sql, object args);
-
 	public interface IDbCmd
 	{
 		/// <summary>

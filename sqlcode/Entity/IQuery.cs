@@ -13,7 +13,7 @@ namespace Sys.Data.Entity
 		IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
 		int Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
 		int InsertOrUpdate<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
-		BaseDbCmd NewDbCmd(string sql, object args);
+		BaseDbCmd NewDbCmd(SqlUnit unit);
 		int PartialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class;
 		int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class;
 		IQueryResultReader Select(Action<DataContext> action);

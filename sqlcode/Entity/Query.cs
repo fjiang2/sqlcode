@@ -22,9 +22,9 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="sql"></param>
 		/// <returns></returns>
-		public BaseDbCmd NewDbCmd(string sql, object args)
+		public BaseDbCmd NewDbCmd(SqlUnit unit)
 		{
-			return new DelegateDbCmd(agent, sql, args);
+			return new DelegateDbCmd(agent, unit);
 		}
 
 		private T Invoke<T>(Func<DataContext, T> func)
@@ -142,7 +142,7 @@ namespace Sys.Data.Entity
 				var table = db.GetTable<TEntity>();
 
 				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
-				string _where = new QueryTranslator(db.Option.Style).Translate(where);
+				string _where = new QueryTranslator(db.Style).Translate(where);
 				string SQL = table.SelectFromWhere(_where, _columns);
 
 				var dt = db.FillDataTable(SQL);

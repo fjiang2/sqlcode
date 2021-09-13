@@ -9,13 +9,18 @@ namespace Sys.Data
 
 	public class SQLiteCmd : BaseDbCmd, IDbCmd
 	{
-		private SQLiteCommand command;
-		private SQLiteConnection connection;
-		private IParameterFactory parameters;
+		private readonly SQLiteCommand command;
+		private readonly SQLiteConnection connection;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+		private readonly string[] statements;
+		private readonly IParameterFactory parameters;
+
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{
-			this.command = new SQLiteCommand(sql);
+			this.statements = unit.Statements;
+			object args = unit.Arguments;
+
+			this.command = new SQLiteCommand();
 			this.connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
@@ -34,8 +39,8 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SQLiteParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				command.Parameters.Add(parameter);
+				SQLiteParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(_parameter);
 			}
 		}
 
@@ -83,24 +88,16 @@ namespace Sys.Data
 		{
 			try
 			{
-				int count = 0;
 				connection.Open();
-				if (command.CommandText.Contains(Environment.NewLine))
+
+				int count = 0;
+				foreach (string statement in statements)
 				{
-					string[] statements = command.CommandText.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-					foreach (string statement in statements)
-					{
-						command.CommandText = statement;
-						SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-						DataTable dt = new DataTable();
-						count += adapter.Fill(dt);
-						dataSet.Tables.Add(dt);
-					}
-				}
-				else
-				{
+					command.CommandText = statement;
 					SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-					count = adapter.Fill(dataSet);
+					DataTable dt = new DataTable();
+					count += adapter.Fill(dt);
+					dataSet.Tables.Add(dt);
 				}
 				return count;
 			}
@@ -128,22 +125,13 @@ namespace Sys.Data
 		{
 			try
 			{
-				int count = 0;
 				connection.Open();
 
-				if (command.CommandText.Contains(Environment.NewLine))
+				int count = 0;
+				foreach (string statement in statements)
 				{
-					string[] statements = command.CommandText.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-					foreach (string statement in statements)
-					{
-						command.CommandText = statement;
-						count += command.ExecuteNonQuery();
-						parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-					}
-				}
-				else
-				{
-					count = command.ExecuteNonQuery();
+					command.CommandText = statement;
+					count += command.ExecuteNonQuery();
 					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				}
 

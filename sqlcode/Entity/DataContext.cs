@@ -10,7 +10,7 @@ namespace Sys.Data.Entity
 	public partial class DataContext : IDisposable
 	{
 		private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
-		private readonly DbCmdFunction function;
+		private readonly IDbAgent agent;
 
 		internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
 		internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
@@ -31,12 +31,10 @@ namespace Sys.Data.Entity
 		/// DataContext using extension class (dc1) or single class (dc2)
 		/// </summary>
 		public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
-		public DbAgentOption Option { get; }
 
 		public DataContext(IDbAgent agent)
 		{
-			this.function = agent.Function;
-			this.Option = agent.Option;
+			this.agent = agent;
 			this.Description = "SQL command handler";
 		}
 
@@ -45,6 +43,9 @@ namespace Sys.Data.Entity
 			CodeBlock.Clear();
 			tables.Clear();
 		}
+
+		public DbAgentOption Option => agent.Option;
+		public DbAgentStyle Style => agent.Option.Style;
 
 		protected void OnRowChanging(IEnumerable<RowEvent> evt)
 		{
@@ -70,19 +71,19 @@ namespace Sys.Data.Entity
 
 		public string GetNonQueryScript()
 		{
-			return CodeBlock.GetNonQuery();
+			return string.Join(Environment.NewLine, CodeBlock.GetNonQuery());
 		}
 
 		public string GetQueryScript()
 		{
-			return CodeBlock.GetQuery();
+			return string.Join(Environment.NewLine, CodeBlock.GetQuery());
 		}
 
 
 
 		internal DataTable FillDataTable(string query)
 		{
-			DataSet ds = FillDataSet(query);
+			DataSet ds = FillDataSet(new string[] { query });
 			if (ds == null)
 				return null;
 
@@ -92,9 +93,10 @@ namespace Sys.Data.Entity
 			return null;
 		}
 
-		private DataSet FillDataSet(string query)
+		private DataSet FillDataSet(string[] query)
 		{
-			var cmd = function(query, args: null);
+			var unit = new SqlUnit(query);
+			var cmd = agent.Proxy(unit);
 			var ds = new DataSet();
 			cmd.FillDataSet(ds);
 			return ds;
@@ -105,7 +107,7 @@ namespace Sys.Data.Entity
 			if (CodeBlock.Length == 0)
 				return null;
 
-			string query = CodeBlock.GetQuery();
+			string[] query = CodeBlock.GetQuery();
 			Type[] types = CodeBlock.GetQueryTypes();
 			var ds = FillDataSet(query);
 			CodeBlock.Clear();
@@ -120,7 +122,8 @@ namespace Sys.Data.Entity
 
 			OnRowChanging(RowEvents);
 
-			var cmd = function(CodeBlock.GetNonQuery(), args: null);
+			var unit = new SqlUnit(CodeBlock.GetNonQuery());
+			var cmd = agent.Proxy(unit);
 			int count = cmd.ExecuteNonQuery();
 			CodeBlock.Clear();
 

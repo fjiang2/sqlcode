@@ -9,12 +9,15 @@ namespace Sys.Data
 
 	public class SqlCeCmd : BaseDbCmd, IDbCmd
 	{
-		private SqlCeCommand command;
-		private SqlCeConnection connection;
-		private IParameterFactory parameters;
+		private readonly SqlCeCommand command;
+		private readonly SqlCeConnection connection;
+		private readonly IParameterFactory parameters;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, string sql, object args)
+		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
 		{
+			string sql = unit.Statement;
+			object args = unit.Arguments;
+
 			this.command = new SqlCeCommand(sql);
 			this.connection = new SqlCeConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
@@ -34,8 +37,8 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SqlCeParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				command.Parameters.Add(parameter);
+				SqlCeParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(_parameter);
 			}
 		}
 
@@ -112,9 +115,9 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				int n = command.ExecuteNonQuery();
+				int count = command.ExecuteNonQuery();
 				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-				return n;
+				return count;
 			}
 			finally
 			{

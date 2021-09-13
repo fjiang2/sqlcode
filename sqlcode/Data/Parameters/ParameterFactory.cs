@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Sys.Data
@@ -12,7 +13,7 @@ namespace Sys.Data
 		protected string GetParameterName(IDataParameter parameter)
 		{
 			string parameterName = parameter.ParameterName;
-			
+
 			if (parameterName.StartsWith("@") || parameterName.StartsWith("$"))
 				parameterName = parameterName.Substring(1);
 
@@ -23,18 +24,26 @@ namespace Sys.Data
 
 		public abstract void UpdateResult(IEnumerable<IDataParameter> result);
 
+		/// <summary>
+		/// Create parameters for SQL statements
+		/// </summary>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
 		public static IParameterFactory Create(object parameters)
 		{
-			IParameterFactory factory;
-
 			if (parameters is List<IDataParameter> list)
-				factory = new ListParameters(list);
-			else if (parameters is IDictionary<string, object> dict)
-				factory = new DictionaryParameters(dict);
-			else
-				factory = new ObjectParameters(parameters);
+				return new ListParameters(list);
 
-			return factory;
+			if (parameters is IDictionary<string, object> dict)
+				return new DictionaryParameters(dict);
+
+			if (parameters is string)
+			{
+				//XML or JSON
+				throw new RowNotInTableException();
+			}
+
+			return new ObjectParameters(parameters);
 		}
 
 	}

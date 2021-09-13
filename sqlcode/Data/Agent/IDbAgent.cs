@@ -19,7 +19,16 @@ namespace Sys.Data
 {
 	public interface IDbAgent
 	{
+		/// <summary>
+		/// Indicating SQL database engine/server
+		/// </summary>
 		DbAgentOption Option { get; }
-		DbCmdFunction Function { get; }
+
+		/// <summary>
+		/// a proxy of SQL command, connection and adapter.
+		/// </summary>
+		/// <param name="unit">include SQL statement with arguments</param>
+		/// <returns></returns>
+		IDbCmd Proxy(SqlUnit unit);
 	}
 }

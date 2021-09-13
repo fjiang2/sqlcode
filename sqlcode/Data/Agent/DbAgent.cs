@@ -25,13 +25,11 @@ namespace Sys.Data
 
 		public abstract DbAgentOption Option { get; }
 
-		public abstract DbCmdFunction Function { get; }
+		public abstract IDbCmd Proxy(SqlUnit unit);
 
 		public override string ToString()
 		{
 			return Option.ToString();
 		}
-
-		
 	}
 }
