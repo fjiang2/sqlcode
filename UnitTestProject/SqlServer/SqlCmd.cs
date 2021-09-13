@@ -9,9 +9,11 @@ namespace Sys.Data
 
 	public class SqlCmd : BaseDbCmd, IDbCmd
 	{
-		private SqlCommand command;
-		private SqlConnection connection;
-		private IParameterFactory parameters;
+		private readonly SqlCommand command;
+		private readonly SqlConnection connection;
+		private readonly IParameterFactory parameters;
+
+
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
@@ -123,9 +125,9 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				int n = command.ExecuteNonQuery();
+				int count = command.ExecuteNonQuery();
 				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-				return n;
+				return count;
 			}
 			finally
 			{

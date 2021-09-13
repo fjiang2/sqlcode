@@ -9,11 +9,11 @@ namespace Sys.Data
 
 	public class SQLiteCmd : BaseDbCmd, IDbCmd
 	{
-		private SQLiteCommand command;
-		private SQLiteConnection connection;
+		private readonly SQLiteCommand command;
+		private readonly SQLiteConnection connection;
 
-		private string[] statements;
-		private IParameterFactory parameters;
+		private readonly string[] statements;
+		private readonly IParameterFactory parameters;
 
 		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{

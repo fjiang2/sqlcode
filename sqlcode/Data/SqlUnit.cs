@@ -15,12 +15,16 @@ namespace Sys.Data
 		/// <summary>
 		/// SQL arguments, which can be a list of IDataParameter, a dictionary, an instance of class, and JSON/XML string
 		/// </summary>
-		public object Arguments { get; }
+		public object Arguments { get; set; }
 
-		public SqlUnit(string[] statements, object args)
+		public SqlUnit(string[] statements)
 		{
 			this.Statements = statements;
-			this.Arguments = args;
+		}
+
+		public SqlUnit(string statement)
+		{
+			this.Statements = new string[] { statement };
 		}
 
 		public SqlUnit(string statement, object args)

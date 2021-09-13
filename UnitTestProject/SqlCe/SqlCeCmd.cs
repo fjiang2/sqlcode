@@ -9,9 +9,9 @@ namespace Sys.Data
 
 	public class SqlCeCmd : BaseDbCmd, IDbCmd
 	{
-		private SqlCeCommand command;
-		private SqlCeConnection connection;
-		private IParameterFactory parameters;
+		private readonly SqlCeCommand command;
+		private readonly SqlCeConnection connection;
+		private readonly IParameterFactory parameters;
 
 		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
 		{
@@ -115,9 +115,9 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				int n = command.ExecuteNonQuery();
+				int count = command.ExecuteNonQuery();
 				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-				return n;
+				return count;
 			}
 			finally
 			{

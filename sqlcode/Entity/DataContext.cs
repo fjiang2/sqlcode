@@ -95,7 +95,7 @@ namespace Sys.Data.Entity
 
 		private DataSet FillDataSet(string[] query)
 		{
-			var unit = new SqlUnit(query, args: null);
+			var unit = new SqlUnit(query);
 			var cmd = agent.Proxy(unit);
 			var ds = new DataSet();
 			cmd.FillDataSet(ds);
@@ -122,7 +122,7 @@ namespace Sys.Data.Entity
 
 			OnRowChanging(RowEvents);
 
-			var unit = new SqlUnit(CodeBlock.GetNonQuery(), args: null);
+			var unit = new SqlUnit(CodeBlock.GetNonQuery());
 			var cmd = agent.Proxy(unit);
 			int count = cmd.ExecuteNonQuery();
 			CodeBlock.Clear();
