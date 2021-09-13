@@ -12,7 +12,7 @@ namespace Sys.Data
 		}
 
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
-		public IDbCmd Function(DbCmdParameter parameter) => new SqlCmd(new SqlConnectionStringBuilder(ConnectionString), parameter);
+		public IDbCmd Proxy(SqlUnit unit) => new SqlCmd(new SqlConnectionStringBuilder(ConnectionString), unit);
 
 
 	}

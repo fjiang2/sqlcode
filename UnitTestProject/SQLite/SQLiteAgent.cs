@@ -15,7 +15,7 @@ namespace Sys.Data
 			=> $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SQLite };
-		public IDbCmd Function(DbCmdParameter parameter) => new SQLiteCmd(new SQLiteConnectionStringBuilder(ConnectionString), parameter);
+		public IDbCmd Proxy(SqlUnit unit) => new SQLiteCmd(new SQLiteConnectionStringBuilder(ConnectionString), unit);
 
 	}
 }

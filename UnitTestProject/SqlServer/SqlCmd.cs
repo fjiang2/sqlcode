@@ -13,14 +13,14 @@ namespace Sys.Data
 		private SqlConnection connection;
 		private IParameterFactory parameters;
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new DbCmdParameter(new string[] { sql }, args))
+			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, DbCmdParameter parameter)
+		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
 		{
-			string sql = parameter.Statement;
-			object args = parameter.Args;
+			string sql = unit.Statement;
+			object args = unit.Arguments;
 
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 

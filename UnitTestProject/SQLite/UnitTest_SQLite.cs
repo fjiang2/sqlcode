@@ -41,7 +41,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.NewDbCmd(new DbCmdParameter(new string[] { line }, null)).ExecuteNonQuery();
+				Query.NewDbCmd(new SqlUnit(line, null)).ExecuteNonQuery();
 			}
 		}
 

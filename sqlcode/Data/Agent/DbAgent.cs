@@ -25,7 +25,7 @@ namespace Sys.Data
 
 		public abstract DbAgentOption Option { get; }
 
-		public abstract IDbCmd Function(DbCmdParameter parameter);
+		public abstract IDbCmd Proxy(SqlUnit unit);
 
 		public override string ToString()
 		{

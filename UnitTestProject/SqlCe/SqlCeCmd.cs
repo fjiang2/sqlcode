@@ -13,10 +13,10 @@ namespace Sys.Data
 		private SqlCeConnection connection;
 		private IParameterFactory parameters;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, DbCmdParameter parameter)
+		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
 		{
-			string sql = parameter.Statement;
-			object args = parameter.Args;
+			string sql = unit.Statement;
+			object args = unit.Arguments;
 
 			this.command = new SqlCeCommand(sql);
 			this.connection = new SqlCeConnection(connectionString.ConnectionString);

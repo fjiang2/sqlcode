@@ -95,8 +95,8 @@ namespace Sys.Data.Entity
 
 		private DataSet FillDataSet(string[] query)
 		{
-			var parameter = new DbCmdParameter(query, args: null);
-			var cmd = agent.Function(parameter);
+			var unit = new SqlUnit(query, args: null);
+			var cmd = agent.Proxy(unit);
 			var ds = new DataSet();
 			cmd.FillDataSet(ds);
 			return ds;
@@ -122,8 +122,8 @@ namespace Sys.Data.Entity
 
 			OnRowChanging(RowEvents);
 
-			var parameter = new DbCmdParameter(CodeBlock.GetNonQuery(), args: null);
-			var cmd = agent.Function(parameter);
+			var unit = new SqlUnit(CodeBlock.GetNonQuery(), args: null);
+			var cmd = agent.Proxy(unit);
 			int count = cmd.ExecuteNonQuery();
 			CodeBlock.Clear();
 

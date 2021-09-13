@@ -15,10 +15,10 @@ namespace Sys.Data
 		private string[] statements;
 		private IParameterFactory parameters;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, DbCmdParameter parameter)
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{
-			this.statements = parameter.Statements;
-			object args = parameter.Args;
+			this.statements = unit.Statements;
+			object args = unit.Arguments;
 
 			this.command = new SQLiteCommand();
 			this.connection = new SQLiteConnection(connectionString.ConnectionString);
