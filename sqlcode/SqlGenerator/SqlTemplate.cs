@@ -11,6 +11,7 @@ namespace Sys.Data
 		private readonly string formalName;
 		private SqlTemplateFormat format = SqlTemplateFormat.SingleLine;
 		private string NewLine = string.Empty;
+		public DbAgentStyle Style { get; set; } = DbAgentStyle.SqlServer;
 
 		public SqlTemplate(string formalName)
 		{
@@ -74,7 +75,7 @@ namespace Sys.Data
 		public string InsertWithIdentityOff(string columns, string values)
 			=> $"SET IDENTITY_INSERT {formalName} ON; {Insert(columns, values)}; SET IDENTITY_INSERT {formalName} OFF";
 
-		public static string SetIdentityOutParameter(string parameterName) 
+		public static string SetIdentityOutParameter(string parameterName)
 			=> $"SET {parameterName}=@@IDENTITY";
 
 		public string Delete()
@@ -96,7 +97,7 @@ namespace Sys.Data
 
 		public string AddColumn(string column, object defaultValue)
 		{
-			string value = new SqlValue(defaultValue).ToScript();
+			string value = new SqlValue(defaultValue).ToScript(Style);
 			return $"ALTER TABLE {formalName} ADD {column} DEFAULT({value})";
 		}
 
@@ -110,10 +111,10 @@ namespace Sys.Data
 		{
 			if (ifExists)
 			{
-				var builder = new StringBuilder();
-				builder.AppendLine($"IF OBJECT_ID('{formalName}') IS NOT NULL")
-					  .AppendLine($"  DROP TABLE {formalName}");
-				return builder.ToString();
+				return new StringBuilder()
+				.AppendLine($"IF OBJECT_ID('{formalName}') IS NOT NULL")
+				.AppendLine($"  DROP TABLE {formalName}")
+				.ToString();
 			}
 
 			return $"DROP TABLE {formalName}";

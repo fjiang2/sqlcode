@@ -31,13 +31,23 @@ namespace Sys.Data
 		/// Use primary-keys as search condition if this property is not empty.
 		/// </summary>
 		public string Where { get; set; } = string.Empty;
-
-		private readonly SqlTemplate template;
+		public DbAgentOption Option { get; set; } = DbAgentOption.DefaultOption;
 
 		public SqlGenerator(string formalName)
 		{
 			this.TableName = formalName;
-			this.template = new SqlTemplate(formalName);
+		}
+
+		private SqlTemplate _template = null;
+		private SqlTemplate template
+		{
+			get
+			{
+				if (_template == null)
+					_template = new SqlTemplate(TableName) { Style = Option.Style };
+
+				return _template;
+			}
 		}
 
 		public override SqlColumnValuePair Add(string name, object value)
@@ -50,7 +60,7 @@ namespace Sys.Data
 			return pair;
 		}
 
-		private string[] notUpdateColumns => columns.Where(p => !p.Column.Saved).Select(p => p.Column.Name).ToArray();
+		private string[] NotUpdateColumns => columns.Where(p => !p.Column.Saved).Select(p => p.Column.Name).ToArray();
 
 		/// <summary>
 		/// SELECT * FROM Table WHERE condition
@@ -115,7 +125,7 @@ namespace Sys.Data
 				throw new InvalidOperationException("WHERE is blank");
 			}
 
-			if (PrimaryKeys.Length + notUpdateColumns.Length == columns.Count)
+			if (PrimaryKeys.Length + NotUpdateColumns.Length == columns.Count)
 			{
 				return template.IfNotExistsInsert(where, Insert());
 			}
@@ -148,7 +158,7 @@ namespace Sys.Data
 		{
 			var C = columns.Where(c => !c.Column.Identity && !c.Value.IsNull);
 			var L1 = string.Join(",", C.Select(c => c.ColumnFormalName));
-			var L2 = string.Join(",", C.Select(c => c.Value.ToString()));
+			var L2 = string.Join(",", C.Select(c => c.Value.ToScript(Option.Style)));
 
 			return template.Insert(L1, L2);
 		}
@@ -194,8 +204,8 @@ namespace Sys.Data
 		/// <returns></returns>
 		public string Update()
 		{
-			var C2 = columns.Where(c => !PrimaryKeys.Contains(c.ColumnName) && !notUpdateColumns.Contains(c.ColumnName));
-			var L2 = string.Join(",", C2.Select(c => c.ToString()));
+			var C2 = columns.Where(c => !PrimaryKeys.Contains(c.ColumnName) && !NotUpdateColumns.Contains(c.ColumnName));
+			var L2 = string.Join(",", C2.Select(c => c.ToScript(Option.Style)));
 
 			if (C2.Count() == 0)
 				return string.Empty;
@@ -239,7 +249,7 @@ namespace Sys.Data
 			if (PrimaryKeys.Length > 0)
 			{
 				var C1 = columns.Where(c => PrimaryKeys.Contains(c.ColumnName));
-				var L1 = string.Join(" AND ", C1.Select(c => c.ToString()));
+				var L1 = string.Join(" AND ", C1.Select(c => c.ToScript(Option.Style)));
 				return L1;
 			}
 

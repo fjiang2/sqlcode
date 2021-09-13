@@ -14,49 +14,27 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Data;
 
 namespace Sys.Data.Text
 {
+
 	/// <summary>
 	/// SQL clauses builder
 	/// </summary>
 	public sealed class SqlBuilder : IQueryScript
 	{
-		private readonly List<string> script = new List<string>();
 
+		CodeBlock block = new CodeBlock();
 		public SqlBuilder()
 		{
 		}
 
-		public string Script
+		public string ToScript(DbAgentStyle style)
 		{
-			get
-			{
-				List<string> lines = new List<string>();
-				StringBuilder builder = new StringBuilder();
-
-				foreach (string item in script)
-				{
-					if (item == Environment.NewLine)
-					{
-						//remove extra space letter on each line
-						lines.Add(builder.ToString().Trim());
-						builder.Clear();
-					}
-
-					builder.Append(item);
-				}
-
-				if (builder.Length > 0)
-					lines.Add(builder.ToString().Trim());
-
-				return string.Join(Environment.NewLine, lines);
-			}
+			return block.ToScript(style);
 		}
 
 		/// <summary>
@@ -66,26 +44,37 @@ namespace Sys.Data.Text
 		/// <returns></returns>
 		public SqlBuilder Append(string text)
 		{
-			script.Add(text);
+			block.Append(text);
 			return this;
 		}
 
 		public SqlBuilder AppendLine()
 		{
-			script.Add(Environment.NewLine);
+			block.AppendLine();
 			return this;
 		}
 
 		public SqlBuilder Append(SqlBuilder builder)
 		{
-			AppendLine();
-			Append(builder.Script);
+			block.Append(builder);
+			return this;
+		}
+
+		public SqlBuilder Append(Expression expr)
+		{
+			block.Append(expr);
 			return this;
 		}
 
 		private SqlBuilder AppendSpace(string text)
 		{
-			script.Add(text + " ");
+			block.AppendSpace(text);
+			return this;
+		}
+
+		private SqlBuilder AppendSpace()
+		{
+			block.AppendSpace();
 			return this;
 		}
 
@@ -128,6 +117,22 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public SqlBuilder LIMIT(int n)
+		{
+			if (n > 0)
+				return AppendSpace($"LIMIT {n}");
+
+			return this;
+		}
+
+		public SqlBuilder OFFSET(int n)
+		{
+			if (n > 0)
+				return AppendSpace($"OFFSET {n}");
+
+			return this;
+		}
+
 		/// <summary>
 		/// Any columns
 		/// </summary>
@@ -153,7 +158,7 @@ namespace Sys.Data.Text
 			if (columns.Count() == 0)
 				return COLUMNS("*");
 			else
-				return COLUMNS(JoinColumns(columns));
+				return Append(new Expression(columns)).AppendSpace();
 		}
 
 		public SqlBuilder COLUMNS(IEnumerable<string> columns)
@@ -176,7 +181,7 @@ namespace Sys.Data.Text
 			return WithTableName("UPDATE", tableName, alias);
 		}
 
-		public SqlBuilder SET(IEnumerable<Expression> assignments) => AppendSpace("SET").AppendSpace(string.Join<Expression>(", ", assignments));
+		public SqlBuilder SET(IEnumerable<Expression> assignments) => AppendSpace("SET").Append(new Expression(assignments)).Append(" ");
 		public SqlBuilder SET(params Expression[] assignments) => SET((IEnumerable<Expression>)assignments);
 
 		public SqlBuilder INSERT_INTO(ITableName tableName) => INSERT_INTO(tableName.FullName);
@@ -192,7 +197,7 @@ namespace Sys.Data.Text
 			WithTableName("INSERT INTO", tableName, null);
 
 			if (columns.Count() > 0)
-				AppendSpace($"({JoinColumns(columns)})");
+				Append("(").Append(new Expression(columns)).AppendSpace(")");
 
 			return this;
 		}
@@ -210,7 +215,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder VALUES(params Expression[] values)
 		{
-			return AppendSpace($"VALUES ({string.Join<Expression>(", ", values)})");
+			return Append("VALUES (").Append(new Expression(values)).Append(")");
 		}
 
 		public SqlBuilder VALUES(params object[] values)
@@ -240,7 +245,7 @@ namespace Sys.Data.Text
 			if (expr is null)
 				return this;
 
-			return WHERE(expr.Script);
+			return AppendSpace("WHERE").Append(expr).AppendSpace();
 		}
 
 		public SqlBuilder WHERE(ILocator locator)
@@ -281,7 +286,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder ON(Expression expr)
 		{
-			AppendSpace($"ON {expr}");
+			AppendSpace("ON").Append(expr).AppendSpace();
 			return this;
 		}
 
@@ -295,7 +300,7 @@ namespace Sys.Data.Text
 			if (columns == null || columns.Length == 0)
 				return this;
 
-			return AppendSpace($"GROUP BY {JoinColumns(columns)}");
+			return AppendSpace("GROUP BY").Append(new Expression(columns)).AppendSpace();
 		}
 
 		public SqlBuilder GROUP_BY(params string[] columns)
@@ -308,7 +313,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder HAVING(Expression condition)
 		{
-			return AppendSpace($"HAVING {condition}");
+			return AppendSpace($"HAVING").Append(condition).AppendSpace();
 		}
 
 		#endregion
@@ -320,7 +325,7 @@ namespace Sys.Data.Text
 			if (columns == null || columns.Length == 0)
 				return this;
 
-			return AppendSpace($"ORDER BY {JoinColumns(columns)}");
+			return AppendSpace("ORDER BY").Append(new Expression(columns)).AppendSpace(); 
 		}
 
 		public SqlBuilder ORDER_BY(params string[] columns)
@@ -342,23 +347,19 @@ namespace Sys.Data.Text
 		public SqlBuilder CREATE() => AppendSpace("CREATE");
 		public SqlBuilder DROP() => AppendSpace("DROP");
 
-		private static string JoinColumns(IEnumerable<Expression> columns)
-		{
-			return string.Join(", ", columns.Select(x => x.ToString()));
-		}
-
 		private static string JoinColumns(IEnumerable<string> columns)
 		{
 			return string.Join(", ", columns.Select(x => new ColumnName(x)));
 		}
 
-
-		public static explicit operator string(SqlBuilder sql)
+		public string ToString(DbAgentStyle style)
 		{
-			return sql.Script;
+			return ToScript(style);
 		}
 
-
-		public override string ToString() => Script;
+		public override string ToString()
+		{
+			return ToScript(DbAgentOption.DefaultStyle);
+		}
 	}
 }

@@ -52,16 +52,16 @@ namespace Sys.Data.Entity
 
         public void Clear() => clauses.Clear();
 
-        public string GetNonQuery()
+        public string[] GetNonQuery()
         {
             var L = clauses.Where(x => x.NonQuery).Select(x => x.Statement);
-            return string.Join(Environment.NewLine, L);
+            return L.ToArray();
         }
 
-        public string GetQuery()
+        public string[] GetQuery()
         {
             var L = clauses.Where(x => !x.NonQuery).Select(x => x.Statement);
-            return string.Join(Environment.NewLine, L);
+            return L.ToArray();
         }
 
         public Type[] GetQueryTypes()

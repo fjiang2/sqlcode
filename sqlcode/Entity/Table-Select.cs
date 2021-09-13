@@ -12,7 +12,7 @@ namespace Sys.Data.Entity
 
         public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new QueryTranslator();
+            var translator = new QueryTranslator(Context.Style);
             string _where = translator.Translate(where);
             return Select(_where);
         }
@@ -25,9 +25,32 @@ namespace Sys.Data.Entity
             return ToList(dt);
         }
 
+        /// <summary>
+        /// Read single entity by primary key
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        public TEntity Select(TEntity where)
+        {
+            SqlGenerator gen = this.Generator;
+            Type type = typeof(TEntity);
+
+            foreach (string key in schema.PrimaryKeys)
+            {
+                object obj = type.GetProperty(key)?.GetValue(where);
+                gen.Add(key, obj);
+            }
+
+            string SQL = gen.SelectRows();
+            gen.Clear();
+
+            var dt = Context.FillDataTable(SQL);
+            return ToList(dt).FirstOrDefault();
+        }
+
         public void SelectOnSubmit(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new QueryTranslator();
+            var translator = new QueryTranslator(Context.Style);
             string _where = translator.Translate(where);
             SelectOnSubmit(_where);
         }

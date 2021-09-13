@@ -171,7 +171,7 @@ namespace Sys.Data.Text
 
         public static Expression operator ==(Expression expr1, Expression expr2)
         {
-            if (expr2 is null || expr2.ToString() == "NULL")
+            if (expr2 is null || expr2.IsNULL())
             {
                 return new Expression(expr1).Append(" IS NULL");
             }
@@ -182,7 +182,7 @@ namespace Sys.Data.Text
 
         public static Expression operator !=(Expression expr1, Expression expr2)
         {
-            if (expr2 is null || expr2.ToString() == "NULL")
+            if (expr2 is null || expr2.IsNULL())
             {
                 return new Expression(expr1).Append(" IS NOT NULL");
             }

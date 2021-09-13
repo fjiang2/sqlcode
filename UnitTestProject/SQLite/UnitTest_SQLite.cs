@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
-using System.Data.SqlClient;
+using System.IO;
 
-using UnitTestProject.Northwind.dc2;
-using Sys;
+using UnitTestProject.Northwind.dc1;
+using UnitTestProject.SQLite;
 using Sys.Data.Entity;
 using Sys.Data;
 
@@ -17,40 +17,34 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTest_EntityClass2
+	public class UnitTest_SQLite
 	{
-		private readonly string connectionString = Setting.ConnectionString;
-		private Query Query;
+		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
+		private string connectionString;
+		private readonly Query Query;
 
-		public UnitTest_EntityClass2()
+		public UnitTest_SQLite()
 		{
-			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query((query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
+			string fileName = Path.Combine(PATH_PROJECT, "db\\Northwind.db");
+			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
+
+			DataContext.EntityClassType = EntityClassType.ExtensionClass;
+			Query = new Query(new SQLiteAgent(fileName));
 		}
 
+		//[TestMethod]
+		public void InsertAllRows()
+		{
+			string[] lines = File.ReadAllLines(Path.Combine(PATH_PROJECT, "db\\sqlite-northwind-insert.sql"));
+			foreach (string line in lines)
+			{
+				if (line == "GO")
+					continue;
 
+				Query.NewDbCmd(new SqlUnit(line)).ExecuteNonQuery();
+			}
+		}
 
-		#region Additional test attributes
-		//
-		// You can use the following additional attributes as you write your tests:
-		//
-		// Use ClassInitialize to run code before running the first test in the class
-		// [ClassInitialize()]
-		// public static void MyClassInitialize(TestContext testContext) { }
-		//
-		// Use ClassCleanup to run code after all tests in a class have run
-		// [ClassCleanup()]
-		// public static void MyClassCleanup() { }
-		//
-		// Use TestInitialize to run code before running each test 
-		// [TestInitialize()]
-		// public void MyTestInitialize() { }
-		//
-		// Use TestCleanup to run code after each test has run
-		// [TestCleanup()]
-		// public void MyTestCleanup() { }
-		//
-		#endregion
 
 		[TestMethod]
 		public void TestMethodSelectIQueryable()
@@ -93,7 +87,7 @@ namespace UnitTestProject
 
 				table.InsertOnSubmit(product);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("INSERT INTO [Products]([ProductName],[SupplierID],[CategoryID],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]) VALUES(N'iPhone',0,0,0,0,0,0,0)"));
+				Debug.Assert(SQL.StartsWith("INSERT INTO [Products]([ProductName],[SupplierID],[CategoryID],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]) VALUES('iPhone',0,0,0,0,0,0,0)"));
 			}
 		}
 
@@ -111,7 +105,7 @@ namespace UnitTestProject
 
 				table.PartialUpdateOnSubmit(product);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductName] = N'iPhone' WHERE [ProductID] = 100"));
+				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductName] = 'iPhone' WHERE [ProductID] = 100"));
 			}
 
 			using (var db = new DbContext(connectionString))
@@ -124,7 +118,7 @@ namespace UnitTestProject
 				};
 				table.PartialUpdateOnSubmit(prod, row => new { row.ProductID, row.ProductName }, row => row.ProductID == 1);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200,[ProductName] = N'iPhone' WHERE (ProductID = 1)"));
+				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200, [ProductName] = 'iPhone' WHERE (ProductID = 1)"));
 			}
 		}
 
@@ -142,7 +136,7 @@ namespace UnitTestProject
 
 				table.InsertOrUpdateOnSubmit(product);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("IF EXISTS(SELECT * FROM [Products] WHERE [ProductID] = 100) UPDATE [Products] SET [ProductName] = N'iPhone',[SupplierID] = 0,[CategoryID] = 0,[QuantityPerUnit] = NULL,[UnitPrice] = 0,[UnitsInStock] = 0,[UnitsOnOrder] = 0,[ReorderLevel] = 0,[Discontinued] = 0 WHERE [ProductID] = 100 ELSE INSERT INTO [Products]([ProductName],[SupplierID],[CategoryID],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]) VALUES(N'iPhone',0,0,0,0,0,0,0)"));
+				Debug.Assert(SQL.StartsWith("IF EXISTS(SELECT * FROM [Products] WHERE [ProductID] = 100) UPDATE [Products] SET [ProductName] = 'iPhone',[SupplierID] = 0,[CategoryID] = 0,[QuantityPerUnit] = NULL,[UnitPrice] = 0,[UnitsInStock] = 0,[UnitsOnOrder] = 0,[ReorderLevel] = 0,[Discontinued] = 0 WHERE [ProductID] = 100 ELSE INSERT INTO [Products]([ProductName],[SupplierID],[CategoryID],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]) VALUES('iPhone',0,0,0,0,0,0,0)"));
 			}
 		}
 
@@ -446,21 +440,21 @@ namespace UnitTestProject
 				new CustomerDemographics { CustomerTypeID = "EE",  CustomerDesc = "Electrical Engineering" },
 			};
 
-			Query.InsertOrUpdate(demographics);
+			Query.Upsert(demographics);
 
-			Query.InsertOrUpdate(new CustomerCustomerDemo[]
-				{
-					new CustomerCustomerDemo
-					 {
-						 CustomerID = "ALFKI",
-						 CustomerTypeID = "IT",
-					 }
-				});
+			Query.Upsert(new CustomerCustomerDemo[]
+			{
+				new CustomerCustomerDemo
+				 {
+					 CustomerID = "ALFKI",
+					 CustomerTypeID = "IT",
+				 }
+			});
 
-			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT").First().CustomerDesc;
+			var desc = Query.Select<CustomerDemographics>(row => row.CustomerTypeID == "IT        ").First().CustomerDesc;
 			Debug.Assert(desc == "Computer Science");
 
-			var customer = Query.Select<CustomerCustomerDemo>(row => row.CustomerTypeID == "IT").First();
+			var customer = Query.Select<CustomerCustomerDemo>(row => row.CustomerTypeID == "IT        ").First();
 			Debug.Assert(customer.CustomerID == "ALFKI");
 		}
 
@@ -482,14 +476,14 @@ namespace UnitTestProject
 			using (var db = new DbContext(connectionString))
 			{
 				db.RowChanged += (sender, args) =>
-				 {
-					 var evt = args.Events.First();
-					 Debug.Assert(evt.TypeName == "CustomerDemographics");
-					 Debug.Assert(evt.Operation == RowOperation.InsertOrUpdate);
-				 };
+				{
+					var evt = args.Events.First();
+					Debug.Assert(evt.TypeName == "CustomerDemographics");
+					Debug.Assert(evt.Operation == RowOperation.Update);
+				};
 
 				var table = db.GetTable<CustomerDemographics>();
-				table.InsertOrUpdateOnSubmit(new CustomerDemographics { CustomerTypeID = "IT", CustomerDesc = "Computer Science" });
+				table.UpdateOnSubmit(new CustomerDemographics { CustomerTypeID = "IT", CustomerDesc = "Computer Science" });
 
 				db.SubmitChanges();
 			}
@@ -541,6 +535,8 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
+			Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
+
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
@@ -564,4 +560,3 @@ namespace UnitTestProject
 		}
 	}
 }
-

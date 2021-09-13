@@ -7,7 +7,7 @@ using System.Linq;
 using System.Data.SqlClient;
 
 using UnitTestProject.Northwind.dc1;
-using Sys;
+using UnitTestProject.SqlServer;
 using Sys.Data.Entity;
 using Sys.Data;
 
@@ -20,12 +20,12 @@ namespace UnitTestProject
 	public class UnitTest_EntityClass1
 	{
 		private readonly string connectionString = Setting.ConnectionString;
-		private Query Query;
+		private readonly Query Query;
 
 		public UnitTest_EntityClass1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query((query, args) => new SqlCmd(new SqlConnectionStringBuilder(connectionString), query, args));
+			Query = new Query(new SqlServerAgent(connectionString));
 		}
 
 
@@ -124,7 +124,7 @@ namespace UnitTestProject
 				};
 				table.PartialUpdateOnSubmit(prod, row => new { row.ProductID, row.ProductName }, row => row.ProductID == 1);
 				string SQL = db.GetNonQueryScript();
-				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200,[ProductName] = N'iPhone' WHERE (ProductID = 1)"));
+				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200, [ProductName] = N'iPhone' WHERE (ProductID = 1)"));
 			}
 		}
 

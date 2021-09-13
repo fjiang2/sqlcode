@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -8,13 +9,16 @@ namespace Sys.Data
     /// <summary>
     /// Represent a collection of column/value pairs
     /// </summary>
-    public class SqlColumnValuePairCollection
+    public class SqlColumnValuePairCollection : IEnumerable<SqlColumnValuePair>
     {
         protected List<SqlColumnValuePair> columns = new List<SqlColumnValuePair>();
 
         public SqlColumnValuePairCollection()
         {
         }
+
+        public IEnumerator<SqlColumnValuePair> GetEnumerator() => columns.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()=> ((IEnumerable)columns).GetEnumerator();
 
         /// <summary>
         /// Clear all column/value pairs
@@ -28,37 +32,58 @@ namespace Sys.Data
         /// Add all properties of data contract class
         /// </summary>
         /// <param name="data"></param>
-        public void AddRange(object data)
+        public SqlColumnValuePairCollection AddRange(object data)
         {
             foreach (var propertyInfo in data.GetType().GetProperties())
             {
                 object value = propertyInfo.GetValue(data) ?? DBNull.Value;
                 Add(propertyInfo.Name, value);
             }
+
+            return this;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="map"></param>
-        public void AddRange(IDictionary<string, object> map)
+        public SqlColumnValuePairCollection AddRange(IDictionary<string, object> map)
         {
             foreach (var kvp in map)
             {
                 Add(kvp.Key, kvp.Value);
             }
+
+            return this;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="row"></param>
-        public void AddRange(DataRow row)
+        public SqlColumnValuePairCollection AddRange(DataRow row)
         {
             foreach (DataColumn column in row.Table.Columns)
             {
                 Add(column.ColumnName, row[column]);
             }
+            
+            return this;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="version"></param>
+        public SqlColumnValuePairCollection AddRange(DataRow row, DataRowVersion version)
+        {
+            foreach (DataColumn column in row.Table.Columns)
+            {
+                Add(column.ColumnName, row[column, version]);
+            }
+
+            return this;
         }
 
         /// <summary>
@@ -67,13 +92,15 @@ namespace Sys.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="columnPrefix"></param>
         /// <param name="values"></param>
-        public void AddRange<T>(string columnPrefix, T[] values)
+        public SqlColumnValuePairCollection AddRange<T>(string columnPrefix, T[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
                 string column = $"{columnPrefix}{i + 1}";
                 Add(column, values[i]);
             }
+
+            return this;
         }
 
         /// <summary>
@@ -81,13 +108,15 @@ namespace Sys.Data
         /// </summary>
         /// <param name="columnPrefix"></param>
         /// <param name="values"></param>
-        public void AddRange(string columnPrefix, object[] values)
+        public SqlColumnValuePairCollection AddRange(string columnPrefix, object[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
                 string column = $"{columnPrefix}{i + 1}";
                 Add(column, values[i]);
             }
+
+            return this;
         }
 
 
@@ -96,12 +125,14 @@ namespace Sys.Data
         /// </summary>
         /// <param name="columns"></param>
         /// <param name="values"></param>
-        public void AddRange(string[] columns, object[] values)
+        public SqlColumnValuePairCollection AddRange(string[] columns, object[] values)
         {
             for (int i = 0; i < values.Length; i++)
             {
                 Add(columns[i], values[i]);
             }
+
+            return this;
         }
 
         public virtual SqlColumnValuePair Add(string name, object value)
@@ -176,6 +207,7 @@ namespace Sys.Data
         {
             return columns.ToString();
         }
-    }
+
+	}
 
 }

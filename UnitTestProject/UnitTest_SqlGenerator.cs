@@ -13,7 +13,10 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlGenerator
 	{
-		private SqlGenerator gen;
+		private static readonly DbAgentOption SqlServer = new DbAgentOption { Style = DbAgentStyle.SqlServer };
+		private static readonly DbAgentOption SqlLite = new DbAgentOption { Style = DbAgentStyle.SQLite };
+
+		private readonly SqlGenerator gen;
 
 		public const string _CATEGORYID = "CategoryID";
 		public const string _CATEGORYNAME = "CategoryName";
@@ -32,6 +35,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_SELECT()
 		{
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 1);
 
@@ -50,6 +54,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_INSERT()
 		{
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -76,8 +81,64 @@ namespace UnitTestProject
 		}
 
 		[TestMethod]
+		public void Test_SQLite_INSERT()
+		{
+			gen.Option = SqlLite;
+			gen.Clear();
+			gen.Add(_CATEGORYID, 12);
+			gen.Add(_CATEGORYNAME, "Drink");
+			gen.Add(_DESCRIPTION, "Water");
+			gen.Add(_PICTURE, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+
+			string SQL = gen.Insert();
+			Debug.Assert(SQL == "INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES('Drink','Water',x'0102030405060708')");
+
+			SQL = gen.InsertWithIdentityParameter();
+			Debug.Assert(SQL == "INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES('Drink','Water',x'0102030405060708'); SET @CategoryID=@@IDENTITY");
+
+			SQL = gen.InsertOrUpdate();
+			Debug.Assert(SQL == "IF EXISTS(SELECT * FROM [Categories] WHERE [CategoryID] = 12) UPDATE [Categories] SET [CategoryName] = 'Drink',[Description] = 'Water',[Picture] = x'0102030405060708' WHERE [CategoryID] = 12 ELSE INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES('Drink','Water',x'0102030405060708')");
+
+			SQL = gen.InsertIfNotExists();
+			Debug.Assert(SQL == "IF NOT EXISTS(SELECT * FROM [Categories] WHERE [CategoryID] = 12) INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES('Drink','Water',x'0102030405060708')");
+
+			SQL = gen.InsertOrUpdate(exists: true);
+			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = 'Drink',[Description] = 'Water',[Picture] = x'0102030405060708' WHERE [CategoryID] = 12");
+
+			SQL = gen.InsertOrUpdate(exists: false);
+			Debug.Assert(SQL == "INSERT INTO [Categories]([CategoryName],[Description],[Picture]) VALUES('Drink','Water',x'0102030405060708')");
+		}
+
+		[TestMethod]
+		public void Test_SQLite_UPDATE()
+		{
+			gen.Option = SqlLite;
+			gen.Clear();
+			gen.Add(_CATEGORYID, 12);
+			gen.Add(_CATEGORYNAME, "Drink");
+			gen.Add(_DESCRIPTION, "Water");
+			gen.Add(_PICTURE, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });
+
+			string SQL = gen.Update();
+			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = 'Drink',[Description] = 'Water',[Picture] = x'0102030405060708' WHERE [CategoryID] = 12");
+
+			SQL = gen.UpdateIfExists();
+			Debug.Assert(SQL == "IF EXISTS(SELECT * FROM [Categories] WHERE [CategoryID] = 12) UPDATE [Categories] SET [CategoryName] = 'Drink',[Description] = 'Water',[Picture] = x'0102030405060708' WHERE [CategoryID] = 12");
+
+			gen.Remove(_PICTURE);
+			SQL = gen.Update();
+			Debug.Assert(SQL == "UPDATE [Categories] SET [CategoryName] = 'Drink',[Description] = 'Water' WHERE [CategoryID] = 12");
+
+			gen.Clear();
+			gen.Add(_CATEGORYID, 12);
+			SQL = gen.Update();
+			Debug.Assert(SQL == "");
+		}
+
+		[TestMethod]
 		public void Test_UPDATE()
 		{
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 			gen.Add(_CATEGORYNAME, "Drink");
@@ -100,9 +161,11 @@ namespace UnitTestProject
 			Debug.Assert(SQL == "");
 		}
 
+
 		[TestMethod]
 		public void Test_DELETE()
 		{
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.Add(_CATEGORYID, 12);
 
@@ -116,6 +179,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_AddRange()
 		{
+			gen.Option = SqlServer;
 			gen.Clear();
 			gen.AddRange(new
 			{
