@@ -48,7 +48,7 @@ namespace Sys.Data.Entity
 
         public void DeleteOnSubmit(Expression<Func<TEntity, bool>> where)
         {
-            var translator = new QueryTranslator(Context.Option.Style);
+            var translator = new QueryTranslator(Context.Style);
             string _where = translator.Translate(where);
             DeleteOnSubmit(_where);
         }
@@ -185,7 +185,7 @@ namespace Sys.Data.Entity
             if (entity == null)
                 throw new ArgumentNullException($"argument {nameof(entity)} cannot be null");
 
-            var style = Context.Option.Style;
+            var style = Context.Style;
             List<string> names = new PropertyTranslator().Translate(modifiedProperties);
             string _where = new QueryTranslator(style).Translate(where);
 

@@ -25,13 +25,11 @@ namespace Sys.Data
 
 		public abstract DbAgentOption Option { get; }
 
-		public abstract DbCmdFunction Function { get; }
+		public abstract IDbCmd Function(DbCmdParameter parameter);
 
 		public override string ToString()
 		{
 			return Option.ToString();
 		}
-
-		
 	}
 }

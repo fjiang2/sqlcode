@@ -10,7 +10,7 @@ namespace Sys.Data.Entity
 	public partial class DataContext : IDisposable
 	{
 		private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
-		private readonly DbCmdFunction function;
+		private readonly IDbAgent agent;
 
 		internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
 		internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
@@ -31,12 +31,10 @@ namespace Sys.Data.Entity
 		/// DataContext using extension class (dc1) or single class (dc2)
 		/// </summary>
 		public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
-		public DbAgentOption Option { get; }
 
 		public DataContext(IDbAgent agent)
 		{
-			this.function = agent.Function;
-			this.Option = agent.Option;
+			this.agent = agent;
 			this.Description = "SQL command handler";
 		}
 
@@ -45,6 +43,9 @@ namespace Sys.Data.Entity
 			CodeBlock.Clear();
 			tables.Clear();
 		}
+
+		public DbAgentOption Option => agent.Option;
+		public DbAgentStyle Style => agent.Option.Style;
 
 		protected void OnRowChanging(IEnumerable<RowEvent> evt)
 		{
@@ -95,7 +96,7 @@ namespace Sys.Data.Entity
 		private DataSet FillDataSet(string[] query)
 		{
 			var parameter = new DbCmdParameter(query, args: null);
-			var cmd = function(parameter);
+			var cmd = agent.Function(parameter);
 			var ds = new DataSet();
 			cmd.FillDataSet(ds);
 			return ds;
@@ -122,7 +123,7 @@ namespace Sys.Data.Entity
 			OnRowChanging(RowEvents);
 
 			var parameter = new DbCmdParameter(CodeBlock.GetNonQuery(), args: null);
-			var cmd = function(parameter);
+			var cmd = agent.Function(parameter);
 			int count = cmd.ExecuteNonQuery();
 			CodeBlock.Clear();
 

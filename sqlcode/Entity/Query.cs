@@ -142,7 +142,7 @@ namespace Sys.Data.Entity
 				var table = db.GetTable<TEntity>();
 
 				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
-				string _where = new QueryTranslator(db.Option.Style).Translate(where);
+				string _where = new QueryTranslator(db.Style).Translate(where);
 				string SQL = table.SelectFromWhere(_where, _columns);
 
 				var dt = db.FillDataTable(SQL);
