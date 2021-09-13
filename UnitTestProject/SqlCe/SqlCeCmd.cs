@@ -11,14 +11,21 @@ namespace Sys.Data
 	{
 		private readonly SqlCeCommand command;
 		private readonly SqlCeConnection connection;
+
+		private readonly string[] statements;
 		private readonly IParameterFactory parameters;
+
+		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, string sql, object args)
+			: this(connectionString, new SqlUnit(sql, args))
+		{
+		}
 
 		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
 		{
-			string sql = unit.Statement;
+			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
-			this.command = new SqlCeCommand(sql);
+			this.command = new SqlCeCommand();
 			this.connection = new SqlCeConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
@@ -87,8 +94,16 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
-				return adapter.Fill(dataSet);
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
+					DataTable dt = new DataTable();
+					count += adapter.Fill(dt);
+					dataSet.Tables.Add(dt);
+				}
+				return count;
 			}
 			finally
 			{
@@ -115,8 +130,15 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				int count = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					count += command.ExecuteNonQuery();
+					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				}
+
 				return count;
 			}
 			finally

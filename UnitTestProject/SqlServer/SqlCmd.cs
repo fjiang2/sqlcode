@@ -13,17 +13,13 @@ namespace Sys.Data
 		private readonly SqlConnection connection;
 		private readonly IParameterFactory parameters;
 
-
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
+		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+			: this(connectionString, unit.Statement, unit.Arguments)
 		{
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
 		{
-			string sql = unit.Statement;
-			object args = unit.Arguments;
-
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 
 			this.command = new SqlCommand(sql);

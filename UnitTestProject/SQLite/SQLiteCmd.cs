@@ -15,6 +15,11 @@ namespace Sys.Data
 		private readonly string[] statements;
 		private readonly IParameterFactory parameters;
 
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+			: this(connectionString, new SqlUnit(sql, args))
+		{
+		}
+
 		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
