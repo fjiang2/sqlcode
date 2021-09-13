@@ -70,19 +70,19 @@ namespace Sys.Data.Entity
 
 		public string GetNonQueryScript()
 		{
-			return CodeBlock.GetNonQuery();
+			return string.Join(Environment.NewLine, CodeBlock.GetNonQuery());
 		}
 
 		public string GetQueryScript()
 		{
-			return CodeBlock.GetQuery();
+			return string.Join(Environment.NewLine, CodeBlock.GetQuery());
 		}
 
 
 
 		internal DataTable FillDataTable(string query)
 		{
-			DataSet ds = FillDataSet(query);
+			DataSet ds = FillDataSet(new string[] { query });
 			if (ds == null)
 				return null;
 
@@ -92,9 +92,10 @@ namespace Sys.Data.Entity
 			return null;
 		}
 
-		private DataSet FillDataSet(string query)
+		private DataSet FillDataSet(string[] query)
 		{
-			var cmd = function(query, args: null);
+			var parameter = new DbCmdParameter(query, args: null);
+			var cmd = function(parameter);
 			var ds = new DataSet();
 			cmd.FillDataSet(ds);
 			return ds;
@@ -105,7 +106,7 @@ namespace Sys.Data.Entity
 			if (CodeBlock.Length == 0)
 				return null;
 
-			string query = CodeBlock.GetQuery();
+			string[] query = CodeBlock.GetQuery();
 			Type[] types = CodeBlock.GetQueryTypes();
 			var ds = FillDataSet(query);
 			CodeBlock.Clear();
@@ -120,7 +121,8 @@ namespace Sys.Data.Entity
 
 			OnRowChanging(RowEvents);
 
-			var cmd = function(CodeBlock.GetNonQuery(), args: null);
+			var parameter = new DbCmdParameter(CodeBlock.GetNonQuery(), args: null);
+			var cmd = function(parameter);
 			int count = cmd.ExecuteNonQuery();
 			CodeBlock.Clear();
 

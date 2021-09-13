@@ -12,9 +12,16 @@ namespace Sys.Data
 		private SqlCommand command;
 		private SqlConnection connection;
 		private IParameterFactory parameters;
-
 		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
+			: this(connectionString, new DbCmdParameter(new string[] { sql }, args))
 		{
+		}
+
+		public SqlCmd(SqlConnectionStringBuilder connectionString, DbCmdParameter parameter)
+		{
+			string sql = parameter.Statement;
+			object args = parameter.Args;
+
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 
 			this.command = new SqlCommand(sql);
@@ -37,8 +44,8 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SqlParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				command.Parameters.Add(parameter);
+				SqlParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(_parameter);
 			}
 		}
 

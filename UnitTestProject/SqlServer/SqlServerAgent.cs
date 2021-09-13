@@ -11,8 +11,8 @@ namespace Sys.Data
 			this.ConnectionString = connectionStirng;
 		}
 
-		public IDbCmd Command(string sql, object args)
-			=> new SqlCmd(new SqlConnectionStringBuilder(ConnectionString), sql, args);
+		public IDbCmd Command(DbCmdParameter parameter)
+			=> new SqlCmd(new SqlConnectionStringBuilder(ConnectionString), parameter);
 
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
 		public DbCmdFunction Function => Command;

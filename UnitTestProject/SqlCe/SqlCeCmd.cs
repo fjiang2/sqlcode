@@ -13,8 +13,11 @@ namespace Sys.Data
 		private SqlCeConnection connection;
 		private IParameterFactory parameters;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, string sql, object args)
+		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, DbCmdParameter parameter)
 		{
+			string sql = parameter.Statement;
+			object args = parameter.Args;
+
 			this.command = new SqlCeCommand(sql);
 			this.connection = new SqlCeConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
@@ -34,8 +37,8 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SqlCeParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				command.Parameters.Add(parameter);
+				SqlCeParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(_parameter);
 			}
 		}
 

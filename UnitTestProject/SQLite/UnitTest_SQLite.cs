@@ -27,7 +27,7 @@ namespace UnitTestProject
 		{
 			string fileName = Path.Combine(PATH_PROJECT, "db\\Northwind.db");
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
-			
+
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
 			Query = new Query(new SQLiteAgent(fileName));
 		}
@@ -41,7 +41,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.NewDbCmd(line, null).ExecuteNonQuery();
+				Query.NewDbCmd(new DbCmdParameter(new string[] { line }, null)).ExecuteNonQuery();
 			}
 		}
 

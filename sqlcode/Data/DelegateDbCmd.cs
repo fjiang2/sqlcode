@@ -10,11 +10,11 @@ namespace Sys.Data
 		private readonly IDbAgent agent;
 		private readonly IDbCmd command;
 
-		public DelegateDbCmd(IDbAgent agent, string sql, object args)
+		public DelegateDbCmd(IDbAgent agent, DbCmdParameter parameter)
 		{
 			this.Description = "delegate DbCmd";
 			this.agent = agent;
-			this.command = agent.Function(sql, args);
+			this.command = agent.Function(parameter);
 		}
 
 		public IDbAgent Provider => agent;

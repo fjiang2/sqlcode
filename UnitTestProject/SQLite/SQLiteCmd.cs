@@ -13,8 +13,11 @@ namespace Sys.Data
 		private SQLiteConnection connection;
 		private IParameterFactory parameters;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, DbCmdParameter parameter)
 		{
+			string sql = parameter.Statement;
+			object args = parameter.Args;
+
 			this.command = new SQLiteCommand(sql);
 			this.connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
@@ -34,8 +37,8 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SQLiteParameter parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
-				command.Parameters.Add(parameter);
+				SQLiteParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				command.Parameters.Add(_parameter);
 			}
 		}
 
