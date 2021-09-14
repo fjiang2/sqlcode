@@ -7,10 +7,8 @@ namespace Sys.Data
 {
 	public abstract class ParameterFactory : IParameterFactory
 	{
-		protected object parameters;
-		public ParameterFactory(object parameters)
+		public ParameterFactory()
 		{
-			this.parameters = parameters;
 		}
 
 		protected string GetParameterName(IDataParameter parameter)
@@ -27,7 +25,33 @@ namespace Sys.Data
 
 		public abstract void UpdateResult(IEnumerable<IDataParameter> result);
 
-		public object Parameters => this.parameters;
+		
+		public static string Serialize(IEnumerable<IDataParameter> parameters)
+		{
+			string xml = ParameterSerialization.ToXElement(parameters).ToString();
+			var bytes = System.Text.Encoding.UTF8.GetBytes(xml);
+			return Convert.ToBase64String(bytes);
+		}
+
+		public static IEnumerable<IDataParameter> Deserialize(string text)
+		{
+			var bytes = Convert.FromBase64String(text);
+			string xml = System.Text.Encoding.UTF8.GetString(bytes);
+
+			XElement element = XElement.Parse(xml);
+			return ParameterSerialization.ToParameters(element);
+		}
+
+		public static XElement ToXElement(IEnumerable<IDataParameter> parameters)
+		{
+			return ParameterSerialization.ToXElement(parameters);
+		}
+
+		public static IEnumerable<IDataParameter> ToParameters(XElement parameters)
+		{
+			return ParameterSerialization.ToParameters(parameters);
+		}
+
 
 		/// <summary>
 		/// Create parameters for SQL statements
@@ -42,11 +66,8 @@ namespace Sys.Data
 			if (parameters is IDictionary<string, object> dict)
 				return new DictionaryParameters(dict);
 
-			if (parameters is XElement element)
-				return new XmlParameters(element);
-
-			if (parameters is string xml)
-				return new StringParameters(xml);
+			if (parameters is string)
+				throw new NotImplementedException();
 
 			return new ObjectParameters(parameters);
 		}

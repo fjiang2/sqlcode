@@ -10,7 +10,6 @@ namespace Sys.Data
 	{
 		private object obj;
 		public ObjectParameters(object parameters)
-			: base(parameters)
 		{
 			this.obj = parameters;
 		}

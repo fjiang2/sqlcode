@@ -9,7 +9,6 @@ namespace Sys.Data
 		private IEnumerable<IDataParameter> list;
 
 		public ListParameters(IEnumerable<IDataParameter> parameters)
-			: base(parameters)
 		{
 			this.list = parameters;
 		}

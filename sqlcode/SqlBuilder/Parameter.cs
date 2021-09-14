@@ -86,31 +86,5 @@ namespace Sys.Data.Text
 				return $"@{ParameterName} = {Value}";
 		}
 
-
-		public static XElement ToXElement(IEnumerable<IDataParameter> parameters)
-		{
-			return ParameterSerialization.ToXElement(parameters);
-		}
-
-		public static IEnumerable<IDataParameter> ToParameters(XElement parameters)
-		{
-			return ParameterSerialization.ToParameters(parameters);
-		}
-
-		public static string Serialize(IEnumerable<IDataParameter> parameters)
-		{
-			string xml = ToXElement(parameters).ToString();
-			var bytes = System.Text.Encoding.UTF8.GetBytes(xml);
-			return Convert.ToBase64String(bytes);
-		}
-
-		public static IEnumerable<IDataParameter> Deserialize(string text)
-		{
-			var bytes = Convert.FromBase64String(text);
-			string xml = System.Text.Encoding.UTF8.GetString(bytes);
-
-			XElement element = XElement.Parse(xml);
-			return ToParameters(element);
-		}
 	}
 }

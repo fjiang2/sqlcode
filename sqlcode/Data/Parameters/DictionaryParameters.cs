@@ -10,7 +10,6 @@ namespace Sys.Data
 		private IDictionary<string, object> dict;
 
 		public DictionaryParameters(IDictionary<string, object> parameters)
-			: base(parameters)
 		{
 			this.dict = parameters;
 		}
