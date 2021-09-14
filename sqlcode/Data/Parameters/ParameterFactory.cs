@@ -7,8 +7,10 @@ namespace Sys.Data
 {
 	public abstract class ParameterFactory : IParameterFactory
 	{
-		public ParameterFactory()
+		protected object parameters;
+		public ParameterFactory(object parameters)
 		{
+			this.parameters = parameters;
 		}
 
 		protected string GetParameterName(IDataParameter parameter)
@@ -25,6 +27,8 @@ namespace Sys.Data
 
 		public abstract void UpdateResult(IEnumerable<IDataParameter> result);
 
+		public object Parameters => this.parameters;
+
 		/// <summary>
 		/// Create parameters for SQL statements
 		/// </summary>
@@ -38,14 +42,11 @@ namespace Sys.Data
 			if (parameters is IDictionary<string, object> dict)
 				return new DictionaryParameters(dict);
 
-			if (parameters is  XElement element)
+			if (parameters is XElement element)
 				return new XmlParameters(element);
 
-			if (parameters is string)
-			{
-				//JSON
-				throw new RowNotInTableException();
-			}
+			if (parameters is string xml)
+				return new StringParameters(xml);
 
 			return new ObjectParameters(parameters);
 		}

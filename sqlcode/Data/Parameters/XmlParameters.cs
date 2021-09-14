@@ -16,16 +16,17 @@ namespace Sys.Data
 	/// </summary>
 	class XmlParameters : ParameterFactory
 	{
-		private XElement parameters;
+		private XElement xelement;
 
 		public XmlParameters(XElement parameters)
+			: base(parameters)
 		{
-			this.parameters = parameters;
+			this.xelement = parameters;
 		}
 
 		public override List<IDataParameter> CreateParameters()
 		{
-			return ParameterSerialization.ToParameters(parameters);
+			return ParameterSerialization.ToParameters(xelement);
 		}
 
 		public override void UpdateResult(IEnumerable<IDataParameter> result)
@@ -37,7 +38,7 @@ namespace Sys.Data
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;
 
-				XElement element = parameters.Elements().FirstOrDefault(x => (string)x.Attribute(ParameterSerialization._NAME) == parameterName);
+				XElement element = xelement.Elements().FirstOrDefault(x => (string)x.Attribute(ParameterSerialization._NAME) == parameterName);
 				if (element != null)
 				{
 					element.Attribute(ParameterSerialization._VALUE).SetValue(parameter.Value);

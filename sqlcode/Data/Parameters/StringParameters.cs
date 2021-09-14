@@ -1,20 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Data;
+using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	class ListParameters : ParameterFactory
+	class StringParameters : ParameterFactory
 	{
-		private IEnumerable<IDataParameter> list;
+		private string text;
+		private List<IDataParameter> list;
 
-		public ListParameters(IEnumerable<IDataParameter> parameters)
+		public StringParameters(string parameters)
 			: base(parameters)
 		{
-			this.list = parameters;
+			this.text = parameters;
 		}
 
-		public override List<IDataParameter> CreateParameters() => list.ToList();
+		public override List<IDataParameter> CreateParameters()
+		{
+			list = Parameter.Deserialize(text).ToList();
+			return list;
+		}
+
 
 		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
@@ -29,6 +37,8 @@ namespace Sys.Data
 				if (found != null)
 					found.Value = parameter.Value;
 			}
+
+			base.parameters = Parameter.Serialize(list);
 		}
 	}
 }

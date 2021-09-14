@@ -32,12 +32,6 @@ namespace Sys.Data
 			if (args == null)
 				return;
 
-			if (args is string)
-			{
-				//The parameters could be JSON
-				return;
-			}
-
 			this.parameters = ParameterFactory.Create(args);
 
 			List<IDataParameter> items = this.parameters.CreateParameters();

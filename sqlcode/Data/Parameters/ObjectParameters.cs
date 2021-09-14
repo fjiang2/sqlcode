@@ -8,19 +8,20 @@ namespace Sys.Data
 {
 	class ObjectParameters : ParameterFactory
 	{
-		private object parameters;
+		private object obj;
 		public ObjectParameters(object parameters)
+			: base(parameters)
 		{
-			this.parameters = parameters;
+			this.obj = parameters;
 		}
 
 		public override List<IDataParameter> CreateParameters()
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
 
-			foreach (var propertyInfo in parameters.GetType().GetProperties())
+			foreach (var propertyInfo in obj.GetType().GetProperties())
 			{
-				object value = propertyInfo.GetValue(parameters);
+				object value = propertyInfo.GetValue(obj);
 				var parameter = new Parameter(propertyInfo.Name, value)
 				{
 					Direction = ParameterDirection.Input,
@@ -35,7 +36,7 @@ namespace Sys.Data
 
 		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
-			var properties = parameters.GetType().GetProperties();
+			var properties = obj.GetType().GetProperties();
 			foreach (IDataParameter parameter in result)
 			{
 				string parameterName = GetParameterName(parameter);
@@ -46,7 +47,7 @@ namespace Sys.Data
 				var found = properties.FirstOrDefault(property => property.Name == parameterName);
 				if (found != null)
 				{
-					found.SetValue(parameters, parameter.Value);
+					found.SetValue(obj, parameter.Value);
 				}
 			}
 		}
