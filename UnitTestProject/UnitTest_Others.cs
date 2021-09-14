@@ -51,5 +51,53 @@ namespace UnitTestProject
 			string name = (string)city.Attribute("Value");
 			Debug.Assert(name.Equals("Austin"));
 		}
+
+		[TestMethod]
+		public void Test_XML_Parameter2()
+		{
+			var paramters = new List<Parameter>
+			{
+				new Parameter("Id", 20),
+				new Parameter("City", "Houston") { Direction = ParameterDirection.Output },
+			};
+			XElement args = Parameter.ToXElement(paramters);
+
+			var parameters = ParameterFactory.Create(args);
+			List<IDataParameter> items = parameters.CreateParameters();
+
+			Debug.Assert(items[0].ParameterName == "Id" && items[1].ParameterName == "City");
+			Debug.Assert(items[0].Value.Equals(20) && items[1].Value.Equals("Houston"));
+			Debug.Assert(items[0].Direction == ParameterDirection.Input && items[1].Direction == ParameterDirection.Output);
+
+			var result = new SqlParameter[]
+				{
+					new SqlParameter("Id", 30),
+					new SqlParameter("City", "Austin") {Direction = ParameterDirection.Output},
+				};
+
+			parameters.UpdateResult(result);
+
+			var L = Parameter.ToParameters(args).ToArray();
+			Debug.Assert(L[1].Value.Equals("Austin"));
+		}
+
+		[TestMethod]
+		public void Test_XML_Parameter_Serialization()
+		{
+			var paramters = new List<Parameter>
+			{
+				new Parameter("Id", 20),
+				new Parameter("City", "Houston") { Direction = ParameterDirection.Output },
+			};
+
+			string text = Parameter.Serialize(paramters);
+			IEnumerable<IDataParameter> parameters = Parameter.Deserialize(text);
+			var items = parameters.ToList();
+
+			Debug.Assert(items[0].ParameterName == "Id" && items[1].ParameterName == "City");
+			Debug.Assert(items[0].Value.Equals(20) && items[1].Value.Equals("Houston"));
+			Debug.Assert(items[0].Direction == ParameterDirection.Input && items[1].Direction == ParameterDirection.Output);
+
+		}
 	}
 }
