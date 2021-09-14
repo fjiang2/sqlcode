@@ -25,7 +25,7 @@ namespace Sys.Data
 
 		public abstract void UpdateResult(IEnumerable<IDataParameter> result);
 
-		
+
 		public static string Serialize(IEnumerable<IDataParameter> parameters)
 		{
 			string xml = ParameterSerialization.ToXElement(parameters).ToString();
@@ -42,16 +42,17 @@ namespace Sys.Data
 			return ParameterSerialization.ToParameters(element);
 		}
 
-		public static XElement ToXElement(IEnumerable<IDataParameter> parameters)
-		{
-			return ParameterSerialization.ToXElement(parameters);
-		}
+		public static XElement ToXml(IEnumerable<IDataParameter> parameters)
+			=> ParameterSerialization.ToXElement(parameters);
+		public static IEnumerable<IDataParameter> FromXml(XElement parameters)
+			=> ParameterSerialization.ToParameters(parameters);
 
-		public static IEnumerable<IDataParameter> ToParameters(XElement parameters)
-		{
-			return ParameterSerialization.ToParameters(parameters);
-		}
-
+		public static IDataParameter NewParameter(string name, object value)
+			=> new Text.Parameter(name, value);
+		public static IDataParameter NewParameter(string name, object value, ParameterDirection direction)
+			=> new Text.Parameter(name, value) { Direction = direction };
+		public static IDataParameter NewParameter(string name, object value, ParameterDirection direction, DbType type)
+			=> new Text.Parameter(name, value) { Direction = direction, DbType = type };
 
 		/// <summary>
 		/// Create parameters for SQL statements
@@ -60,7 +61,7 @@ namespace Sys.Data
 		/// <returns></returns>
 		public static IParameterFactory Create(object parameters)
 		{
-			if (parameters is List<IDataParameter> list)
+			if (parameters is IEnumerable<IDataParameter> list)
 				return new ListParameters(list);
 
 			if (parameters is IDictionary<string, object> dict)

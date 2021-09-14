@@ -44,7 +44,7 @@ namespace Sys.Data
 					continue;
 
 				var found = properties.FirstOrDefault(property => property.Name == parameterName);
-				if (found != null)
+				if (found != null && found.CanWrite)
 				{
 					found.SetValue(obj, parameter.Value);
 				}

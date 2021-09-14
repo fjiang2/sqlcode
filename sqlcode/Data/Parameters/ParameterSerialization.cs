@@ -11,8 +11,8 @@ namespace Sys.Data
 	{
 		private const string _PARAMETERS = "Parameters";
 		private const string _PARAMETER = "Parameter";
-		public const string _NAME = "Name";
-		public const string _VALUE = "Value";
+		private const string _NAME = "Name";
+		private const string _VALUE = "Value";
 		private const string _TYPE = "Type";
 		private const string _DIRECTION = "Direction";
 
