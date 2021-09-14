@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Sys.Data
 {
@@ -37,9 +38,12 @@ namespace Sys.Data
 			if (parameters is IDictionary<string, object> dict)
 				return new DictionaryParameters(dict);
 
+			if (parameters is  XElement element)
+				return new XmlParameters(element);
+
 			if (parameters is string)
 			{
-				//XML or JSON
+				//JSON
 				throw new RowNotInTableException();
 			}
 
