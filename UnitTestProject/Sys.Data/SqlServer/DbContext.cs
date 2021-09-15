@@ -6,12 +6,12 @@ using System.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data;
 
-namespace UnitTestProject.SQLite
+namespace Sys.Data.SqlServer
 {
 	public class DbContext : DataContext
 	{
 		public DbContext(string connectionString)
-			: base(new SQLiteAgent(connectionString))
+			: base(new SqlServerAgent(connectionString))
 		{
 		}
 	}

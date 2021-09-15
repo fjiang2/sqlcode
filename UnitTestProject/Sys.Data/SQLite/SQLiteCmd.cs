@@ -2,34 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
-using System.Data.SqlServerCe;
+using System.Data.SQLite;
 
 namespace Sys.Data
 {
 
-	public class SqlCeCmd : BaseDbCmd, IDbCmd
+	public class SQLiteCmd : BaseDbCmd, IDbCmd
 	{
-		private readonly SqlCeCommand command;
-		private readonly SqlCeConnection connection;
+		private readonly SQLiteCommand command;
+		private readonly SQLiteConnection connection;
+
+		private readonly string[] statements;
 		private readonly IParameterFactory parameters;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+			: this(connectionString, new SqlUnit(sql, args))
 		{
-			string sql = unit.Statement;
+		}
+
+		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
+		{
+			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
-			this.command = new SqlCeCommand(sql);
-			this.connection = new SqlCeConnection(connectionString.ConnectionString);
+			this.command = new SQLiteCommand();
+			this.connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
 			if (args == null)
 				return;
-
-			if (args is string)
-			{
-				//The parameters could be JSON
-				return;
-			}
 
 			this.parameters = ParameterFactory.Create(args);
 
@@ -37,12 +38,12 @@ namespace Sys.Data
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SqlCeParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				SQLiteParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
 
-		private SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;
 			if (value is int)
@@ -72,7 +73,7 @@ namespace Sys.Data
 			else if (value is Guid)
 				dbType = DbType.Guid;
 
-			SqlCeParameter param = new SqlCeParameter(parameterName, dbType)
+			SQLiteParameter param = new SQLiteParameter(parameterName, dbType)
 			{
 				Value = value,
 				Direction = direction,
@@ -87,8 +88,17 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
-				return adapter.Fill(dataSet);
+
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+					DataTable dt = new DataTable();
+					count += adapter.Fill(dt);
+					dataSet.Tables.Add(dt);
+				}
+				return count;
 			}
 			finally
 			{
@@ -101,7 +111,7 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
+				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
 			finally
@@ -115,8 +125,15 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				int count = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					count += command.ExecuteNonQuery();
+					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				}
+
 				return count;
 			}
 			finally

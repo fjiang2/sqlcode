@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Data;
 using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	class DictionaryParameters : ParameterFactory
+	class ObjectParameters : ParameterFactory
 	{
-		private IDictionary<string, object> parameters;
-
-		public DictionaryParameters(IDictionary<string, object> parameters)
+		private object obj;
+		public ObjectParameters(object parameters)
 		{
-			this.parameters = parameters;
+			this.obj = parameters;
 		}
 
 		public override List<IDataParameter> CreateParameters()
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
 
-			foreach (KeyValuePair<string, object> item in parameters)
+			foreach (var propertyInfo in obj.GetType().GetProperties())
 			{
-				object value = item.Value;
-				var parameter = new Parameter(item.Key, value)
+				object value = propertyInfo.GetValue(obj);
+				var parameter = new Parameter(propertyInfo.Name, value)
 				{
 					Direction = ParameterDirection.Input,
 				};
@@ -32,8 +32,10 @@ namespace Sys.Data
 			return list;
 		}
 
+
 		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
+			var properties = obj.GetType().GetProperties();
 			foreach (IDataParameter parameter in result)
 			{
 				string parameterName = GetParameterName(parameter);
@@ -41,9 +43,10 @@ namespace Sys.Data
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;
 
-				if (parameters.ContainsKey(parameterName))
+				var found = properties.FirstOrDefault(property => property.Name == parameterName);
+				if (found != null && found.CanWrite)
 				{
-					parameters[parameterName] = parameter.Value;
+					found.SetValue(obj, parameter.Value);
 				}
 			}
 		}

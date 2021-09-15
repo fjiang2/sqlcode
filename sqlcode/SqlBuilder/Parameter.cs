@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace Sys.Data.Text
 {
@@ -18,6 +20,42 @@ namespace Sys.Data.Text
 		{
 			this.ParameterName = parameterName;
 			this.Value = value ?? DBNull.Value;
+
+			DbType = DbType.String;
+			if (value is int)
+				DbType = DbType.Int32;
+			else if (value is short)
+				DbType = DbType.Int16;
+			else if (value is long)
+				DbType = DbType.Int64;
+			if (value is uint)
+				DbType = DbType.UInt32;
+			else if (value is ushort)
+				DbType = DbType.UInt16;
+			else if (value is ulong)
+				DbType = DbType.UInt64;
+			else if (value is byte)
+				DbType = DbType.Byte;
+			else if (value is sbyte)
+				DbType = DbType.SByte;
+			else if (value is DateTime)
+				DbType = DbType.DateTime;
+			else if (value is double)
+				DbType = DbType.Double;
+			else if (value is float)
+				DbType = DbType.Single;
+			else if (value is decimal)
+				DbType = DbType.Decimal;
+			else if (value is bool)
+				DbType = DbType.Boolean;
+			else if (value is string && ((string)value).Length > 4000)
+				DbType = DbType.AnsiString;
+			else if (value is string)
+				DbType = DbType.String;
+			else if (value is byte[])
+				DbType = DbType.Binary;
+			else if (value is Guid)
+				DbType = DbType.Guid;
 		}
 
 		public override string ToString()
@@ -47,5 +85,6 @@ namespace Sys.Data.Text
 			else
 				return $"@{ParameterName} = {Value}";
 		}
+
 	}
 }
