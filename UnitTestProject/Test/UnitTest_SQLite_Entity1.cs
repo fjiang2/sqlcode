@@ -17,13 +17,13 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTest_SQLite
+	public class UnitTest_SQLite_Entity1
 	{
 		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
 		private string connectionString;
 		private readonly Query Query;
 
-		public UnitTest_SQLite()
+		public UnitTest_SQLite_Entity1()
 		{
 			string fileName = Path.Combine(PATH_PROJECT, "db\\Northwind.db");
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
