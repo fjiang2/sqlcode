@@ -4,7 +4,7 @@ using System.Linq;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Sys.Data
+namespace Sys.Data.SqlClient
 {
 
 	public class SqlCmd : BaseDbCmd, IDbCmd

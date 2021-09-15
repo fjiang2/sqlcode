@@ -4,7 +4,7 @@ using System.Linq;
 using System.Data;
 using System.Data.SQLite;
 
-namespace Sys.Data
+namespace Sys.Data.SQLite
 {
 
 	public class SQLiteCmd : BaseDbCmd, IDbCmd

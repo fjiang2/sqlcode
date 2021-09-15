@@ -7,7 +7,7 @@ using System.Linq;
 using System.Data.SqlClient;
 
 using UnitTestProject.Northwind.dc1;
-using Sys.Data.SqlServer;
+using Sys.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data;
 
@@ -25,7 +25,7 @@ namespace UnitTestProject
 		public UnitTest_SqlServer_Entity1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(new SqlServerAgent(connectionString));
+			Query = new Query(new SqlClientAgent(connectionString));
 		}
 
 

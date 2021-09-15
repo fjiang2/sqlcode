@@ -1,12 +1,12 @@
 ﻿using System.Data.SqlClient;
 
-namespace Sys.Data
+namespace Sys.Data.SqlClient
 {
-	public class SqlServerAgent : IDbAgent
+	public class SqlClientAgent : IDbAgent
 	{
 		public string ConnectionString { get; }
 
-		public SqlServerAgent(string connectionStirng)
+		public SqlClientAgent(string connectionStirng)
 		{
 			this.ConnectionString = connectionStirng;
 		}

@@ -1,6 +1,6 @@
 ﻿using System.Data.SQLite;
 
-namespace Sys.Data
+namespace Sys.Data.SQLite
 {
 	public class SQLiteAgent : IDbAgent
 	{
