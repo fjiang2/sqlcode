@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlServerCe;
 
-namespace Sys.Data
+namespace Sys.Data.SqlCe
 {
 	public class SqlCeAgent : IDbAgent
 	{

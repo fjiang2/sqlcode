@@ -12,6 +12,7 @@ using System.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;
+using Sys.Data.SqlClient;
 
 namespace UnitTestProject
 {

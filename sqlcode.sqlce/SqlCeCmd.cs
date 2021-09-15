@@ -4,9 +4,8 @@ using System.Linq;
 using System.Data;
 using System.Data.SqlServerCe;
 
-namespace Sys.Data
+namespace Sys.Data.SqlCe
 {
-
 	public class SqlCeCmd : BaseDbCmd, IDbCmd
 	{
 		private readonly SqlCeCommand command;

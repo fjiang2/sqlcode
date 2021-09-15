@@ -7,7 +7,7 @@ using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	class ParameterSerialization
+	public class ParameterSerialization
 	{
 		private const string _PARAMETERS = "Parameters";
 		private const string _PARAMETER = "Parameter";
