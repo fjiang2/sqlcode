@@ -178,6 +178,9 @@ namespace Sys.Data.Text
 		public static Expression NOT(Expression expr) => new UnaryExpression("NOT", expr);
 		public Expression NOT() => NOT(this);
 
+		public Expression DEFINE_NULL(string type) => new Expression(this).AppendSpace().AppendSpace(type).Append("NULL");
+		public Expression DEFINE_NOT_NULL(string type) => new Expression(this).AppendSpace().AppendSpace(type).Append("NOT NULL");
+
 		public string ToScript(DbAgentStyle style)
 		{
 			StringBuilder x = new StringBuilder();

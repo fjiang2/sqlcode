@@ -595,7 +595,7 @@ SET @CategoryId = @@IDENTITY");
 
 
 		[TestMethod]
-		public void TEST_BETWEEN()
+		public void Test_BETWEEN()
 		{
 			string sql = "SELECT COUNT(*), MAX([ProductId]) FROM [Products] WHERE [ProductId] BETWEEN 10 AND 30";
 			string query = new SqlBuilder().SELECT().COLUMNS(Expression.COUNT_STAR, ProductId.MAX()).FROM(Products).WHERE(ProductId.BETWEEN(10, 30)).ToString();
@@ -612,10 +612,48 @@ SET @CategoryId = @@IDENTITY");
 
 
 		[TestMethod]
-		public void Test_Cast()
+		public void Test_CREATE_TABLE()
 		{
-			string categoryID = "CategoryID";
-			Expression column = categoryID.AsColumn();
+			string sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NOT NULL, [DATA] int NOT NULL PRIMARY KEY ( [Id], [Time], [ENU], [DATA]))";
+
+			var Id = "Id".AsColumn();
+			var Time = "Time".AsColumn();
+			var ENU = "ENU".AsColumn();
+			var DATA = "DATA".AsColumn();
+
+			string query = new SqlBuilder()
+				.CREATE().TABLE("Purdue")
+				.Append("(")
+				.COLUMNS(
+					Id.DEFINE_NOT_NULL("int"),
+					Time.DEFINE_NOT_NULL("DateTime"),
+					ENU.DEFINE_NOT_NULL("int"),
+					DATA.DEFINE_NOT_NULL("int")
+					)
+				.PRIMARY_KEY(Id, Time, ENU, DATA)
+				//.FOREIGN_KEY(Id).REFERENCES("Products", "ProductID".AsColumn())
+				.Append(")")
+				.ToString();
+
+			Debug.Assert(sql == query);
+
+			sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NULL, [DATA] int NULL PRIMARY KEY ( [Id], [Time])FOREIGN KEY ( [Id])REFERENCES Products([ProductID]))";
+			query = new SqlBuilder()
+				.CREATE().TABLE("Purdue")
+				.Append("(")
+				.COLUMNS(
+					  Id.DEFINE_NOT_NULL("int"),
+					Time.DEFINE_NOT_NULL("DateTime"),
+					 ENU.DEFINE_NULL("int"),
+					DATA.DEFINE_NULL("int")
+					)
+				.PRIMARY_KEY(Id, Time)
+				.FOREIGN_KEY(Id).REFERENCES("Products", "ProductID".AsColumn())
+				.Append(")")
+				.ToString();
+
+
+			Debug.Assert(sql == query);
 		}
 
 	}

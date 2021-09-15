@@ -36,7 +36,7 @@ namespace UnitTestProject
 				);
 
 
-			List<IDataParameter> args = ParameterFactory.FromXml(xml).ToList();
+			List<IDataParameter> args = ParameterSerialization.FromXml(xml).ToList();
 
 			Debug.Assert(args[0].ParameterName == "Id" && args[1].ParameterName == "City");
 			Debug.Assert(args[0].Value.Equals(20) && args[1].Value.Equals("Houston"));
@@ -44,7 +44,7 @@ namespace UnitTestProject
 
 			args[1].Value = "Austin";
 
-			XElement _xml = ParameterFactory.ToXml(args);
+			XElement _xml = ParameterSerialization.ToXml(args);
 			XElement city = _xml.Elements().Skip(1).First();
 			string name = (string)city.Attribute("Value");
 			Debug.Assert(name.Equals("Austin"));
@@ -55,8 +55,8 @@ namespace UnitTestProject
 		{
 			var args = new List<IDataParameter>
 			{
-				ParameterFactory.NewParameter("Id", 20),
-				ParameterFactory.NewParameter("City", "Houston", ParameterDirection.Output),
+				new Parameter("Id", 20),
+				new Parameter("City", "Houston") { Direction = ParameterDirection.Output },
 			};
 
 			IParameterFactory parameters = ParameterFactory.Create(args);
@@ -110,12 +110,12 @@ namespace UnitTestProject
 		{
 			var paramters = new List<IDataParameter>
 			{
-				ParameterFactory.NewParameter("Id", 20),
-				ParameterFactory.NewParameter("City", "Houston", ParameterDirection.Output),
+				new Parameter("Id", 20),
+				new Parameter("City", "Houston") { Direction = ParameterDirection.Output },
 			};
 
-			string text = ParameterFactory.Serialize(paramters);
-			IEnumerable<IDataParameter> parameters = ParameterFactory.Deserialize(text);
+			string text = ParameterSerialization.Serialize(paramters);
+			IEnumerable<IDataParameter> parameters = ParameterSerialization.Deserialize(text);
 			var items = parameters.ToList();
 
 			Debug.Assert(items[0].ParameterName == "Id" && items[1].ParameterName == "City");

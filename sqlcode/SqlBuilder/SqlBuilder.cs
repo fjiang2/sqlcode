@@ -325,7 +325,7 @@ namespace Sys.Data.Text
 			if (columns == null || columns.Length == 0)
 				return this;
 
-			return AppendSpace("ORDER BY").Append(new Expression(columns)).AppendSpace(); 
+			return AppendSpace("ORDER BY").Append(new Expression(columns)).AppendSpace();
 		}
 
 		public SqlBuilder ORDER_BY(params string[] columns)
@@ -344,8 +344,13 @@ namespace Sys.Data.Text
 		public SqlBuilder INTO(string tableName) => WithTableName("INTO", tableName, null);
 
 		public SqlBuilder ALTER() => AppendSpace("ALTER");
-		public SqlBuilder CREATE() => AppendSpace("CREATE");
 		public SqlBuilder DROP() => AppendSpace("DROP");
+		public SqlBuilder CREATE() => AppendSpace("CREATE");
+		public SqlBuilder TABLE(ITableName table) => TABLE(table.FullName);
+		public SqlBuilder TABLE(string table) => WithTableName("TABLE", table, alias: null);
+		public SqlBuilder PRIMARY_KEY(params Expression[] columns) => AppendSpace("PRIMARY KEY (").Append(new Expression(columns)).Append(")");
+		public SqlBuilder FOREIGN_KEY(Expression column) => AppendSpace("FOREIGN KEY (").Append(column).Append(")");
+		public SqlBuilder REFERENCES(string table, Expression column) => AppendSpace("REFERENCES").Append(table).Append("(").Append(column).Append(")");
 
 		private static string JoinColumns(IEnumerable<string> columns)
 		{

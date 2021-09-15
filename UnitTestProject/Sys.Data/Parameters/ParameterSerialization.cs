@@ -16,7 +16,7 @@ namespace Sys.Data
 		private const string _TYPE = "Type";
 		private const string _DIRECTION = "Direction";
 
-		public static XElement ToXElement(IEnumerable<IDataParameter> parameters)
+		public static XElement ToXml(IEnumerable<IDataParameter> parameters)
 		{
 			XElement element = new XElement(_PARAMETERS);
 			foreach (var parameter in parameters)
@@ -38,7 +38,7 @@ namespace Sys.Data
 		}
 
 		
-		public static List<IDataParameter> ToParameters(XElement xml)
+		public static List<IDataParameter> FromXml(XElement xml)
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
 			foreach (var element in xml.Elements())
@@ -148,5 +148,20 @@ namespace Sys.Data
 			throw new NotImplementedException();
 		}
 
+		public static string Serialize(IEnumerable<IDataParameter> parameters)
+		{
+			string xml = ToXml(parameters).ToString();
+			var bytes = Encoding.UTF8.GetBytes(xml);
+			return Convert.ToBase64String(bytes);
+		}
+
+		public static IEnumerable<IDataParameter> Deserialize(string text)
+		{
+			var bytes = Convert.FromBase64String(text);
+			string xml = Encoding.UTF8.GetString(bytes);
+
+			XElement element = XElement.Parse(xml);
+			return FromXml(element);
+		}
 	}
 }
