@@ -178,8 +178,17 @@ namespace Sys.Data.Text
 		public static Expression NOT(Expression expr) => new UnaryExpression("NOT", expr);
 		public Expression NOT() => NOT(this);
 
+		internal Expression TUPLE(params Expression[] exprList) => TUPLE((IEnumerable<Expression>)exprList);
+		internal Expression TUPLE(IEnumerable<Expression> exprList) => Append("(").Append(new Expression(exprList)).Append(")");
+
+
 		public Expression DEFINE_NULL(string type) => new Expression(this).AppendSpace().AppendSpace(type).Append("NULL");
 		public Expression DEFINE_NOT_NULL(string type) => new Expression(this).AppendSpace().AppendSpace(type).Append("NOT NULL");
+		public static Expression PRIMARY_KEY(params Expression[] columns) => new Expression().AppendSpace("PRIMARY KEY").TUPLE(columns);
+		public static Expression FOREIGN_KEY(Expression fkColumn, string pkTable, Expression pKColumn)
+			=> new Expression().AppendSpace("FOREIGN KEY").TUPLE(fkColumn).AppendSpace().AppendSpace("REFERENCES").Append(pkTable).TUPLE(pKColumn);
+		public Expression FOREIGN_KEY(string pkTable, Expression pKColumn) => FOREIGN_KEY(this, pkTable, pKColumn);
+			
 
 		public string ToScript(DbAgentStyle style)
 		{

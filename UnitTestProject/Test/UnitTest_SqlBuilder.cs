@@ -134,6 +134,13 @@ WHERE Products.[Discontinued] <> 1";
 
 			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
 
+			SQL = new SqlBuilder()
+				.INSERT_INTO("Categories", new Expression[] { "CategoryName".AsColumn(), "Description".AsColumn(), "Picture".AsColumn() })
+				.VALUES("Seafood", "Seaweed and fish", new byte[] { 0x15, 0xC2 })
+				.ToString();
+
+			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
+
 		}
 
 		[TestMethod]
@@ -614,7 +621,7 @@ SET @CategoryId = @@IDENTITY");
 		[TestMethod]
 		public void Test_CREATE_TABLE()
 		{
-			string sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NOT NULL, [DATA] int NOT NULL PRIMARY KEY ( [Id], [Time], [ENU], [DATA]))";
+			string sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NOT NULL, [DATA] int NOT NULL, PRIMARY KEY ([Id], [Time], [ENU], [DATA]))";
 
 			var Id = "Id".AsColumn();
 			var Time = "Time".AsColumn();
@@ -623,33 +630,28 @@ SET @CategoryId = @@IDENTITY");
 
 			string query = new SqlBuilder()
 				.CREATE().TABLE("Purdue")
-				.Append("(")
-				.COLUMNS(
-					Id.DEFINE_NOT_NULL("int"),
+				.TUPLE(
+		 			  Id.DEFINE_NOT_NULL("int"),
 					Time.DEFINE_NOT_NULL("DateTime"),
-					ENU.DEFINE_NOT_NULL("int"),
-					DATA.DEFINE_NOT_NULL("int")
+					 ENU.DEFINE_NOT_NULL("int"),
+					DATA.DEFINE_NOT_NULL("int"),
+		 	  Expression.PRIMARY_KEY(Id, Time, ENU, DATA)
 					)
-				.PRIMARY_KEY(Id, Time, ENU, DATA)
-				//.FOREIGN_KEY(Id).REFERENCES("Products", "ProductID".AsColumn())
-				.Append(")")
 				.ToString();
 
 			Debug.Assert(sql == query);
 
-			sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NULL, [DATA] int NULL PRIMARY KEY ( [Id], [Time])FOREIGN KEY ( [Id])REFERENCES Products([ProductID]))";
+			sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NULL, [DATA] int NULL, PRIMARY KEY ([Id], [Time]), FOREIGN KEY ([Id]) REFERENCES Products([ProductID]))";
 			query = new SqlBuilder()
 				.CREATE().TABLE("Purdue")
-				.Append("(")
-				.COLUMNS(
+				.TUPLE(
 					  Id.DEFINE_NOT_NULL("int"),
 					Time.DEFINE_NOT_NULL("DateTime"),
 					 ENU.DEFINE_NULL("int"),
-					DATA.DEFINE_NULL("int")
+					DATA.DEFINE_NULL("int"),
+	  	      Expression.PRIMARY_KEY(Id, Time),
+				   	  Id.FOREIGN_KEY("Products", "ProductID".AsColumn())
 					)
-				.PRIMARY_KEY(Id, Time)
-				.FOREIGN_KEY(Id).REFERENCES("Products", "ProductID".AsColumn())
-				.Append(")")
 				.ToString();
 
 
