@@ -4,22 +4,58 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
+using System.Data;
 
 namespace Sys.Data.Entity
 {
 	public static class Query
 	{
+		/// <summary>
+		/// It must be assigned before using class Query. The agent could be SQL Server, SQLite, SQLCe agents.
+		/// </summary>
 		public static IDbAgent DefaultAgent { get; set; }
 
 		private static DataQuery query => new DataQuery(DefaultAgent);
 
 		/// <summary>
-		/// 
+		/// Create DbCommand
 		/// </summary>
 		/// <param name="sql"></param>
 		/// <returns></returns>
 		public static BaseDbCmd NewDbCmd(SqlUnit unit)
-			=> query.NewDbCmd(unit);
+			=> new DelegateDbCmd(DefaultAgent, unit);
+
+		/// <summary>
+		/// Fill data table
+		/// </summary>
+		/// <param name="sql"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public static DataTable FillDataTable(string sql, object args = null)
+			=> NewDbCmd(new SqlUnit(sql, args)).FillDataTable();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sql"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public static int ExecuteNonQuery(string sql, object args = null)
+			=> NewDbCmd(new SqlUnit(sql, args)).ExecuteNonQuery();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="func"></param>
+		/// <returns></returns>
+		public static T Invoke<T>(Func<DataContext, T> func)
+		{
+			using (var db = new DataContext(DefaultAgent))
+			{
+				return func(db);
+			}
+		}
 
 		/// <summary>
 		/// Operate a table and submit changes
@@ -111,7 +147,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		public static int Insert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOnSubmit(entities));
 
 		/// <summary>
@@ -129,7 +165,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Update<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		public static int Update<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.UpdateOnSubmit(entities));
 
 		/// <summary>
@@ -151,7 +187,7 @@ namespace Sys.Data.Entity
 		/// <param name="entities"></param>
 		/// <param name="throwException"></param>
 		/// <returns></returns>
-		public static int PartialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class
+		public static int PartialUpdate<TEntity>(this IEnumerable<object> entities, bool throwException = false) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entities, throwException));
 
 		/// <summary>
@@ -181,7 +217,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int InsertOrUpdate<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		public static int InsertOrUpdate<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOrUpdateOnSubmit(entities));
 
 		/// <summary>
@@ -199,7 +235,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		public static int Delete<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.DeleteOnSubmit(entities));
 
 		/// <summary>
@@ -236,7 +272,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TSubEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
+		public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(this IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
 			=> query.Expand<TEntity, TSubEntity>(entities);
 
 		/// <summary>
@@ -245,7 +281,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		public static IQueryResultReader Expand<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> query.Expand(entities);
 
 		/// <summary>
@@ -263,7 +299,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Upsert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		public static int Upsert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> query.Upsert(entities);
 
 	}
