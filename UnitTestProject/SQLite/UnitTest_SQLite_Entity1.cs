@@ -29,7 +29,8 @@ namespace UnitTestProject
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(new SQLiteAgent(fileName));
+			//Query = new Query(new SQLiteAgent(fileName));
+			Query = SQLiteAgent.Query(connectionString);
 		}
 
 		//[TestMethod]

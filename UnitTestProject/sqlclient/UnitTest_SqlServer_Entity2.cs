@@ -25,7 +25,8 @@ namespace UnitTestProject
 		public UnitTest_SqlServer_Entity2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query(new SqlClientAgent(connectionString));
+			//Query = new Query(new SqlAgent(new SqlConnectionStringBuilder(connectionString)));
+			Query = SqlAgent.Query(connectionString);
 		}
 
 
