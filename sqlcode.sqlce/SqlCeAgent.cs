@@ -20,8 +20,17 @@ namespace Sys.Data.SqlCe
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
 		public IDbCmd Proxy(SqlUnit unit) => new SqlCeCmd(connectionString, unit);
 
-		public static Query Query(string connectionString)
-			=> new Query(new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)));
+		public void CreateDatabase()
+		{
+			using (SqlCeEngine engine = new SqlCeEngine(connectionString.ConnectionString))
+			{
+				engine.CreateDatabase();
+			}
+		}
+
+		public static DataQuery Query(string connectionString)
+			=> new DataQuery(new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)));
+
 
 	}
 }

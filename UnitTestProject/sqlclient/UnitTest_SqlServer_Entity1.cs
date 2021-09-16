@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define USE_Query_Class
+using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,19 +20,25 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlServer_Entity1
 	{
-		private readonly string connectionString = Setting.ConnectionString;
-		private readonly Query Query;
+		private readonly static string connectionString = Setting.ConnectionString;
 
+#if !USE_Query_Class
+		private readonly DataQuery Query = SqlAgent.Query(connectionString);
+#endif
 		public UnitTest_SqlServer_Entity1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			//Query = new Query(new SqlAgent(new SqlConnectionStringBuilder(connectionString)));
+
+#if USE_Query_Class
+			Query.DefaultAgent = new SqlAgent(new SqlConnectionStringBuilder(connectionString));
+#else
 			Query = SqlAgent.Query(connectionString);
+#endif
 		}
 
 
 
-		#region Additional test attributes
+#region Additional test attributes
 		//
 		// You can use the following additional attributes as you write your tests:
 		//
@@ -51,7 +58,7 @@ namespace UnitTestProject
 		// [TestCleanup()]
 		// public void MyTestCleanup() { }
 		//
-		#endregion
+#endregion
 
 		[TestMethod]
 		public void TestMethodSelectIQueryable()
@@ -468,8 +475,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestAssoicationClass()
 		{
-			var product = Query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
-			var A = product.GetAssociation(Query);
+			var query = SqlAgent.Query(connectionString);
+			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
+			var A = product.GetAssociation(query);
 			var D = A.Order_Details;
 
 			Debug.Assert(D.Count == 22);

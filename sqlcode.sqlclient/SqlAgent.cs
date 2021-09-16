@@ -15,7 +15,7 @@ namespace Sys.Data.SqlClient
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
 		public IDbCmd Proxy(SqlUnit unit) => new SqlCmd(connectionString, unit);
 
-		public static Query Query(string connectionString) 
-			=> new Query(new SqlAgent(new SqlConnectionStringBuilder(connectionString)));
+		public static DataQuery Query(string connectionString) 
+			=> new DataQuery(new SqlAgent(new SqlConnectionStringBuilder(connectionString)));
 	}
 }
