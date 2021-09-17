@@ -80,6 +80,14 @@ namespace Sys.Data.Entity
 		}
 
 
+		internal DataTable FillDataTable(string query, int startRecord, int maxRecords)
+		{
+			var unit = new SqlUnit(query);
+			var cmd = agent.Proxy(unit);
+			var dt = new DataTable();
+			cmd.FillDataTable(dt, startRecord, maxRecords);
+			return dt;
+		}
 
 		internal DataTable FillDataTable(string query)
 		{

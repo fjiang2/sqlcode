@@ -76,6 +76,11 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where: string.Empty));
 		}
 
+		public IEnumerable<TEntity> Select<TEntity>(string where, int startRecord, int maxRecords) where TEntity : class
+		{
+			return Invoke(db => db.GetTable<TEntity>().Select(where, startRecord, maxRecords));
+		}
+
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE ...
 		/// </summary>

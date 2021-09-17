@@ -38,7 +38,7 @@ namespace UnitTestProject
 
 
 
-#region Additional test attributes
+		#region Additional test attributes
 		//
 		// You can use the following additional attributes as you write your tests:
 		//
@@ -58,7 +58,7 @@ namespace UnitTestProject
 		// [TestCleanup()]
 		// public void MyTestCleanup() { }
 		//
-#endregion
+		#endregion
 
 		[TestMethod]
 		public void TestMethodSelectIQueryable()
@@ -76,7 +76,7 @@ namespace UnitTestProject
 
 
 		[TestMethod]
-		public void TestMethodSelect()
+		public void TestMethod_Select()
 		{
 			using (var db = new DbContext(connectionString))
 			{
@@ -85,6 +85,14 @@ namespace UnitTestProject
 
 				Debug.Assert(rows.First(row => row.ProductID == 6).ProductName == "Grandma's Boysenberry Spread");
 			}
+		}
+
+		[TestMethod]
+		public void TestMethod_Select_MaxRecords()
+		{
+			var rows = Query.Select<Products>(null, 3, 4);
+			Debug.Assert(rows.First(row => row.ProductID == 4).ProductName == "Chef Anton's Cajun Seasoning");
+			Debug.Assert(rows.Count() == 4);
 		}
 
 		[TestMethod]

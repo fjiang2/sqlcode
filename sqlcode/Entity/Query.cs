@@ -64,7 +64,14 @@ namespace Sys.Data.Entity
 		/// <param name="action"></param>
 		/// <returns></returns>
 		public static int Submit<TEntity>(Action<Table<TEntity>> action) where TEntity : class
-			=> query.Submit(action);
+		{
+			return Invoke(db =>
+			{
+				var table = db.GetTable<TEntity>();
+				action(table);
+				return db.SubmitChanges();
+			});
+		}
 
 		/// <summary>
 		/// Use SelectOnSumbit(...) in action
@@ -81,6 +88,17 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public static IEnumerable<TEntity> Select<TEntity>() where TEntity : class
 			=> query.Select<TEntity>();
+
+		/// <summary>
+		/// Retrieve maxRecord starting on startRecord: SELECT * FROM entity-table WHERE ...
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="where"></param>
+		/// <param name="startRecord"> The zero-based record number to start with.</param>
+		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
+		/// <returns></returns>
+		public static IEnumerable<TEntity> Select<TEntity>(string where, int startRecord, int maxRecords) where TEntity : class
+			=> query.Select<TEntity>(where, startRecord, maxRecords);
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE ...
