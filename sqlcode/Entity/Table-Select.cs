@@ -17,7 +17,7 @@ namespace Sys.Data.Entity
 			return Select(_where);
 		}
 
-		public IEnumerable<TEntity> Select(string where = null)
+		public IEnumerable<TEntity> Select(string where)
 		{
 			string SQL = SelectFromWhere(where);
 
@@ -25,7 +25,7 @@ namespace Sys.Data.Entity
 			return ToList(dt);
 		}
 
-		public IEnumerable<TEntity> Select(string where, int startRecord, int maxRecords)
+		public IEnumerable<TEntity> Select(int startRecord, int maxRecords, string where)
 		{
 			string SQL = SelectFromWhere(where);
 			var dt = Context.FillDataTable(SQL, startRecord, maxRecords);

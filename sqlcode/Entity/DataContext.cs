@@ -115,12 +115,17 @@ namespace Sys.Data.Entity
 			if (CodeBlock.Length == 0)
 				return null;
 
-			string[] query = CodeBlock.GetQuery();
-			Type[] types = CodeBlock.GetQueryTypes();
-			var ds = FillDataSet(query);
-			CodeBlock.Clear();
-
-			return new QueryResultReader(this, types, ds);
+			try
+			{
+				string[] query = CodeBlock.GetQuery();
+				Type[] types = CodeBlock.GetQueryTypes();
+				var ds = FillDataSet(query);
+				return new QueryResultReader(this, types, ds);
+			}
+			finally
+			{
+				CodeBlock.Clear();
+			}
 		}
 
 		public int SubmitChanges()
@@ -128,17 +133,22 @@ namespace Sys.Data.Entity
 			if (CodeBlock.Length == 0)
 				return -1;
 
-			OnRowChanging(RowEvents);
-
-			var unit = new SqlUnit(CodeBlock.GetNonQuery());
-			var cmd = agent.Proxy(unit);
-			int count = cmd.ExecuteNonQuery();
-			CodeBlock.Clear();
-
-			OnRowChanged(RowEvents);
-			RowEvents.Clear();
-
-			return count;
+			try
+			{
+				OnRowChanging(RowEvents);
+				
+				var unit = new SqlUnit(CodeBlock.GetNonQuery());
+				var cmd = agent.Proxy(unit);
+				int count = cmd.ExecuteNonQuery();
+				
+				OnRowChanged(RowEvents);
+				return count;
+			}
+			finally
+			{
+				CodeBlock.Clear();
+				RowEvents.Clear();
+			}
 		}
 
 

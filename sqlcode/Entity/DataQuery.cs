@@ -76,9 +76,9 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where: string.Empty));
 		}
 
-		public IEnumerable<TEntity> Select<TEntity>(string where, int startRecord, int maxRecords) where TEntity : class
+		public IEnumerable<TEntity> Select<TEntity>(int startRecord, int maxRecords, string where) where TEntity : class
 		{
-			return Invoke(db => db.GetTable<TEntity>().Select(where, startRecord, maxRecords));
+			return Invoke(db => db.GetTable<TEntity>().Select(startRecord, maxRecords, where));
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public IEnumerable<TEntity> Select<TEntity>(string where = null) where TEntity : class
+		public IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
 		{
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
@@ -128,7 +128,7 @@ namespace Sys.Data.Entity
 		/// <param name="selectedColumns"></param>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where = null) where TEntity : class, new()
+		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
 		{
 			TEntity CreateInstance(System.Reflection.PropertyInfo[] properties, DataRow row, IEnumerable<string> columns)
 			{
@@ -303,7 +303,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public int Delete<TEntity>(string where = null) where TEntity : class
+		public int Delete<TEntity>(string where) where TEntity : class
 		{
 			return Submit<TEntity>(table => table.DeleteOnSubmit(where));
 		}

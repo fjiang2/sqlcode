@@ -53,7 +53,7 @@ namespace Sys.Data.Entity
             DeleteOnSubmit(_where);
         }
 
-        public void DeleteOnSubmit(string where = null)
+        public void DeleteOnSubmit(string where)
         {
             string SQL;
             if (!string.IsNullOrEmpty(where))

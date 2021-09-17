@@ -93,12 +93,12 @@ namespace Sys.Data.Entity
 		/// Retrieve maxRecord starting on startRecord: SELECT * FROM entity-table WHERE ...
 		/// </summary>
 		/// <typeparam name="TEntity"></typeparam>
-		/// <param name="where"></param>
 		/// <param name="startRecord"> The zero-based record number to start with.</param>
 		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
+		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(string where, int startRecord, int maxRecords) where TEntity : class
-			=> query.Select<TEntity>(where, startRecord, maxRecords);
+		public static IEnumerable<TEntity> Select<TEntity>(int startRecord, int maxRecords, string where) where TEntity : class
+			=> query.Select<TEntity>(startRecord, maxRecords, where);
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE ...
@@ -106,7 +106,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(string where = null) where TEntity : class
+		public static IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
 			=> query.Select<TEntity>(where);
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace Sys.Data.Entity
 		/// <param name="selectedColumns"></param>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where = null) where TEntity : class, new()
+		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
 			=> query.Select(selectedColumns, where);
 
 		/// <summary>
@@ -271,7 +271,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(string where = null) where TEntity : class
+		public static int Delete<TEntity>(string where) where TEntity : class
 			=> query.Delete<TEntity>(where);
 
 		/// <summary>
