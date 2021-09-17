@@ -47,5 +47,12 @@ namespace Sys.Data
 		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
 		/// <returns></returns>
 		int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="dataTable"></param>
+		/// <param name="batchSize"></param>
+		void BulkInsert(DataTable dataTable, int batchSize);
 	}
 }

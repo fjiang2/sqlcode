@@ -20,6 +20,7 @@ namespace Sys.Data
 		public abstract int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
+		public abstract void BulkInsert(DataTable dataTable, int batchSize);
 
 		public DataSet FillDataSet()
 		{

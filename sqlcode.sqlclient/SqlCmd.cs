@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -139,5 +140,15 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
+		public override void BulkInsert(DataTable dataTable, int batchSize)
+		{
+			using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection.ConnectionString))
+			{
+				bulkCopy.BatchSize = batchSize;
+
+				bulkCopy.DestinationTableName = dataTable.TableName;
+				bulkCopy.WriteToServer(dataTable);
+			}
+		}
 	}
 }

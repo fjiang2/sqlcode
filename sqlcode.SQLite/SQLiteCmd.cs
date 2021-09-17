@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using System.Text;
 using System.Data.SQLite;
 
 namespace Sys.Data.SQLite
@@ -156,5 +157,73 @@ namespace Sys.Data.SQLite
 			}
 		}
 
+		public override void BulkInsert(DataTable dataTable, int batchSize)
+		{
+			int count = 0;
+			List<string> list = new List<string>();
+
+			SqlGenerator gen = new SqlGenerator(dataTable.TableName);
+
+			foreach (DataRow row in dataTable.Rows)
+			{
+				gen.Clear();
+				gen.AddRange(row);
+				list.Add(gen.Insert());
+
+				count++;
+				if (count >= batchSize)
+				{
+					BulkCopy(list);
+					list.Clear();
+					count = 0;
+				}
+			}
+
+			BulkCopy(list);
+		}
+
+		private void BulkCopy(List<string> inserts)
+		{
+			if (inserts.Count == 0)
+				return;
+
+			StringBuilder SQL = new StringBuilder("BEGIN TRANSACTION;");
+			foreach (string line in inserts)
+			{
+				SQL.Append(line).AppendLine(";");
+			}
+			SQL.AppendLine("COMMIT;");
+
+			try
+			{
+				connection.Open();
+				command.CommandText = SQL.ToString();
+				command.ExecuteNonQuery();
+			}
+			finally
+			{
+				connection.Close();
+			}
+
+			//try
+			//{
+			//	connection.Open();
+			//	using (var transaction = connection.BeginTransaction())
+			//	{
+			//		foreach (string line in inserts)
+			//		{
+			//			command.CommandText = line;
+			//			command.ExecuteNonQuery();
+			//		}
+
+			//		transaction.Commit();
+			//	}
+			//}
+			//finally
+			//{
+			//	connection.Close();
+			//}
+
+		}
 	}
 }

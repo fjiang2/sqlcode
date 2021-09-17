@@ -154,5 +154,56 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
+		public override void BulkInsert(DataTable dataTable, int batchSize)
+		{
+			int count = 0;
+			List<string> list = new List<string>();
+
+			SqlGenerator gen = new SqlGenerator(dataTable.TableName);
+
+			foreach (DataRow row in dataTable.Rows)
+			{
+				gen.Clear();
+				gen.AddRange(row);
+				list.Add(gen.Insert());
+
+				count++;
+				if (count >= batchSize)
+				{
+					BulkCopy(list);
+					list.Clear();
+					count = 0;
+				}
+			}
+
+			BulkCopy(list);
+		}
+
+		private void BulkCopy(List<string> inserts)
+		{
+			if (inserts.Count == 0)
+				return;
+
+			try
+			{
+				connection.Open();
+				using (var transaction = connection.BeginTransaction())
+				{
+					foreach (string line in inserts)
+					{
+						command.CommandText = line;
+						command.ExecuteNonQuery();
+					}
+
+					transaction.Commit();
+				}
+			}
+			finally
+			{
+				connection.Close();
+			}
+
+		}
+
 	}
 }
