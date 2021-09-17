@@ -63,7 +63,7 @@ namespace Sys.Data.Entity
 			SelectOnSubmit(_where);
 		}
 
-		public void SelectOnSubmit(string where = null)
+		public void SelectOnSubmit(string where)
 		{
 			string SQL = SelectFromWhere(where);
 			Context.CodeBlock.AppendQuery<TEntity>(SQL);
@@ -82,17 +82,7 @@ namespace Sys.Data.Entity
 
 		internal string SelectFromWhere(string where, IEnumerable<string> columns)
 		{
-			string SQL;
-			string _columns = "*";
-			if (columns != null && columns.Count() == 0)
-				_columns = string.Join(",", columns);
-
-			if (!string.IsNullOrEmpty(where))
-				SQL = $"SELECT {_columns} FROM {formalName} WHERE {where}";
-			else
-				SQL = $"SELECT {_columns} FROM {formalName}";
-
-			return SQL;
+			return new Text.SqlBuilder().SELECT().COLUMNS(columns).FROM(formalName).WHERE(where).ToScript(Context.Style);
 		}
 
 	}

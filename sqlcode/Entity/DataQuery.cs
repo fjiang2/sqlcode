@@ -375,6 +375,14 @@ namespace Sys.Data.Entity
 			});
 		}
 
+		public IEnumerable<TEntity> ToList<TEntity>(DataTable dataTable) where TEntity : class
+		{
+			return Invoke(db =>
+			{
+				var dt = db.GetTable<TEntity>();
+				return dt.ToList(dataTable);
+			});
+		}
 	}
 
 }

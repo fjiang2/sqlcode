@@ -35,7 +35,7 @@ namespace Sys.Data.Entity
 		public DataContext(IDbAgent agent)
 		{
 			this.agent = agent;
-			this.Description = "SQL command handler";
+			this.Description = nameof(DataContext);
 		}
 
 		public void Dispose()
@@ -79,6 +79,11 @@ namespace Sys.Data.Entity
 			return string.Join(Environment.NewLine, CodeBlock.GetQuery());
 		}
 
+		/// <summary>
+		/// It can be used for Bulk copy/insert
+		/// </summary>
+		/// <returns>key is table-name, value is an array of INSERT statements</returns>
+		public IDictionary<Type, string[]> GetBulkInsert() => CodeBlock.GetBulkInsert();
 
 		internal DataTable FillDataTable(string query, int startRecord, int maxRecords)
 		{
@@ -151,6 +156,14 @@ namespace Sys.Data.Entity
 			}
 		}
 
+		/// <summary>
+		/// Clear generated code and row events
+		/// </summary>
+		public void Clear()
+		{
+			CodeBlock.Clear();
+			RowEvents.Clear();
+		}
 
 		public override string ToString()
 		{
