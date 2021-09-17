@@ -128,25 +128,27 @@ namespace UnitTestProject.Northwind.dc2
 		
 		public static DataTable CreateTable()
 		{
-			DataTable dt = new DataTable();
-			dt.Columns.Add(new DataColumn(_EMPLOYEEID, typeof(int)));
-			dt.Columns.Add(new DataColumn(_LASTNAME, typeof(string)));
-			dt.Columns.Add(new DataColumn(_FIRSTNAME, typeof(string)));
-			dt.Columns.Add(new DataColumn(_TITLE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_TITLEOFCOURTESY, typeof(string)));
+			DataTable dt = new DataTable { TableName = TableName };
+			dt.Columns.Add(new DataColumn(_EMPLOYEEID, typeof(int)) { Unique = true, AllowDBNull = false, AutoIncrement = true });
+			dt.Columns.Add(new DataColumn(_LASTNAME, typeof(string)) { AllowDBNull = false, MaxLength = 20 });
+			dt.Columns.Add(new DataColumn(_FIRSTNAME, typeof(string)) { AllowDBNull = false, MaxLength = 10 });
+			dt.Columns.Add(new DataColumn(_TITLE, typeof(string)) { MaxLength = 30 });
+			dt.Columns.Add(new DataColumn(_TITLEOFCOURTESY, typeof(string)) { MaxLength = 25 });
 			dt.Columns.Add(new DataColumn(_BIRTHDATE, typeof(DateTime)));
 			dt.Columns.Add(new DataColumn(_HIREDATE, typeof(DateTime)));
-			dt.Columns.Add(new DataColumn(_ADDRESS, typeof(string)));
-			dt.Columns.Add(new DataColumn(_CITY, typeof(string)));
-			dt.Columns.Add(new DataColumn(_REGION, typeof(string)));
-			dt.Columns.Add(new DataColumn(_POSTALCODE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_COUNTRY, typeof(string)));
-			dt.Columns.Add(new DataColumn(_HOMEPHONE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_EXTENSION, typeof(string)));
+			dt.Columns.Add(new DataColumn(_ADDRESS, typeof(string)) { MaxLength = 60 });
+			dt.Columns.Add(new DataColumn(_CITY, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_REGION, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_POSTALCODE, typeof(string)) { MaxLength = 10 });
+			dt.Columns.Add(new DataColumn(_COUNTRY, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_HOMEPHONE, typeof(string)) { MaxLength = 24 });
+			dt.Columns.Add(new DataColumn(_EXTENSION, typeof(string)) { MaxLength = 4 });
 			dt.Columns.Add(new DataColumn(_PHOTO, typeof(byte[])));
 			dt.Columns.Add(new DataColumn(_NOTES, typeof(string)));
 			dt.Columns.Add(new DataColumn(_REPORTSTO, typeof(int)));
-			dt.Columns.Add(new DataColumn(_PHOTOPATH, typeof(string)));
+			dt.Columns.Add(new DataColumn(_PHOTOPATH, typeof(string)) { MaxLength = 255 });
+			
+			dt.PrimaryKey = dt.Columns.OfType<DataColumn>().Where(column => Keys.Contains(column.ColumnName)).ToArray();
 			
 			return dt;
 		}

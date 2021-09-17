@@ -88,17 +88,19 @@ namespace UnitTestProject.Northwind.dc2
 		
 		public static DataTable CreateTable()
 		{
-			DataTable dt = new DataTable();
-			dt.Columns.Add(new DataColumn(_PRODUCTID, typeof(int)));
-			dt.Columns.Add(new DataColumn(_PRODUCTNAME, typeof(string)));
+			DataTable dt = new DataTable { TableName = TableName };
+			dt.Columns.Add(new DataColumn(_PRODUCTID, typeof(int)) { Unique = true, AllowDBNull = false, AutoIncrement = true });
+			dt.Columns.Add(new DataColumn(_PRODUCTNAME, typeof(string)) { AllowDBNull = false, MaxLength = 40 });
 			dt.Columns.Add(new DataColumn(_SUPPLIERID, typeof(int)));
 			dt.Columns.Add(new DataColumn(_CATEGORYID, typeof(int)));
-			dt.Columns.Add(new DataColumn(_QUANTITYPERUNIT, typeof(string)));
+			dt.Columns.Add(new DataColumn(_QUANTITYPERUNIT, typeof(string)) { MaxLength = 20 });
 			dt.Columns.Add(new DataColumn(_UNITPRICE, typeof(decimal)));
 			dt.Columns.Add(new DataColumn(_UNITSINSTOCK, typeof(short)));
 			dt.Columns.Add(new DataColumn(_UNITSONORDER, typeof(short)));
 			dt.Columns.Add(new DataColumn(_REORDERLEVEL, typeof(short)));
-			dt.Columns.Add(new DataColumn(_DISCONTINUED, typeof(bool)));
+			dt.Columns.Add(new DataColumn(_DISCONTINUED, typeof(bool)) { AllowDBNull = false });
+			
+			dt.PrimaryKey = dt.Columns.OfType<DataColumn>().Where(column => Keys.Contains(column.ColumnName)).ToArray();
 			
 			return dt;
 		}
