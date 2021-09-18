@@ -157,72 +157,60 @@ namespace Sys.Data.SQLite
 			}
 		}
 
-		public override void BulkInsert(DataTable dataTable, int batchSize)
+		public override void BulkInsert(int batchSize)
 		{
 			int count = 0;
 			List<string> list = new List<string>();
 
-			SqlGenerator gen = new SqlGenerator(dataTable.TableName);
-
-			foreach (DataRow row in dataTable.Rows)
+			foreach (string statement in statements)
 			{
-				gen.Clear();
-				gen.AddRange(row);
-				list.Add(gen.Insert());
+				list.Add(statement);
 
 				count++;
 				if (count >= batchSize)
 				{
-					BulkCopy(list);
+					ExecuteTransaction(list);
 					list.Clear();
 					count = 0;
 				}
 			}
 
-			BulkCopy(list);
+			ExecuteTransaction(list);
 		}
 
-		private void BulkCopy(List<string> inserts)
-		{
-			if (inserts.Count == 0)
-				return;
+		public override void ExecuteTransaction() => ExecuteTransaction(this.statements);
 
-			StringBuilder SQL = new StringBuilder("BEGIN TRANSACTION;");
-			foreach (string line in inserts)
-			{
-				SQL.Append(line).AppendLine(";");
-			}
-			SQL.AppendLine("COMMIT;");
+		private void ExecuteTransaction(IEnumerable<string> statements)
+		{
+			if (statements.Count() == 0)
+				return;
 
 			try
 			{
 				connection.Open();
-				command.CommandText = SQL.ToString();
-				command.ExecuteNonQuery();
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						foreach (string line in statements)
+						{
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch(Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
 			}
 			finally
 			{
 				connection.Close();
 			}
-
-			//try
-			//{
-			//	connection.Open();
-			//	using (var transaction = connection.BeginTransaction())
-			//	{
-			//		foreach (string line in inserts)
-			//		{
-			//			command.CommandText = line;
-			//			command.ExecuteNonQuery();
-			//		}
-
-			//		transaction.Commit();
-			//	}
-			//}
-			//finally
-			//{
-			//	connection.Close();
-			//}
 
 		}
 	}

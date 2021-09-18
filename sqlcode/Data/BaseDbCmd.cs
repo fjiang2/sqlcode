@@ -20,7 +20,8 @@ namespace Sys.Data
 		public abstract int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
-		public abstract void BulkInsert(DataTable dataTable, int batchSize);
+		public abstract void ExecuteTransaction();
+		public abstract void BulkInsert(int batchSize);
 
 		public DataSet FillDataSet()
 		{
@@ -35,6 +36,7 @@ namespace Sys.Data
 		public DataRow FillDataRow() => new DataLand(FillDataSet()).GetRow();
 		public object FillObject() => new DataLand(FillDataSet()).GetCell();
 		public T FillObject<T>()=> new DataLand(FillDataSet()).GetCell<T>();
+
 
 		public override string ToString()
 		{

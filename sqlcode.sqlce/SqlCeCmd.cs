@@ -154,34 +154,32 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
-		public override void BulkInsert(DataTable dataTable, int batchSize)
+		public override void BulkInsert(int batchSize)
 		{
 			int count = 0;
 			List<string> list = new List<string>();
 
-			SqlGenerator gen = new SqlGenerator(dataTable.TableName);
-
-			foreach (DataRow row in dataTable.Rows)
+			foreach (string statement in statements)
 			{
-				gen.Clear();
-				gen.AddRange(row);
-				list.Add(gen.Insert());
+				list.Add(statement);
 
 				count++;
 				if (count >= batchSize)
 				{
-					BulkCopy(list);
+					ExecuteTransaction(list);
 					list.Clear();
 					count = 0;
 				}
 			}
 
-			BulkCopy(list);
+			ExecuteTransaction(list);
 		}
 
-		private void BulkCopy(List<string> inserts)
+		public override void ExecuteTransaction() => ExecuteTransaction(this.statements);
+
+		private void ExecuteTransaction(IEnumerable<string> statements)
 		{
-			if (inserts.Count == 0)
+			if (statements.Count() == 0)
 				return;
 
 			try
@@ -189,13 +187,21 @@ namespace Sys.Data.SqlCe
 				connection.Open();
 				using (var transaction = connection.BeginTransaction())
 				{
-					foreach (string line in inserts)
+					try
 					{
-						command.CommandText = line;
-						command.ExecuteNonQuery();
-					}
+						foreach (string line in statements)
+						{
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
 
-					transaction.Commit();
+						transaction.Commit();
+					}
+					catch (Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
 				}
 			}
 			finally
