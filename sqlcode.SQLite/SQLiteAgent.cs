@@ -18,7 +18,7 @@ namespace Sys.Data.SQLite
 		}
 
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SQLite };
-		public IDbCmd Proxy(SqlUnit unit) => new SQLiteCmd(connectionString, unit);
+		public IDbCmd Proxy(SqlUnit unit) => new SQLiteAccess(connectionString, unit);
 
 		public static DataQuery Query(string connectionString)
 			=> new DataQuery(new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)));

@@ -18,7 +18,7 @@ namespace Sys.Data.SqlCe
 		}
 
 		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
-		public IDbCmd Proxy(SqlUnit unit) => new SqlCeCmd(connectionString, unit);
+		public IDbCmd Proxy(SqlUnit unit) => new SqlCeAccess(connectionString, unit);
 
 		public void CreateDatabase()
 		{

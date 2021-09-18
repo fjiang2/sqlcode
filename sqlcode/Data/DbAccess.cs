@@ -8,11 +8,11 @@ using System.Diagnostics.Contracts;
 
 namespace Sys.Data
 {
-	public abstract class BaseDbCmd : IDbFill, IDbCmd
+	public abstract class DbAccess : IDbFill, IDbCmd
 	{
-		public string Description { get; set; } = nameof(BaseDbCmd);
+		public string Description { get; set; } = nameof(DbAccess);
 
-		public BaseDbCmd()
+		public DbAccess()
 		{
 		}
 

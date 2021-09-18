@@ -1,38 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlClient;
+using System.Text;
+using System.Data.SQLite;
 
-namespace Sys.Data.SqlClient
+namespace Sys.Data.SQLite
 {
 
-	public class SqlCmd : BaseDbCmd, IDbCmd
+	public class SQLiteAccess : DbAccess, IDbCmd
 	{
-		private readonly SqlCommand command;
-		private readonly SqlConnection connection;
-		
+		private readonly SQLiteCommand command;
+		private readonly SQLiteConnection connection;
+
 		private readonly string[] statements;
 		private readonly IParameterFactory parameters;
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
+		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
-			string sql = unit.Statement;
 
-			this.connection = new SqlConnection(connectionString.ConnectionString);
-
-			this.command = new SqlCommand(sql);
+			this.command = new SQLiteCommand();
+			this.connection = new SQLiteConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
-			if (!sql.Contains(' '))
-				command.CommandType = CommandType.StoredProcedure;
 
 			if (args == null)
 				return;
@@ -43,42 +39,42 @@ namespace Sys.Data.SqlClient
 			foreach (IDataParameter item in items)
 			{
 				object value = item.Value ?? DBNull.Value;
-				SqlParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				SQLiteParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
 
-		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
-			SqlDbType dbType = SqlDbType.NVarChar;
+			DbType dbType = DbType.AnsiString;
 			if (value is int)
-				dbType = SqlDbType.Int;
+				dbType = DbType.Int32;
 			else if (value is short)
-				dbType = SqlDbType.SmallInt;
+				dbType = DbType.Int16;
 			else if (value is long)
-				dbType = SqlDbType.BigInt;
+				dbType = DbType.Int64;
 			else if (value is byte)
-				dbType = SqlDbType.TinyInt;
+				dbType = DbType.Byte;
 			else if (value is DateTime)
-				dbType = SqlDbType.DateTime;
+				dbType = DbType.DateTime;
 			else if (value is double)
-				dbType = SqlDbType.Float;
+				dbType = DbType.Double;
 			else if (value is float)
-				dbType = SqlDbType.Float;
+				dbType = DbType.Single;
 			else if (value is decimal)
-				dbType = SqlDbType.Decimal;
+				dbType = DbType.Decimal;
 			else if (value is bool)
-				dbType = SqlDbType.Bit;
+				dbType = DbType.Boolean;
 			else if (value is string && ((string)value).Length > 4000)
-				dbType = SqlDbType.NText;
+				dbType = DbType.AnsiString;
 			else if (value is string)
-				dbType = SqlDbType.NVarChar;
+				dbType = DbType.String;
 			else if (value is byte[])
-				dbType = SqlDbType.Binary;
+				dbType = DbType.Binary;
 			else if (value is Guid)
-				dbType = SqlDbType.UniqueIdentifier;
+				dbType = DbType.Guid;
 
-			SqlParameter param = new SqlParameter(parameterName, dbType)
+			SQLiteParameter param = new SQLiteParameter(parameterName, dbType)
 			{
 				Value = value,
 				Direction = direction,
@@ -93,8 +89,17 @@ namespace Sys.Data.SqlClient
 			try
 			{
 				connection.Open();
-				SqlDataAdapter adapter = new SqlDataAdapter(command);
-				return adapter.Fill(dataSet);
+
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+					DataTable dt = new DataTable();
+					count += adapter.Fill(dt);
+					dataSet.Tables.Add(dt);
+				}
+				return count;
 			}
 			finally
 			{
@@ -107,7 +112,7 @@ namespace Sys.Data.SqlClient
 			try
 			{
 				connection.Open();
-				SqlDataAdapter adapter = new SqlDataAdapter(command);
+				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
 			finally
@@ -116,14 +121,20 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
-
 		public override int ExecuteNonQuery()
 		{
 			try
 			{
 				connection.Open();
-				int count = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					count += command.ExecuteNonQuery();
+					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				}
+
 				return count;
 			}
 			finally
@@ -147,7 +158,7 @@ namespace Sys.Data.SqlClient
 		}
 
 		
-		public override void ExecuteTransaction() 
+		public override void ExecuteTransaction()
 		{
 			if (statements.Count() == 0)
 				return;
@@ -161,14 +172,13 @@ namespace Sys.Data.SqlClient
 					{
 						foreach (string line in statements)
 						{
-							command.Transaction = transaction;
 							command.CommandText = line;
 							command.ExecuteNonQuery();
 						}
 
 						transaction.Commit();
 					}
-					catch (Exception)
+					catch(Exception)
 					{
 						transaction.Rollback();
 						throw;

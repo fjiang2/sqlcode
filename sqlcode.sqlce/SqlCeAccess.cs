@@ -6,7 +6,7 @@ using System.Data.SqlServerCe;
 
 namespace Sys.Data.SqlCe
 {
-	public class SqlCeCmd : BaseDbCmd, IDbCmd
+	public class SqlCeAccess : DbAccess, IDbCmd
 	{
 		private readonly SqlCeCommand command;
 		private readonly SqlCeConnection connection;
@@ -14,12 +14,12 @@ namespace Sys.Data.SqlCe
 		private readonly string[] statements;
 		private readonly IParameterFactory parameters;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, string sql, object args)
+		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
