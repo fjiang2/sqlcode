@@ -24,7 +24,7 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public DbAccess NewDbAccess(SqlUnit unit)
 		{
-			return new DelegateDbAccess(agent, unit);
+			return new DbAccessDelegate(agent, unit);
 		}
 
 		private T Invoke<T>(Func<DataContext, T> func)

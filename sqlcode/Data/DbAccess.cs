@@ -8,7 +8,7 @@ using System.Diagnostics.Contracts;
 
 namespace Sys.Data
 {
-	public abstract class DbAccess : IDbFill, IDbCmd
+	public abstract class DbAccess : IDbFill, IDbAccess
 	{
 		public string Description { get; set; } = nameof(DbAccess);
 

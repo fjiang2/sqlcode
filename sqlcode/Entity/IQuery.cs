@@ -23,10 +23,5 @@ namespace Sys.Data.Entity
 		IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
 		IQueryResultReader Select(Action<DataContext> action);
 
-		//BaseDbCmd NewDbCmd(SqlUnit unit);
-		//IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where = null) where TEntity : class, new();
-		//int PartialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class;
-		//int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class;
-		//int Submit<TEntity>(Action<Table<TEntity>> action) where TEntity : class;
 	}
 }

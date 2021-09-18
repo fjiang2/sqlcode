@@ -18,7 +18,7 @@ using System.Data;
 
 namespace Sys.Data
 {
-	public interface IDbCmd
+	public interface IDbAccess
 	{
 		/// <summary>
 		/// 

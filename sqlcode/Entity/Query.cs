@@ -23,7 +23,7 @@ namespace Sys.Data.Entity
 		/// <param name="sql"></param>
 		/// <returns></returns>
 		public static DbAccess NewDbAccess(SqlUnit unit)
-			=> new DelegateDbAccess(DefaultAgent, unit);
+			=> new DbAccessDelegate(DefaultAgent, unit);
 
 		/// <summary>
 		/// Fill data table
