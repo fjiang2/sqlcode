@@ -5,9 +5,9 @@ using System.Xml.Linq;
 
 namespace Sys.Data
 {
-	public abstract class ParameterFactory : IParameterFactory
+	public abstract class ParameterFacet : IParameterFacet
 	{
-		public ParameterFactory()
+		public ParameterFacet()
 		{
 		}
 
@@ -31,18 +31,18 @@ namespace Sys.Data
 		/// </summary>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		public static IParameterFactory Create(object parameters)
+		public static IParameterFacet Create(object parameters)
 		{
 			if (parameters is IEnumerable<IDataParameter> list)
-				return new ListParameters(list);
+				return new ParameterOfList(list);
 
 			if (parameters is IDictionary<string, object> dict)
-				return new DictionaryParameters(dict);
+				return new ParameterOfDictionary(dict);
 
 			if (parameters is string)
 				throw new NotImplementedException();
 
-			return new ObjectParameters(parameters);
+			return new ParameterOfObject(parameters);
 		}
 
 	}

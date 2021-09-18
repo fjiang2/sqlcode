@@ -12,7 +12,7 @@ namespace Sys.Data
 
 		public DbAccessDelegate(IDbAgent agent, SqlUnit unit)
 		{
-			this.Description = "delegate DbCmd";
+			this.Description = nameof(DbAccessDelegate);
 			this.agent = agent;
 			this.command = agent.Proxy(unit);
 		}

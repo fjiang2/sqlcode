@@ -12,7 +12,7 @@ namespace Sys.Data.SqlCe
 		private readonly SqlCeConnection connection;
 
 		private readonly string[] statements;
-		private readonly IParameterFactory parameters;
+		private readonly IParameterFacet facet;
 
 		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
@@ -31,13 +31,13 @@ namespace Sys.Data.SqlCe
 			if (args == null)
 				return;
 
-			this.parameters = ParameterFactory.Create(args);
+			this.facet = ParameterFacet.Create(args);
 
-			List<IDataParameter> items = this.parameters.CreateParameters();
-			foreach (IDataParameter item in items)
+			List<IDataParameter> parameters = this.facet.CreateParameters();
+			foreach (IDataParameter parameter in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlCeParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				object value = parameter.Value ?? DBNull.Value;
+				SqlCeParameter _parameter = NewParameter("@" + parameter.ParameterName, value, parameter.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
@@ -129,7 +129,7 @@ namespace Sys.Data.SqlCe
 				{
 					command.CommandText = statement;
 					count += command.ExecuteNonQuery();
-					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+					facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				}
 
 				return count;

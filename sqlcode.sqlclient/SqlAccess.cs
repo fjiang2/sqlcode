@@ -14,7 +14,7 @@ namespace Sys.Data.SqlClient
 		private readonly SqlConnection connection;
 		
 		private readonly string[] statements;
-		private readonly IParameterFactory parameters;
+		private readonly IParameterFacet facet;
 
 		public SqlAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
@@ -37,13 +37,13 @@ namespace Sys.Data.SqlClient
 			if (args == null)
 				return;
 
-			this.parameters = ParameterFactory.Create(args);
+			this.facet = ParameterFacet.Create(args);
 
-			List<IDataParameter> items = this.parameters.CreateParameters();
-			foreach (IDataParameter item in items)
+			List<IDataParameter> parameters = this.facet.CreateParameters();
+			foreach (IDataParameter parameter in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				object value = parameter.Value ?? DBNull.Value;
+				SqlParameter _parameter = NewParameter("@" + parameter.ParameterName, value, parameter.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
@@ -123,7 +123,7 @@ namespace Sys.Data.SqlClient
 			{
 				connection.Open();
 				int count = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				return count;
 			}
 			finally

@@ -33,5 +33,9 @@
     <ProjectReference Include="..\sqlcode.sqlite\sqlcode.sqlite.csproj" />
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="sqlce\" />
+  </ItemGroup>
 
 </Project>
