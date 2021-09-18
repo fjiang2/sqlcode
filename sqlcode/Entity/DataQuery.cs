@@ -22,9 +22,9 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="sql"></param>
 		/// <returns></returns>
-		public BaseDbCmd NewDbCmd(SqlUnit unit)
+		public DbAccess NewDbAccess(SqlUnit unit)
 		{
-			return new DelegateDbCmd(agent, unit);
+			return new DbAccessDelegate(agent, unit);
 		}
 
 		private T Invoke<T>(Func<DataContext, T> func)

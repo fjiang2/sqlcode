@@ -1,78 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Data;
-using System.Data.SqlServerCe;
+using System.Data.SqlClient;
 
-namespace Sys.Data.SqlCe
+namespace Sys.Data.SqlClient
 {
-	public class SqlCeCmd : BaseDbCmd, IDbCmd
+
+	public class SqlAccess : DbAccess, IDbAccess
 	{
-		private readonly SqlCeCommand command;
-		private readonly SqlCeConnection connection;
-
+		private readonly SqlCommand command;
+		private readonly SqlConnection connection;
+		
 		private readonly string[] statements;
-		private readonly IParameterFactory parameters;
+		private readonly IParameterFacet facet;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, string sql, object args)
+		public SqlAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
+			string sql = unit.Statement;
 
-			this.command = new SqlCeCommand();
-			this.connection = new SqlCeConnection(connectionString.ConnectionString);
+			this.connection = new SqlConnection(connectionString.ConnectionString);
+
+			this.command = new SqlCommand(sql);
 			this.command.Connection = connection;
+			if (!sql.Contains(' '))
+				command.CommandType = CommandType.StoredProcedure;
 
 			if (args == null)
 				return;
 
-			this.parameters = ParameterFactory.Create(args);
+			this.facet = ParameterFacet.Create(args);
 
-			List<IDataParameter> items = this.parameters.CreateParameters();
-			foreach (IDataParameter item in items)
+			List<IDataParameter> parameters = this.facet.CreateParameters();
+			foreach (IDataParameter parameter in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlCeParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				object value = parameter.Value ?? DBNull.Value;
+				SqlParameter _parameter = NewParameter("@" + parameter.ParameterName, value, parameter.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
 
-		private SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
-			DbType dbType = DbType.AnsiString;
+			SqlDbType dbType = SqlDbType.NVarChar;
 			if (value is int)
-				dbType = DbType.Int32;
+				dbType = SqlDbType.Int;
 			else if (value is short)
-				dbType = DbType.Int16;
+				dbType = SqlDbType.SmallInt;
 			else if (value is long)
-				dbType = DbType.Int64;
+				dbType = SqlDbType.BigInt;
 			else if (value is byte)
-				dbType = DbType.Byte;
+				dbType = SqlDbType.TinyInt;
 			else if (value is DateTime)
-				dbType = DbType.DateTime;
+				dbType = SqlDbType.DateTime;
 			else if (value is double)
-				dbType = DbType.Double;
+				dbType = SqlDbType.Float;
 			else if (value is float)
-				dbType = DbType.Single;
+				dbType = SqlDbType.Float;
 			else if (value is decimal)
-				dbType = DbType.Decimal;
+				dbType = SqlDbType.Decimal;
 			else if (value is bool)
-				dbType = DbType.Boolean;
+				dbType = SqlDbType.Bit;
 			else if (value is string && ((string)value).Length > 4000)
-				dbType = DbType.AnsiString;
+				dbType = SqlDbType.NText;
 			else if (value is string)
-				dbType = DbType.String;
+				dbType = SqlDbType.NVarChar;
 			else if (value is byte[])
-				dbType = DbType.Binary;
+				dbType = SqlDbType.Binary;
 			else if (value is Guid)
-				dbType = DbType.Guid;
+				dbType = SqlDbType.UniqueIdentifier;
 
-			SqlCeParameter param = new SqlCeParameter(parameterName, dbType)
+			SqlParameter param = new SqlParameter(parameterName, dbType)
 			{
 				Value = value,
 				Direction = direction,
@@ -87,16 +93,8 @@ namespace Sys.Data.SqlCe
 			try
 			{
 				connection.Open();
-				int count = 0;
-				foreach (string statement in statements)
-				{
-					command.CommandText = statement;
-					SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
-					DataTable dt = new DataTable();
-					count += adapter.Fill(dt);
-					dataSet.Tables.Add(dt);
-				}
-				return count;
+				SqlDataAdapter adapter = new SqlDataAdapter(command);
+				return adapter.Fill(dataSet);
 			}
 			finally
 			{
@@ -109,7 +107,7 @@ namespace Sys.Data.SqlCe
 			try
 			{
 				connection.Open();
-				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
+				SqlDataAdapter adapter = new SqlDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
 			finally
@@ -118,20 +116,14 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
+
 		public override int ExecuteNonQuery()
 		{
 			try
 			{
 				connection.Open();
-
-				int count = 0;
-				foreach (string statement in statements)
-				{
-					command.CommandText = statement;
-					count += command.ExecuteNonQuery();
-					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-				}
-
+				int count = command.ExecuteNonQuery();
+				facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				return count;
 			}
 			finally
@@ -154,8 +146,8 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
-
-		public override void ExecuteTransaction()
+		
+		public override void ExecuteTransaction() 
 		{
 			if (statements.Count() == 0)
 				return;
@@ -169,6 +161,7 @@ namespace Sys.Data.SqlCe
 					{
 						foreach (string line in statements)
 						{
+							command.Transaction = transaction;
 							command.CommandText = line;
 							command.ExecuteNonQuery();
 						}
@@ -188,6 +181,5 @@ namespace Sys.Data.SqlCe
 			}
 
 		}
-
 	}
 }

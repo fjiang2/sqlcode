@@ -8,20 +8,20 @@ using System.Data.SQLite;
 namespace Sys.Data.SQLite
 {
 
-	public class SQLiteCmd : BaseDbCmd, IDbCmd
+	public class SQLiteAccess : DbAccess, IDbAccess
 	{
 		private readonly SQLiteCommand command;
 		private readonly SQLiteConnection connection;
 
 		private readonly string[] statements;
-		private readonly IParameterFactory parameters;
+		private readonly IParameterFacet facet;
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, string sql, object args)
+		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SQLiteCmd(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
+		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
@@ -33,13 +33,13 @@ namespace Sys.Data.SQLite
 			if (args == null)
 				return;
 
-			this.parameters = ParameterFactory.Create(args);
+			this.facet = ParameterFacet.Create(args);
 
-			List<IDataParameter> items = this.parameters.CreateParameters();
-			foreach (IDataParameter item in items)
+			List<IDataParameter> parameters = this.facet.CreateParameters();
+			foreach (IDataParameter parameter in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SQLiteParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				object value = parameter.Value ?? DBNull.Value;
+				SQLiteParameter _parameter = NewParameter("@" + parameter.ParameterName, value, parameter.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
@@ -132,7 +132,7 @@ namespace Sys.Data.SQLite
 				{
 					command.CommandText = statement;
 					count += command.ExecuteNonQuery();
-					parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+					facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				}
 
 				return count;

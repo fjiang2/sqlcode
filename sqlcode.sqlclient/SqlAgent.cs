@@ -3,7 +3,7 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlClient
 {
-	public class SqlAgent : IDbAgent
+	public class SqlAgent : DbAgent
 	{
 		private SqlConnectionStringBuilder connectionString;
 
@@ -12,8 +12,8 @@ namespace Sys.Data.SqlClient
 			this.connectionString = connectionString;
 		}
 
-		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
-		public IDbCmd Proxy(SqlUnit unit) => new SqlCmd(connectionString, unit);
+		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
+		public override IDbAccess Proxy(SqlUnit unit) => new SqlAccess(connectionString, unit);
 
 		public static DataQuery Query(string connectionString) 
 			=> new DataQuery(new SqlAgent(new SqlConnectionStringBuilder(connectionString)));

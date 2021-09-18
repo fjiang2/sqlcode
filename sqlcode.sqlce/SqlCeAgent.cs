@@ -3,7 +3,7 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlCe
 {
-	public class SqlCeAgent : IDbAgent
+	public class SqlCeAgent : DbAgent
 	{
 		private SqlCeConnectionStringBuilder connectionString;
 
@@ -17,8 +17,8 @@ namespace Sys.Data.SqlCe
 			this.connectionString = connectionString;
 		}
 
-		public DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
-		public IDbCmd Proxy(SqlUnit unit) => new SqlCeCmd(connectionString, unit);
+		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
+		public override IDbAccess Proxy(SqlUnit unit) => new SqlCeAccess(connectionString, unit);
 
 		public void CreateDatabase()
 		{

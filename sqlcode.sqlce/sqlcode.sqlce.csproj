@@ -44,7 +44,7 @@
     <Compile Include="DbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlCeAgent.cs" />
-    <Compile Include="SqlCeCmd.cs" />
+    <Compile Include="SqlCeAccess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sqlcode\sqlcode.csproj">

@@ -59,8 +59,8 @@ namespace UnitTestProject
 				new Parameter("City", "Houston") { Direction = ParameterDirection.Output },
 			};
 
-			IParameterFactory parameters = ParameterFactory.Create(args);
-			List<IDataParameter> items = parameters.CreateParameters();
+			IParameterFacet facet = ParameterFacet.Create(args);
+			List<IDataParameter> items = facet.CreateParameters();
 
 			Debug.Assert(items[0].ParameterName == "Id" && items[1].ParameterName == "City");
 			Debug.Assert(items[0].Value.Equals(20) && items[1].Value.Equals("Houston"));
@@ -72,7 +72,7 @@ namespace UnitTestProject
 				new SqlParameter("City", "Austin") {Direction = ParameterDirection.Output},
 			};
 
-			parameters.UpdateResult(result);
+			facet.UpdateResult(result);
 
 			Debug.Assert(args[0].Value.Equals(20));
 			Debug.Assert(args[1].Value.Equals("Austin"));
@@ -84,8 +84,8 @@ namespace UnitTestProject
 		{
 			var args = new Enitity { Id = 20, City = "Houston" };
 
-			IParameterFactory parameters = ParameterFactory.Create(args);
-			List<IDataParameter> items = parameters.CreateParameters();
+			IParameterFacet facet = ParameterFacet.Create(args);
+			List<IDataParameter> items = facet.CreateParameters();
 			items[1].Direction = ParameterDirection.Output;
 
 			Debug.Assert(items[0].ParameterName == "Id" && items[1].ParameterName == "City");
@@ -98,7 +98,7 @@ namespace UnitTestProject
 				new SqlParameter("City", "Austin") {Direction = ParameterDirection.Output},
 			};
 
-			parameters.UpdateResult(result);
+			facet.UpdateResult(result);
 
 			Debug.Assert(args.Id == 20);
 			Debug.Assert(args.City == "Austin");

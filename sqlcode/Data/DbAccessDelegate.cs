@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Sys.Data
 {
-	class DelegateDbCmd : BaseDbCmd, IDbCmd
+	class DbAccessDelegate : DbAccess, IDbAccess
 	{
 		private readonly IDbAgent agent;
-		private readonly IDbCmd command;
+		private readonly IDbAccess command;
 
-		public DelegateDbCmd(IDbAgent agent, SqlUnit unit)
+		public DbAccessDelegate(IDbAgent agent, SqlUnit unit)
 		{
-			this.Description = "delegate DbCmd";
+			this.Description = nameof(DbAccessDelegate);
 			this.agent = agent;
 			this.command = agent.Proxy(unit);
 		}

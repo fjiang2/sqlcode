@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Sys.Data
 {
-	class ListParameters : ParameterFactory
+	class ParameterOfList : ParameterFacet
 	{
 		private IEnumerable<IDataParameter> list;
 
-		public ListParameters(IEnumerable<IDataParameter> parameters)
+		public ParameterOfList(IEnumerable<IDataParameter> parameters)
 		{
 			this.list = parameters;
 		}

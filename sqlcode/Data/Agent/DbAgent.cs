@@ -14,6 +14,7 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
+using Sys.Data.Entity;
 
 namespace Sys.Data
 {
@@ -25,7 +26,11 @@ namespace Sys.Data
 
 		public abstract DbAgentOption Option { get; }
 
-		public abstract IDbCmd Proxy(SqlUnit unit);
+		public abstract IDbAccess Proxy(SqlUnit unit);
+
+		public DataContext DataContext() => new DataContext(this);
+
+		public DataQuery Query() => new DataQuery(this);
 
 		public override string ToString()
 		{
