@@ -8,50 +8,28 @@ using System.Data;
 
 namespace Sys.Data.Entity
 {
-	public static class Query
+	public class DataQuery : IQuery
 	{
-		/// <summary>
-		/// It must be assigned before using class Query. The agent could be SQL Server, SQLite, SQLCe agents.
-		/// </summary>
-		public static IDbAgent DefaultAgent { get; set; }
+		private readonly IDbAgent agent;
 
-		private static DataQuery query => new DataQuery(DefaultAgent);
-
-		/// <summary>
-		/// Create DbCommand
-		/// </summary>
-		/// <param name="sql"></param>
-		/// <returns></returns>
-		public static BaseDbCmd NewDbCmd(SqlUnit unit)
-			=> new DelegateDbCmd(DefaultAgent, unit);
-
-		/// <summary>
-		/// Fill data table
-		/// </summary>
-		/// <param name="sql"></param>
-		/// <param name="args"></param>
-		/// <returns></returns>
-		public static DataTable FillDataTable(string sql, object args = null)
-			=> NewDbCmd(new SqlUnit(sql, args)).FillDataTable();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="sql"></param>
-		/// <param name="args"></param>
-		/// <returns></returns>
-		public static int ExecuteNonQuery(string sql, object args = null)
-			=> NewDbCmd(new SqlUnit(sql, args)).ExecuteNonQuery();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="func"></param>
-		/// <returns></returns>
-		public static T Invoke<T>(Func<DataContext, T> func)
+		public DataQuery(IDbAgent agent)
 		{
-			using (var db = new DataContext(DefaultAgent))
+			this.agent = agent ?? throw new ArgumentNullException("undefined agent");
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="sql"></param>
+		/// <returns></returns>
+		public BaseDbCmd NewDbCmd(SqlUnit unit)
+		{
+			return new DelegateDbCmd(agent, unit);
+		}
+
+		private T Invoke<T>(Func<DataContext, T> func)
+		{
+			using (var db = new DataContext(agent))
 			{
 				return func(db);
 			}
@@ -63,7 +41,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="action"></param>
 		/// <returns></returns>
-		public static int Submit<TEntity>(Action<Table<TEntity>> action) where TEntity : class
+		public int Submit<TEntity>(Action<Table<TEntity>> action) where TEntity : class
 		{
 			return Invoke(db =>
 			{
@@ -78,27 +56,30 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="action"></param>
 		/// <returns></returns>
-		public static IQueryResultReader Select(Action<DataContext> action)
-			=> query.Select(action);
+		public IQueryResultReader Select(Action<DataContext> action)
+		{
+			return Invoke(db =>
+			{
+				action(db);
+				return db.SumbitQueries();
+			});
+		}
+
 
 		/// <summary>
 		/// SELECT * FROM entity-table
 		/// </summary>
 		/// <typeparam name="TEntity"></typeparam>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>() where TEntity : class
-			=> query.Select<TEntity>();
+		public IEnumerable<TEntity> Select<TEntity>() where TEntity : class
+		{
+			return Invoke(db => db.GetTable<TEntity>().Select(where: string.Empty));
+		}
 
-		/// <summary>
-		/// Retrieve maxRecord starting on startRecord: SELECT * FROM entity-table WHERE ...
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <param name="startRecord"> The zero-based record number to start with.</param>
-		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
-		/// <param name="where"></param>
-		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(int startRecord, int maxRecords, string where) where TEntity : class
-			=> query.Select<TEntity>(startRecord, maxRecords, where);
+		public IEnumerable<TEntity> Select<TEntity>(int startRecord, int maxRecords, string where) where TEntity : class
+		{
+			return Invoke(db => db.GetTable<TEntity>().Select(startRecord, maxRecords, where));
+		}
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE ...
@@ -106,8 +87,10 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
-			=> query.Select<TEntity>(where);
+		public IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
+		{
+			return Invoke(db => db.GetTable<TEntity>().Select(where));
+		}
 
 		/// <summary>
 		/// Select single entity by primary key. Properties of primary key must have values
@@ -115,8 +98,14 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public static TEntity SelectRow<TEntity>(TEntity entity) where TEntity : class
-			=> query.SelectRow(entity);
+		public TEntity SelectRow<TEntity>(TEntity entity) where TEntity : class
+		{
+			return Invoke(db =>
+			{
+				var table = db.GetTable<TEntity>();
+				return table.Select(entity);
+			});
+		}
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE ...
@@ -124,8 +113,10 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
-			=> query.Select(where);
+		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
+		{
+			return Invoke(db => db.GetTable<TEntity>().Select(where));
+		}
 
 		/// <summary>
 		/// SELECT col1,col2,... FROM entity-table WHERE ...
@@ -137,8 +128,36 @@ namespace Sys.Data.Entity
 		/// <param name="selectedColumns"></param>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
-			=> query.Select(selectedColumns, where);
+		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
+		{
+			TEntity CreateInstance(System.Reflection.PropertyInfo[] properties, DataRow row, IEnumerable<string> columns)
+			{
+				TEntity entity = new TEntity();
+				foreach (var property in properties)
+				{
+					if (columns.Contains(property.Name))
+						property.SetValue(entity, Convert.ChangeType(row[property.Name], property.PropertyType));
+				}
+
+				return entity;
+			}
+
+			return Invoke(db =>
+			{
+				var table = db.GetTable<TEntity>();
+
+				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
+				string _where = new QueryTranslator(db.Style).Translate(where);
+				string SQL = table.SelectFromWhere(_where, _columns);
+
+				var dt = db.FillDataTable(SQL);
+				if (dt == null || dt.Rows.Count == 0)
+					return new List<TEntity>();
+
+				var properties = typeof(TEntity).GetProperties();
+				return dt.ToList(row => CreateInstance(properties, row, _columns));
+			});
+		}
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)
@@ -153,10 +172,23 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public static IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
+		public IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
 			where TEntity : class
 			where TResult : class
-			=> query.Select(where, keySelector, resultSelector);
+		{
+			var translator = new QueryTranslator(agent.Option.Style);
+			string _where = translator.Translate(where);
+			string _keySelector = translator.Translate(keySelector);
+			string _resultSelector = translator.Translate(resultSelector);
+
+			return Invoke(db =>
+			{
+				var dt = db.GetTable<TEntity>();
+				string SQL = $"{_resultSelector} IN (SELECT {_keySelector} FROM {dt} WHERE {_where})";
+				return db.GetTable<TResult>().Select(SQL);
+			});
+		}
+
 
 
 		/// <summary>
@@ -165,7 +197,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Insert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int Insert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOnSubmit(entities));
 
 		/// <summary>
@@ -174,7 +206,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public static int InsertRow<TEntity>(TEntity entity) where TEntity : class
+		public int InsertRow<TEntity>(TEntity entity) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOnSubmit(entity));
 
 		/// <summary>
@@ -183,7 +215,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Update<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int Update<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.UpdateOnSubmit(entities));
 
 		/// <summary>
@@ -192,7 +224,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public static int UpdateRow<TEntity>(TEntity entity) where TEntity : class
+		public int UpdateRow<TEntity>(TEntity entity) where TEntity : class
 			=> Submit<TEntity>(table => table.UpdateOnSubmit(entity));
 
 		/// <summary>
@@ -205,7 +237,7 @@ namespace Sys.Data.Entity
 		/// <param name="entities"></param>
 		/// <param name="throwException"></param>
 		/// <returns></returns>
-		public static int PartialUpdate<TEntity>(this IEnumerable<object> entities, bool throwException = false) where TEntity : class
+		public int PartialUpdate<TEntity>(IEnumerable<object> entities, bool throwException = false) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entities, throwException));
 
 		/// <summary>
@@ -215,7 +247,7 @@ namespace Sys.Data.Entity
 		/// <param name="entity"></param>
 		/// <param name="throwException"></param>
 		/// <returns></returns>
-		public static int PartialUpdateRow<TEntity>(object entity, bool throwException = false) where TEntity : class
+		public int PartialUpdateRow<TEntity>(object entity, bool throwException = false) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, throwException));
 
 		/// <summary>
@@ -226,7 +258,7 @@ namespace Sys.Data.Entity
 		/// <param name="modifiedProperties">The properties are modified</param>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
+		public int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
 			=> Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, modifiedProperties, where));
 
 		/// <summary>
@@ -235,7 +267,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int InsertOrUpdate<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int InsertOrUpdate<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOrUpdateOnSubmit(entities));
 
 		/// <summary>
@@ -244,7 +276,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public static int InsertOrUpdateRow<TEntity>(TEntity entity) where TEntity : class
+		public int InsertOrUpdateRow<TEntity>(TEntity entity) where TEntity : class
 			=> Submit<TEntity>(table => table.InsertOrUpdateOnSubmit(entity));
 
 		/// <summary>
@@ -253,7 +285,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
+		public int Delete<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Submit<TEntity>(table => table.DeleteOnSubmit(entities));
 
 		/// <summary>
@@ -262,8 +294,8 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public static int DeleteRow<TEntity>(TEntity entity) where TEntity : class
-			=> query.DeleteRow(entity);
+		public int DeleteRow<TEntity>(TEntity entity) where TEntity : class
+			=> Submit<TEntity>(table => table.DeleteOnSubmit(entity));
 
 		/// <summary>
 		/// DELETE FROM entity-table WHERE ...
@@ -271,8 +303,10 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(string where) where TEntity : class
-			=> query.Delete<TEntity>(where);
+		public int Delete<TEntity>(string where) where TEntity : class
+		{
+			return Submit<TEntity>(table => table.DeleteOnSubmit(where));
+		}
 
 		/// <summary>
 		/// DELETE FROM entity-table WHERE ...
@@ -280,8 +314,10 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="where"></param>
 		/// <returns></returns>
-		public static int Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
-			=> query.Delete<TEntity>(where);
+		public int Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
+		{
+			return Submit<TEntity>(table => table.DeleteOnSubmit(where));
+		}
 
 		/// <summary>
 		/// Expand detail table from master table
@@ -290,8 +326,8 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TSubEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(this IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
-			=> query.Expand<TEntity, TSubEntity>(entities);
+		public IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
+			=> Invoke(db => db.Expand<TEntity, TSubEntity>(entities));
 
 		/// <summary>
 		/// Expand assocation tables with foreign keys
@@ -299,8 +335,8 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static IQueryResultReader Expand<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
-			=> query.Expand(entities);
+		public IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+			=> Invoke(db => db.Expand(entities));
 
 		/// <summary>
 		/// Support SqlCe and SQL server, use primary key to check row existence
@@ -308,8 +344,16 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entity"></param>
 		/// <returns></returns>
-		public static int UpsertRow<TEntity>(TEntity entity) where TEntity : class
-			=> query.UpsertRow(entity);
+		public int UpsertRow<TEntity>(TEntity entity) where TEntity : class
+		{
+			return Submit<TEntity>(table =>
+			{
+				if (table.Select(entity) == null)
+					table.InsertOnSubmit(entity);
+				else
+					table.UpdateOnSubmit(entity);
+			});
+		}
 
 		/// <summary>
 		/// Support SqlCe and SQL server
@@ -317,8 +361,28 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <returns></returns>
-		public static int Upsert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
-			=> query.Upsert(entities);
+		public int Upsert<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+		{
+			return Submit<TEntity>(table =>
+			{
+				foreach (var entity in entities)
+				{
+					if (table.Select(entity) == null)
+						table.InsertOnSubmit(entity);
+					else
+						table.UpdateOnSubmit(entity);
+				}
+			});
+		}
+
+		public IEnumerable<TEntity> ToList<TEntity>(DataTable dataTable) where TEntity : class
+		{
+			return Invoke(db =>
+			{
+				var dt = db.GetTable<TEntity>();
+				return dt.ToList(dataTable);
+			});
+		}
 
 		/// <summary>
 		/// Bulk insert entities
@@ -326,8 +390,31 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TEntity"></typeparam>
 		/// <param name="entities"></param>
 		/// <param name="batchSize"></param>
-		public static void BulkInsert<TEntity>(this IEnumerable<TEntity> entities, int batchSize) where TEntity : class
-			=> query.BulkInsert(entities, batchSize);
+		public void BulkInsert<TEntity>(IEnumerable<TEntity> entities, int batchSize) where TEntity : class
+		{
+			Invoke(db =>
+			{
+				var dt = db.GetTable<TEntity>();
+				foreach (var entity in entities)
+				{
+					dt.InsertOnSubmit(entity);
+				}
+
+				var dict = db.GetBulkInsert();
+				foreach (var kvp in dict)
+				{
+					foreach (var list in kvp.Value.Split(batchSize))
+					{
+						var unit = new SqlUnit(list.ToArray());
+						var cmd = agent.Proxy(unit);
+						cmd.ExecuteTransaction();
+					}
+				}
+
+				return 0;
+			});
+		}
+
 	}
 
 }

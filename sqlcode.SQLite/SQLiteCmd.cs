@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using System.Text;
 using System.Data.SQLite;
 
 namespace Sys.Data.SQLite
@@ -156,5 +157,39 @@ namespace Sys.Data.SQLite
 			}
 		}
 
+		
+		public override void ExecuteTransaction()
+		{
+			if (statements.Count() == 0)
+				return;
+
+			try
+			{
+				connection.Open();
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						foreach (string line in statements)
+						{
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch(Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
+			}
+			finally
+			{
+				connection.Close();
+			}
+
+		}
 	}
 }

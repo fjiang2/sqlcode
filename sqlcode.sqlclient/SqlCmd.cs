@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -11,15 +12,21 @@ namespace Sys.Data.SqlClient
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;
+		
+		private readonly string[] statements;
 		private readonly IParameterFactory parameters;
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
-			: this(connectionString, unit.Statement, unit.Arguments)
+		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
+			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
+		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
 		{
+			this.statements = unit.Statements;
+			object args = unit.Arguments;
+			string sql = unit.Statement;
+
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 
 			this.command = new SqlCommand(sql);
@@ -139,5 +146,40 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
+		
+		public override void ExecuteTransaction() 
+		{
+			if (statements.Count() == 0)
+				return;
+
+			try
+			{
+				connection.Open();
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						foreach (string line in statements)
+						{
+							command.Transaction = transaction;
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
+			}
+			finally
+			{
+				connection.Close();
+			}
+
+		}
 	}
 }

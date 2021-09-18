@@ -97,7 +97,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder TUPLE(params Expression[] exprList)
 		{
-			return TUPLE((IEnumerable<Expression>) exprList);
+			return TUPLE((IEnumerable<Expression>)exprList);
 		}
 
 		public SqlBuilder TUPLE(IEnumerable<Expression> exprList)
@@ -165,7 +165,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder COLUMNS(IEnumerable<Expression> columns)
 		{
-			if (columns.Count() == 0)
+			if (columns == null || columns.Count() == 0)
 				return COLUMNS("*");
 			else
 				return Append(new Expression(columns)).AppendSpace();
@@ -173,7 +173,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder COLUMNS(IEnumerable<string> columns)
 		{
-			if (columns.Count() == 0)
+			if (columns == null || columns.Count() == 0)
 				return COLUMNS("*");
 			else
 				return COLUMNS(JoinColumns(columns));

@@ -20,12 +20,14 @@ namespace UnitTestProject
 	public class UnitTest_SqlServer_Entity2
 	{
 		private readonly string connectionString = Setting.ConnectionString;
-		private readonly Query Query;
+		private readonly DataQuery Query;
 
 		public UnitTest_SqlServer_Entity2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query(new SqlClientAgent(connectionString));
+			var agent = new SqlAgent(new SqlConnectionStringBuilder(connectionString));
+			//Query = new DataQuery(agent);
+			Query = SqlAgent.Query(connectionString);
 		}
 
 

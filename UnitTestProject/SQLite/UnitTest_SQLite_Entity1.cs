@@ -21,7 +21,7 @@ namespace UnitTestProject
 	{
 		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
 		private string connectionString;
-		private readonly Query Query;
+		private readonly DataQuery Query;
 
 		public UnitTest_SQLite_Entity1()
 		{
@@ -29,7 +29,8 @@ namespace UnitTestProject
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(new SQLiteAgent(fileName));
+			//Query = new Query(new SQLiteAgent(fileName));
+			Query = SQLiteAgent.Query(connectionString);
 		}
 
 		//[TestMethod]
@@ -535,7 +536,8 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-			Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
+			var L = Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages").ToArray();
+			Debug.Assert(L[0].CategoryID == 1 && L[0].Description == null);
 
 			using (var db = new DbContext(connectionString))
 			{

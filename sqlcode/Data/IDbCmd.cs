@@ -33,6 +33,11 @@ namespace Sys.Data
 		object ExecuteScalar();
 
 		/// <summary>
+		/// 
+		/// </summary>
+		void ExecuteTransaction();
+
+		/// <summary>
 		/// Retrieve data set
 		/// </summary>
 		/// <param name="dataSet"></param>

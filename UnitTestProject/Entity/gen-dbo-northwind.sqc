@@ -8,8 +8,8 @@ let ns = "UnitTestProject.Northwind";
 cd ..\Northwind
 
 
-export * /ns:{ns}.dc1 /dc1 /out:{output}\dc1 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc
-export * /ns:{ns}.dc2 /dc2 /out:{output}\dc2 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc
+export * /ns:{ns}.dc1 /dc1 /out:{output}\dc1 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc /data-column-property
+export * /ns:{ns}.dc2 /dc2 /out:{output}\dc2 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc /data-column-property
 
 
 rem export * /ns:{ns}.l2s /l2s /out:{output}\l2s /method:GetField /using:Sys.Data;Sys.Data.Entity

@@ -53,10 +53,12 @@ namespace UnitTestProject.Northwind.dc2
 		
 		public static DataTable CreateTable()
 		{
-			DataTable dt = new DataTable();
-			dt.Columns.Add(new DataColumn(_TERRITORYID, typeof(string)));
-			dt.Columns.Add(new DataColumn(_TERRITORYDESCRIPTION, typeof(string)));
-			dt.Columns.Add(new DataColumn(_REGIONID, typeof(int)));
+			DataTable dt = new DataTable { TableName = TableName };
+			dt.Columns.Add(new DataColumn(_TERRITORYID, typeof(string)) { Unique = true, AllowDBNull = false, MaxLength = 20 });
+			dt.Columns.Add(new DataColumn(_TERRITORYDESCRIPTION, typeof(string)) { AllowDBNull = false, MaxLength = 50 });
+			dt.Columns.Add(new DataColumn(_REGIONID, typeof(int)) { AllowDBNull = false });
+			
+			dt.PrimaryKey = dt.Columns.OfType<DataColumn>().Where(column => Keys.Contains(column.ColumnName)).ToArray();
 			
 			return dt;
 		}

@@ -154,5 +154,40 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
+
+		public override void ExecuteTransaction()
+		{
+			if (statements.Count() == 0)
+				return;
+
+			try
+			{
+				connection.Open();
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						foreach (string line in statements)
+						{
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
+			}
+			finally
+			{
+				connection.Close();
+			}
+
+		}
+
 	}
 }

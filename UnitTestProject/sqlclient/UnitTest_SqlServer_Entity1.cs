@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define USE_Query_Class
+using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,13 +20,20 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SqlServer_Entity1
 	{
-		private readonly string connectionString = Setting.ConnectionString;
-		private readonly Query Query;
+		private readonly static string connectionString = Setting.ConnectionString;
 
+#if !USE_Query_Class
+		private readonly DataQuery Query = SqlAgent.Query(connectionString);
+#endif
 		public UnitTest_SqlServer_Entity1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(new SqlClientAgent(connectionString));
+
+#if USE_Query_Class
+			Query.DefaultAgent = new SqlAgent(new SqlConnectionStringBuilder(connectionString));
+#else
+			Query = SqlAgent.Query(connectionString);
+#endif
 		}
 
 
@@ -68,7 +76,7 @@ namespace UnitTestProject
 
 
 		[TestMethod]
-		public void TestMethodSelect()
+		public void TestMethod_Select()
 		{
 			using (var db = new DbContext(connectionString))
 			{
@@ -77,6 +85,14 @@ namespace UnitTestProject
 
 				Debug.Assert(rows.First(row => row.ProductID == 6).ProductName == "Grandma's Boysenberry Spread");
 			}
+		}
+
+		[TestMethod]
+		public void TestMethod_Select_MaxRecords()
+		{
+			var rows = Query.Select<Products>(3, 4, null);
+			Debug.Assert(rows.First(row => row.ProductID == 4).ProductName == "Chef Anton's Cajun Seasoning");
+			Debug.Assert(rows.Count() == 4);
 		}
 
 		[TestMethod]
@@ -467,8 +483,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestAssoicationClass()
 		{
-			var product = Query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
-			var A = product.GetAssociation(Query);
+			var query = SqlAgent.Query(connectionString);
+			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
+			var A = product.GetAssociation(query);
 			var D = A.Order_Details;
 
 			Debug.Assert(D.Count == 22);
@@ -564,6 +581,154 @@ namespace UnitTestProject
 				Debug.Assert(SQL == "DELETE FROM [Products] WHERE ((CategoryID = 1) AND (ProductName = 'Apple'))");
 			}
 		}
+
+		[TestMethod]
+		public void Test_BulkInsert()
+		{
+			List<Products> list = new List<Products>
+			{
+			new Products
+			{
+				ProductID = 1,
+				ProductName = "Chai",
+				SupplierID = 1,
+				CategoryID = 1,
+				QuantityPerUnit = "10 boxes x 20 bags",
+				UnitPrice = (decimal)18.0000,
+				UnitsInStock = 39,
+				UnitsOnOrder = 0,
+				ReorderLevel = 10,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 2,
+				ProductName = "Chang",
+				SupplierID = 1,
+				CategoryID = 1,
+				QuantityPerUnit = "24 - 12 oz bottles",
+				UnitPrice = (decimal)19.0000,
+				UnitsInStock = 17,
+				UnitsOnOrder = 40,
+				ReorderLevel = 25,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 3,
+				ProductName = "Aniseed Syrup",
+				SupplierID = 1,
+				CategoryID = 2,
+				QuantityPerUnit = "12 - 550 ml bottles",
+				UnitPrice = (decimal)10.0000,
+				UnitsInStock = 13,
+				UnitsOnOrder = 70,
+				ReorderLevel = 25,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 4,
+				ProductName = "Chef Anton's Cajun Seasoning",
+				SupplierID = 2,
+				CategoryID = 2,
+				QuantityPerUnit = "48 - 6 oz jars",
+				UnitPrice = (decimal)22.0000,
+				UnitsInStock = 53,
+				UnitsOnOrder = 0,
+				ReorderLevel = 0,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 5,
+				ProductName = "Chef Anton's Gumbo Mix",
+				SupplierID = 2,
+				CategoryID = 2,
+				QuantityPerUnit = "36 boxes",
+				UnitPrice = (decimal)21.3500,
+				UnitsInStock = 0,
+				UnitsOnOrder = 0,
+				ReorderLevel = 0,
+				Discontinued = true
+			},
+			new Products
+			{
+				ProductID = 6,
+				ProductName = "Grandma's Boysenberry Spread",
+				SupplierID = 3,
+				CategoryID = 2,
+				QuantityPerUnit = "12 - 8 oz jars",
+				UnitPrice = (decimal)25.0000,
+				UnitsInStock = 120,
+				UnitsOnOrder = 0,
+				ReorderLevel = 25,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 7,
+				ProductName = "Uncle Bob's Organic Dried Pears",
+				SupplierID = 3,
+				CategoryID = 7,
+				QuantityPerUnit = "12 - 1 lb pkgs.",
+				UnitPrice = (decimal)30.0000,
+				UnitsInStock = 15,
+				UnitsOnOrder = 0,
+				ReorderLevel = 10,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 8,
+				ProductName = "Northwoods Cranberry Sauce",
+				SupplierID = 3,
+				CategoryID = 2,
+				QuantityPerUnit = "12 - 12 oz jars",
+				UnitPrice = (decimal)40.0000,
+				UnitsInStock = 6,
+				UnitsOnOrder = 0,
+				ReorderLevel = 0,
+				Discontinued = false
+			},
+			new Products
+			{
+				ProductID = 9,
+				ProductName = "Mishi Kobe Niku",
+				SupplierID = 4,
+				CategoryID = 6,
+				QuantityPerUnit = "18 - 500 g pkgs.",
+				UnitPrice = (decimal)97.0000,
+				UnitsInStock = 29,
+				UnitsOnOrder = 0,
+				ReorderLevel = 0,
+				Discontinued = true
+			},
+			new Products
+			{
+				ProductID = 10,
+				ProductName = "Ikura",
+				SupplierID = 4,
+				CategoryID = 8,
+				QuantityPerUnit = "12 - 200 ml jars",
+				UnitPrice = (decimal)31.0000,
+				UnitsInStock = 31,
+				UnitsOnOrder = 0,
+				ReorderLevel = 0,
+				Discontinued = false
+			}
+			};
+
+			Query.Delete<Products>(row => row.ProductID > 77);
+			Query.BulkInsert<Products>(list, batchSize: 4);
+
+			var rows = Query.Select<Products>(row => row.ProductID > 77);
+			Debug.Assert(rows.Count() == list.Count);
+			
+			//clear inserts
+			Query.Delete<Products>(row => row.ProductID > 77);
+		}
+
 	}
 }
 

@@ -22,5 +22,6 @@ namespace Sys.Data
 		public override object ExecuteScalar() => command.ExecuteScalar();
 		public override int FillDataSet(DataSet dataSet) => command.FillDataSet(dataSet);
 		public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords) => command.FillDataTable(dataTable, startRecord, maxRecords);
+		public override void ExecuteTransaction() => command.ExecuteTransaction();
 	}
 }
