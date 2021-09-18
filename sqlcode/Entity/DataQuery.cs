@@ -383,6 +383,38 @@ namespace Sys.Data.Entity
 				return dt.ToList(dataTable);
 			});
 		}
+
+		/// <summary>
+		/// Bulk insert entities
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entities"></param>
+		/// <param name="batchSize"></param>
+		public void BulkInsert<TEntity>(IEnumerable<TEntity> entities, int batchSize) where TEntity : class
+		{
+			Invoke(db =>
+			{
+				var dt = db.GetTable<TEntity>();
+				foreach (var entity in entities)
+				{
+					dt.InsertOnSubmit(entity);
+				}
+
+				var dict = db.GetBulkInsert();
+				foreach (var kvp in dict)
+				{
+					foreach (var list in kvp.Value.Split(batchSize))
+					{
+						var unit = new SqlUnit(list.ToArray());
+						var cmd = agent.Proxy(unit);
+						cmd.ExecuteTransaction();
+					}
+				}
+
+				return 0;
+			});
+		}
+
 	}
 
 }

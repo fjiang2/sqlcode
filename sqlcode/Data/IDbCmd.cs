@@ -38,12 +38,6 @@ namespace Sys.Data
 		void ExecuteTransaction();
 
 		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="batchSize"></param>
-		void BulkInsert(int batchSize);
-
-		/// <summary>
 		/// Retrieve data set
 		/// </summary>
 		/// <param name="dataSet"></param>

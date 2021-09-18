@@ -320,6 +320,14 @@ namespace Sys.Data.Entity
 		public static int Upsert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> query.Upsert(entities);
 
+		/// <summary>
+		/// Bulk insert entities
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <param name="entities"></param>
+		/// <param name="batchSize"></param>
+		public static void BulkInsert<TEntity>(this IEnumerable<TEntity> entities, int batchSize) where TEntity : class
+			=> query.BulkInsert(entities, batchSize);
 	}
 
 }

@@ -21,7 +21,6 @@ namespace Sys.Data
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
 		public abstract void ExecuteTransaction();
-		public abstract void BulkInsert(int batchSize);
 
 		public DataSet FillDataSet()
 		{

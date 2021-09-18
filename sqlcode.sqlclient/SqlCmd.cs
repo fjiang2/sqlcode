@@ -146,30 +146,8 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
-		public override void BulkInsert(int batchSize)
-		{
-			int count = 0;
-			List<string> list = new List<string>();
-
-			foreach (string statement in statements)
-			{
-				list.Add(statement);
-
-				count++;
-				if (count >= batchSize)
-				{
-					ExecuteTransaction(list);
-					list.Clear();
-					count = 0;
-				}
-			}
-
-			ExecuteTransaction(list);
-		}
-
-		public override void ExecuteTransaction() => ExecuteTransaction(this.statements);
-
-		private void ExecuteTransaction(IEnumerable<string> statements)
+		
+		public override void ExecuteTransaction() 
 		{
 			if (statements.Count() == 0)
 				return;
@@ -183,6 +161,7 @@ namespace Sys.Data.SqlClient
 					{
 						foreach (string line in statements)
 						{
+							command.Transaction = transaction;
 							command.CommandText = line;
 							command.ExecuteNonQuery();
 						}
