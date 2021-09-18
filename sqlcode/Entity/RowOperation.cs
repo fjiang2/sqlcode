@@ -2,6 +2,7 @@
 {
     public enum RowOperation
     {
+        Select,
         Insert,
         Update,
         PartialUpdate,

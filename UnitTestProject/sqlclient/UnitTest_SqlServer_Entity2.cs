@@ -7,7 +7,7 @@ using System.Linq;
 using System.Data.SqlClient;
 
 using UnitTestProject.Northwind.dc2;
-using UnitTestProject.SqlServer;
+using Sys.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data;
 
@@ -17,15 +17,17 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTest_EntityClass2
+	public class UnitTest_SqlServer_Entity2
 	{
 		private readonly string connectionString = Setting.ConnectionString;
-		private readonly Query Query;
+		private readonly DataQuery Query;
 
-		public UnitTest_EntityClass2()
+		public UnitTest_SqlServer_Entity2()
 		{
 			DataContext.EntityClassType = EntityClassType.SingleClass;
-			Query = new Query(new SqlServerAgent(connectionString));
+			var agent = new SqlAgent(new SqlConnectionStringBuilder(connectionString));
+			//Query = new DataQuery(agent);
+			Query = SqlAgent.Query(connectionString);
 		}
 
 

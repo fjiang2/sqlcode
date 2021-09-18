@@ -2,15 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0;net48</TargetFrameworks>
-    <RootNamespace>Sys.Data.SQLite</RootNamespace>
+    <RootNamespace>Sys.Data.SqlClient</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-	<PackageReference Include="System.Data.SQLite" Version="1.0.115" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-	<PackageReference Include="System.Data.SQLite" Version="1.0.115" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>

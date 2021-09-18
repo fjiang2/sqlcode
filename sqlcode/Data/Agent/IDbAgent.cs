@@ -29,6 +29,6 @@ namespace Sys.Data
 		/// </summary>
 		/// <param name="unit">include SQL statement with arguments</param>
 		/// <returns></returns>
-		IDbCmd Proxy(SqlUnit unit);
+		IDbAccess Proxy(SqlUnit unit);
 	}
 }

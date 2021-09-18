@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace Sys.Data
 {
-	class ListParameters : ParameterFactory
+	class ParameterOfList : ParameterFacet
 	{
-		private IEnumerable<IDataParameter> parameters;
+		private IEnumerable<IDataParameter> list;
 
-		public ListParameters(IEnumerable<IDataParameter> parameters)
+		public ParameterOfList(IEnumerable<IDataParameter> parameters)
 		{
-			this.parameters = parameters;
+			this.list = parameters;
 		}
 
-		public override List<IDataParameter> CreateParameters() => parameters.ToList();
+		public override List<IDataParameter> CreateParameters() => list.ToList();
 
 		public override void UpdateResult(IEnumerable<IDataParameter> result)
 		{
@@ -24,7 +24,7 @@ namespace Sys.Data
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;
 
-				var found = parameters.FirstOrDefault(x => x.ParameterName == parameterName);
+				var found = list.FirstOrDefault(x => x.ParameterName == parameterName);
 				if (found != null)
 					found.Value = parameter.Value;
 			}

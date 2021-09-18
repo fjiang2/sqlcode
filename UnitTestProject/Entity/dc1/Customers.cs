@@ -93,18 +93,20 @@ namespace UnitTestProject.Northwind.dc1
 		
 		public static DataTable CreateTable()
 		{
-			DataTable dt = new DataTable();
-			dt.Columns.Add(new DataColumn(_CUSTOMERID, typeof(string)));
-			dt.Columns.Add(new DataColumn(_COMPANYNAME, typeof(string)));
-			dt.Columns.Add(new DataColumn(_CONTACTNAME, typeof(string)));
-			dt.Columns.Add(new DataColumn(_CONTACTTITLE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_ADDRESS, typeof(string)));
-			dt.Columns.Add(new DataColumn(_CITY, typeof(string)));
-			dt.Columns.Add(new DataColumn(_REGION, typeof(string)));
-			dt.Columns.Add(new DataColumn(_POSTALCODE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_COUNTRY, typeof(string)));
-			dt.Columns.Add(new DataColumn(_PHONE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_FAX, typeof(string)));
+			DataTable dt = new DataTable { TableName = TableName };
+			dt.Columns.Add(new DataColumn(_CUSTOMERID, typeof(string)) { Unique = true, AllowDBNull = false, MaxLength = 5 });
+			dt.Columns.Add(new DataColumn(_COMPANYNAME, typeof(string)) { AllowDBNull = false, MaxLength = 40 });
+			dt.Columns.Add(new DataColumn(_CONTACTNAME, typeof(string)) { MaxLength = 30 });
+			dt.Columns.Add(new DataColumn(_CONTACTTITLE, typeof(string)) { MaxLength = 30 });
+			dt.Columns.Add(new DataColumn(_ADDRESS, typeof(string)) { MaxLength = 60 });
+			dt.Columns.Add(new DataColumn(_CITY, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_REGION, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_POSTALCODE, typeof(string)) { MaxLength = 10 });
+			dt.Columns.Add(new DataColumn(_COUNTRY, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_PHONE, typeof(string)) { MaxLength = 24 });
+			dt.Columns.Add(new DataColumn(_FAX, typeof(string)) { MaxLength = 24 });
+			
+			dt.PrimaryKey = dt.Columns.OfType<DataColumn>().Where(column => Keys.Contains(column.ColumnName)).ToArray();
 			
 			return dt;
 		}

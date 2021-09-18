@@ -8,11 +8,11 @@ using System.Diagnostics.Contracts;
 
 namespace Sys.Data
 {
-	public abstract class BaseDbCmd : IDbFill, IDbCmd
+	public abstract class DbAccess : IDbFill, IDbAccess
 	{
-		public string Description { get; set; } = nameof(BaseDbCmd);
+		public string Description { get; set; } = nameof(DbAccess);
 
-		public BaseDbCmd()
+		public DbAccess()
 		{
 		}
 
@@ -20,6 +20,7 @@ namespace Sys.Data
 		public abstract int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
+		public abstract void ExecuteTransaction();
 
 		public DataSet FillDataSet()
 		{
@@ -34,6 +35,7 @@ namespace Sys.Data
 		public DataRow FillDataRow() => new DataLand(FillDataSet()).GetRow();
 		public object FillObject() => new DataLand(FillDataSet()).GetCell();
 		public T FillObject<T>()=> new DataLand(FillDataSet()).GetCell<T>();
+
 
 		public override string ToString()
 		{

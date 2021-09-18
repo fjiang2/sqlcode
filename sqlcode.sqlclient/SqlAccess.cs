@@ -1,28 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Sys.Data
+namespace Sys.Data.SqlClient
 {
 
-	public class SqlCmd : BaseDbCmd, IDbCmd
+	public class SqlAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;
-		private readonly IParameterFactory parameters;
+		
+		private readonly string[] statements;
+		private readonly IParameterFacet facet;
 
-
-		public SqlCmd(SqlConnectionStringBuilder connectionString, string sql, object args)
+		public SqlAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlCmd(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
 		{
-			string sql = unit.Statement;
+			this.statements = unit.Statements;
 			object args = unit.Arguments;
+			string sql = unit.Statement;
 
 			this.connection = new SqlConnection(connectionString.ConnectionString);
 
@@ -34,19 +37,13 @@ namespace Sys.Data
 			if (args == null)
 				return;
 
-			if (args is string)
-			{
-				//The parameters could be JSON or XML
-				return;
-			}
+			this.facet = ParameterFacet.Create(args);
 
-			this.parameters = ParameterFactory.Create(args);
-
-			List<IDataParameter> items = this.parameters.CreateParameters();
-			foreach (IDataParameter item in items)
+			List<IDataParameter> parameters = this.facet.CreateParameters();
+			foreach (IDataParameter parameter in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				object value = parameter.Value ?? DBNull.Value;
+				SqlParameter _parameter = NewParameter("@" + parameter.ParameterName, value, parameter.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
@@ -126,7 +123,7 @@ namespace Sys.Data
 			{
 				connection.Open();
 				int count = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
 				return count;
 			}
 			finally
@@ -149,5 +146,40 @@ namespace Sys.Data
 			}
 		}
 
+		
+		public override void ExecuteTransaction() 
+		{
+			if (statements.Count() == 0)
+				return;
+
+			try
+			{
+				connection.Open();
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						foreach (string line in statements)
+						{
+							command.Transaction = transaction;
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
+			}
+			finally
+			{
+				connection.Close();
+			}
+
+		}
 	}
 }

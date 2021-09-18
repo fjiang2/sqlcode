@@ -120,21 +120,23 @@ namespace UnitTestProject.Northwind.dc1
 		
 		public static DataTable CreateTable()
 		{
-			DataTable dt = new DataTable();
-			dt.Columns.Add(new DataColumn(_ORDERID, typeof(int)));
-			dt.Columns.Add(new DataColumn(_CUSTOMERID, typeof(string)));
+			DataTable dt = new DataTable { TableName = TableName };
+			dt.Columns.Add(new DataColumn(_ORDERID, typeof(int)) { Unique = true, AllowDBNull = false, AutoIncrement = true });
+			dt.Columns.Add(new DataColumn(_CUSTOMERID, typeof(string)) { MaxLength = 5 });
 			dt.Columns.Add(new DataColumn(_EMPLOYEEID, typeof(int)));
 			dt.Columns.Add(new DataColumn(_ORDERDATE, typeof(DateTime)));
 			dt.Columns.Add(new DataColumn(_REQUIREDDATE, typeof(DateTime)));
 			dt.Columns.Add(new DataColumn(_SHIPPEDDATE, typeof(DateTime)));
 			dt.Columns.Add(new DataColumn(_SHIPVIA, typeof(int)));
 			dt.Columns.Add(new DataColumn(_FREIGHT, typeof(decimal)));
-			dt.Columns.Add(new DataColumn(_SHIPNAME, typeof(string)));
-			dt.Columns.Add(new DataColumn(_SHIPADDRESS, typeof(string)));
-			dt.Columns.Add(new DataColumn(_SHIPCITY, typeof(string)));
-			dt.Columns.Add(new DataColumn(_SHIPREGION, typeof(string)));
-			dt.Columns.Add(new DataColumn(_SHIPPOSTALCODE, typeof(string)));
-			dt.Columns.Add(new DataColumn(_SHIPCOUNTRY, typeof(string)));
+			dt.Columns.Add(new DataColumn(_SHIPNAME, typeof(string)) { MaxLength = 40 });
+			dt.Columns.Add(new DataColumn(_SHIPADDRESS, typeof(string)) { MaxLength = 60 });
+			dt.Columns.Add(new DataColumn(_SHIPCITY, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_SHIPREGION, typeof(string)) { MaxLength = 15 });
+			dt.Columns.Add(new DataColumn(_SHIPPOSTALCODE, typeof(string)) { MaxLength = 10 });
+			dt.Columns.Add(new DataColumn(_SHIPCOUNTRY, typeof(string)) { MaxLength = 15 });
+			
+			dt.PrimaryKey = dt.Columns.OfType<DataColumn>().Where(column => Keys.Contains(column.ColumnName)).ToArray();
 			
 			return dt;
 		}

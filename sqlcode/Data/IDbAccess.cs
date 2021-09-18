@@ -18,7 +18,7 @@ using System.Data;
 
 namespace Sys.Data
 {
-	public interface IDbCmd
+	public interface IDbAccess
 	{
 		/// <summary>
 		/// 
@@ -31,6 +31,11 @@ namespace Sys.Data
 		/// </summary>
 		/// <returns></returns>
 		object ExecuteScalar();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		void ExecuteTransaction();
 
 		/// <summary>
 		/// Retrieve data set

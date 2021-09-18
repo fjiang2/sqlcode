@@ -12,7 +12,7 @@ namespace Sys.Data
 				return defaultValue;
 
 			//SQLite treats byte,short,int,and long to be long
-			if (value is not T)
+			if (!(value is T))
 				value = Convert.ChangeType(value, typeof(T));
 
 			if (value is T)

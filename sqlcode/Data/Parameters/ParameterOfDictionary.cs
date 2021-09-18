@@ -5,20 +5,20 @@ using Sys.Data.Text;
 
 namespace Sys.Data
 {
-	class DictionaryParameters : ParameterFactory
+	class ParameterOfDictionary : ParameterFacet
 	{
-		private IDictionary<string, object> parameters;
+		private IDictionary<string, object> dict;
 
-		public DictionaryParameters(IDictionary<string, object> parameters)
+		public ParameterOfDictionary(IDictionary<string, object> parameters)
 		{
-			this.parameters = parameters;
+			this.dict = parameters;
 		}
 
 		public override List<IDataParameter> CreateParameters()
 		{
 			List<IDataParameter> list = new List<IDataParameter>();
 
-			foreach (KeyValuePair<string, object> item in parameters)
+			foreach (KeyValuePair<string, object> item in dict)
 			{
 				object value = item.Value;
 				var parameter = new Parameter(item.Key, value)
@@ -41,9 +41,9 @@ namespace Sys.Data
 				if (parameter.Direction == ParameterDirection.Input)
 					continue;
 
-				if (parameters.ContainsKey(parameterName))
+				if (dict.ContainsKey(parameterName))
 				{
-					parameters[parameterName] = parameter.Value;
+					dict[parameterName] = parameter.Value;
 				}
 			}
 		}

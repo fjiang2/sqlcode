@@ -95,6 +95,16 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public SqlBuilder TUPLE(params Expression[] exprList)
+		{
+			return TUPLE((IEnumerable<Expression>)exprList);
+		}
+
+		public SqlBuilder TUPLE(IEnumerable<Expression> exprList)
+		{
+			return Append("(").Append(new Expression(exprList)).Append(")");
+		}
+
 		public SqlBuilder USE(string database)
 		{
 			return AppendSpace($"USE {database}");
@@ -155,7 +165,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder COLUMNS(IEnumerable<Expression> columns)
 		{
-			if (columns.Count() == 0)
+			if (columns == null || columns.Count() == 0)
 				return COLUMNS("*");
 			else
 				return Append(new Expression(columns)).AppendSpace();
@@ -163,7 +173,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder COLUMNS(IEnumerable<string> columns)
 		{
-			if (columns.Count() == 0)
+			if (columns == null || columns.Count() == 0)
 				return COLUMNS("*");
 			else
 				return COLUMNS(JoinColumns(columns));
@@ -197,7 +207,7 @@ namespace Sys.Data.Text
 			WithTableName("INSERT INTO", tableName, null);
 
 			if (columns.Count() > 0)
-				Append("(").Append(new Expression(columns)).AppendSpace(")");
+				TUPLE(columns).AppendSpace();
 
 			return this;
 		}
@@ -215,7 +225,7 @@ namespace Sys.Data.Text
 
 		public SqlBuilder VALUES(params Expression[] values)
 		{
-			return Append("VALUES (").Append(new Expression(values)).Append(")");
+			return AppendSpace("VALUES").TUPLE(values);
 		}
 
 		public SqlBuilder VALUES(params object[] values)
@@ -225,8 +235,8 @@ namespace Sys.Data.Text
 
 		public SqlBuilder VALUES(IEnumerable<object> values)
 		{
-			var L = values.Select(x => new Expression(new SqlValue(x))).ToArray();
-			return AppendSpace($"VALUES ({string.Join<Expression>(", ", L)})");
+			var L = values.Select(x => new Expression(new SqlValue(x)));
+			return AppendSpace("VALUES").TUPLE(L);
 		}
 
 		public SqlBuilder DELETE_FROM(ITableName tableName) => DELETE_FROM(tableName.FullName);
@@ -325,7 +335,7 @@ namespace Sys.Data.Text
 			if (columns == null || columns.Length == 0)
 				return this;
 
-			return AppendSpace("ORDER BY").Append(new Expression(columns)).AppendSpace(); 
+			return AppendSpace("ORDER BY").Append(new Expression(columns)).AppendSpace();
 		}
 
 		public SqlBuilder ORDER_BY(params string[] columns)
@@ -344,8 +354,10 @@ namespace Sys.Data.Text
 		public SqlBuilder INTO(string tableName) => WithTableName("INTO", tableName, null);
 
 		public SqlBuilder ALTER() => AppendSpace("ALTER");
-		public SqlBuilder CREATE() => AppendSpace("CREATE");
 		public SqlBuilder DROP() => AppendSpace("DROP");
+		public SqlBuilder CREATE() => AppendSpace("CREATE");
+		public SqlBuilder TABLE(ITableName table) => TABLE(table.FullName);
+		public SqlBuilder TABLE(string table) => WithTableName("TABLE", table, alias: null);
 
 		private static string JoinColumns(IEnumerable<string> columns)
 		{

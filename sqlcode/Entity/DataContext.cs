@@ -35,7 +35,7 @@ namespace Sys.Data.Entity
 		public DataContext(IDbAgent agent)
 		{
 			this.agent = agent;
-			this.Description = "SQL command handler";
+			this.Description = nameof(DataContext);
 		}
 
 		public void Dispose()
@@ -79,7 +79,20 @@ namespace Sys.Data.Entity
 			return string.Join(Environment.NewLine, CodeBlock.GetQuery());
 		}
 
+		/// <summary>
+		/// It can be used for Bulk copy/insert
+		/// </summary>
+		/// <returns>key is table-name, value is an array of INSERT statements</returns>
+		public IDictionary<Type, string[]> GetBulkInsert() => CodeBlock.GetBulkInsert();
 
+		internal DataTable FillDataTable(string query, int startRecord, int maxRecords)
+		{
+			var unit = new SqlUnit(query);
+			var cmd = agent.Proxy(unit);
+			var dt = new DataTable();
+			cmd.FillDataTable(dt, startRecord, maxRecords);
+			return dt;
+		}
 
 		internal DataTable FillDataTable(string query)
 		{
@@ -107,12 +120,17 @@ namespace Sys.Data.Entity
 			if (CodeBlock.Length == 0)
 				return null;
 
-			string[] query = CodeBlock.GetQuery();
-			Type[] types = CodeBlock.GetQueryTypes();
-			var ds = FillDataSet(query);
-			CodeBlock.Clear();
-
-			return new QueryResultReader(this, types, ds);
+			try
+			{
+				string[] query = CodeBlock.GetQuery();
+				Type[] types = CodeBlock.GetQueryTypes();
+				var ds = FillDataSet(query);
+				return new QueryResultReader(this, types, ds);
+			}
+			finally
+			{
+				CodeBlock.Clear();
+			}
 		}
 
 		public int SubmitChanges()
@@ -120,19 +138,32 @@ namespace Sys.Data.Entity
 			if (CodeBlock.Length == 0)
 				return -1;
 
-			OnRowChanging(RowEvents);
-
-			var unit = new SqlUnit(CodeBlock.GetNonQuery());
-			var cmd = agent.Proxy(unit);
-			int count = cmd.ExecuteNonQuery();
-			CodeBlock.Clear();
-
-			OnRowChanged(RowEvents);
-			RowEvents.Clear();
-
-			return count;
+			try
+			{
+				OnRowChanging(RowEvents);
+				
+				var unit = new SqlUnit(CodeBlock.GetNonQuery());
+				var cmd = agent.Proxy(unit);
+				int count = cmd.ExecuteNonQuery();
+				
+				OnRowChanged(RowEvents);
+				return count;
+			}
+			finally
+			{
+				CodeBlock.Clear();
+				RowEvents.Clear();
+			}
 		}
 
+		/// <summary>
+		/// Clear generated code and row events
+		/// </summary>
+		public void Clear()
+		{
+			CodeBlock.Clear();
+			RowEvents.Clear();
+		}
 
 		public override string ToString()
 		{

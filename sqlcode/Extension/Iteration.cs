@@ -51,5 +51,26 @@ namespace Sys.Data
 			return list;
 		}
 
+		public static IEnumerable<List<T>> Split<T>(this IEnumerable<T> source, int batchSize)
+		{
+			int count = 0;
+			List<T> list = new List<T>();
+
+			foreach (T item in source)
+			{
+				list.Add(item);
+
+				count++;
+				if (count >= batchSize)
+				{
+					yield return list;
+					list.Clear();
+					count = 0;
+				}
+			}
+
+			yield return list;
+		}
+
 	}
 }

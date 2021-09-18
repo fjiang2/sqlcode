@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Sys.Data
 {
-	public abstract class ParameterFactory : IParameterFactory
+	public abstract class ParameterFacet : IParameterFacet
 	{
-		public ParameterFactory()
+		public ParameterFacet()
 		{
 		}
 
@@ -24,26 +25,24 @@ namespace Sys.Data
 
 		public abstract void UpdateResult(IEnumerable<IDataParameter> result);
 
+
 		/// <summary>
 		/// Create parameters for SQL statements
 		/// </summary>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		public static IParameterFactory Create(object parameters)
+		public static IParameterFacet Create(object parameters)
 		{
-			if (parameters is List<IDataParameter> list)
-				return new ListParameters(list);
+			if (parameters is IEnumerable<IDataParameter> list)
+				return new ParameterOfList(list);
 
 			if (parameters is IDictionary<string, object> dict)
-				return new DictionaryParameters(dict);
+				return new ParameterOfDictionary(dict);
 
 			if (parameters is string)
-			{
-				//XML or JSON
-				throw new RowNotInTableException();
-			}
+				throw new NotImplementedException();
 
-			return new ObjectParameters(parameters);
+			return new ParameterOfObject(parameters);
 		}
 
 	}

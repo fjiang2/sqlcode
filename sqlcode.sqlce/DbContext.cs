@@ -6,12 +6,12 @@ using System.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data;
 
-namespace UnitTestProject.SqlServer
+namespace Sys.Data.SqlCe
 {
 	public class DbContext : DataContext
 	{
 		public DbContext(string connectionString)
-			: base(new SqlServerAgent(connectionString))
+			: base(new SqlCeAgent(new System.Data.SqlServerCe.SqlCeConnectionStringBuilder(connectionString)))
 		{
 		}
 	}

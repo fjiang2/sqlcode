@@ -12,6 +12,7 @@ using System.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;
+using Sys.Data.SqlClient;
 
 namespace UnitTestProject
 {
@@ -134,6 +135,13 @@ WHERE Products.[Discontinued] <> 1";
 
 			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
 
+			SQL = new SqlBuilder()
+				.INSERT_INTO("Categories", new Expression[] { "CategoryName".AsColumn(), "Description".AsColumn(), "Picture".AsColumn() })
+				.VALUES("Seafood", "Seaweed and fish", new byte[] { 0x15, 0xC2 })
+				.ToString();
+
+			Debug.Assert(SQL == "INSERT INTO [Categories] ([CategoryName], [Description], [Picture]) VALUES (N'Seafood', N'Seaweed and fish', 0x15C2)");
+
 		}
 
 		[TestMethod]
@@ -160,7 +168,7 @@ WHERE Products.[Discontinued] <> 1";
 			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = N'Electronics'");
 
 #if HAS_SQL_SERVER
-			int result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
+			int result = new SqlAccess(conn, SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result >= 0);
 #endif
 
@@ -176,7 +184,7 @@ WHERE Products.[Discontinued] <> 1";
 SET @CategoryId = @@IDENTITY");
 
 #if HAS_SQL_SERVER
-			result = new SqlCmd(conn, SQL, context.Parameters).ExecuteNonQuery();
+			result = new SqlAccess(conn, SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result == 1);
 
 			int CategoryId = (int)context["CategoryId"].Value;
@@ -374,16 +382,16 @@ SET @CategoryId = @@IDENTITY");
 
 #if HAS_SQL_SERVER
 
-			var dt1 = new SqlCmd(conn, SQL, new { Id = 7 }).FillDataTable();
+			var dt1 = new SqlAccess(conn, SQL, new { Id = 7 }).FillDataTable();
 			Debug.Assert(dt1.Rows.Count >= 5);
 
-			var dt2 = new SqlCmd(conn, SQL, context.Parameters).FillDataTable();
+			var dt2 = new SqlAccess(conn, SQL, context.Parameters).FillDataTable();
 			Debug.Assert(dt2.Rows.Count >= 5);
 
 			//if you want to change value of parameter from 7 to 10
 			context["Id"].Value = 10;
 
-			dt2 = new SqlCmd(conn, SQL, context.Parameters).FillDataTable();
+			dt2 = new SqlAccess(conn, SQL, context.Parameters).FillDataTable();
 			Debug.Assert(dt2.Rows.Count == 0);
 
 #endif
@@ -595,7 +603,7 @@ SET @CategoryId = @@IDENTITY");
 
 
 		[TestMethod]
-		public void TEST_BETWEEN()
+		public void Test_BETWEEN()
 		{
 			string sql = "SELECT COUNT(*), MAX([ProductId]) FROM [Products] WHERE [ProductId] BETWEEN 10 AND 30";
 			string query = new SqlBuilder().SELECT().COLUMNS(Expression.COUNT_STAR, ProductId.MAX()).FROM(Products).WHERE(ProductId.BETWEEN(10, 30)).ToString();
@@ -612,10 +620,43 @@ SET @CategoryId = @@IDENTITY");
 
 
 		[TestMethod]
-		public void Test_Cast()
+		public void Test_CREATE_TABLE()
 		{
-			string categoryID = "CategoryID";
-			Expression column = categoryID.AsColumn();
+			string sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NOT NULL, [DATA] int NOT NULL, PRIMARY KEY ([Id], [Time], [ENU], [DATA]))";
+
+			var Id = "Id".AsColumn();
+			var Time = "Time".AsColumn();
+			var ENU = "ENU".AsColumn();
+			var DATA = "DATA".AsColumn();
+
+			string query = new SqlBuilder()
+				.CREATE().TABLE("Purdue")
+				.TUPLE(
+		 			  Id.DEFINE_NOT_NULL("int"),
+					Time.DEFINE_NOT_NULL("DateTime"),
+					 ENU.DEFINE_NOT_NULL("int"),
+					DATA.DEFINE_NOT_NULL("int"),
+		 	  Expression.PRIMARY_KEY(Id, Time, ENU, DATA)
+					)
+				.ToString();
+
+			Debug.Assert(sql == query);
+
+			sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NULL, [DATA] int NULL, PRIMARY KEY ([Id], [Time]), FOREIGN KEY ([Id]) REFERENCES Products([ProductID]))";
+			query = new SqlBuilder()
+				.CREATE().TABLE("Purdue")
+				.TUPLE(
+					  Id.DEFINE_NOT_NULL("int"),
+					Time.DEFINE_NOT_NULL("DateTime"),
+					 ENU.DEFINE_NULL("int"),
+					DATA.DEFINE_NULL("int"),
+	  	      Expression.PRIMARY_KEY(Id, Time),
+				   	  Id.FOREIGN_KEY("Products", "ProductID".AsColumn())
+					)
+				.ToString();
+
+
+			Debug.Assert(sql == query);
 		}
 
 	}

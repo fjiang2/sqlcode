@@ -4,40 +4,40 @@ using System.Linq;
 using System.Data;
 using System.Data.SqlServerCe;
 
-namespace Sys.Data
+namespace Sys.Data.SqlCe
 {
-
-	public class SqlCeCmd : BaseDbCmd, IDbCmd
+	public class SqlCeAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCeCommand command;
 		private readonly SqlCeConnection connection;
-		private readonly IParameterFactory parameters;
 
-		public SqlCeCmd(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		private readonly string[] statements;
+		private readonly IParameterFacet facet;
+
+		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, string sql, object args)
+			: this(connectionString, new SqlUnit(sql, args))
 		{
-			string sql = unit.Statement;
+		}
+
+		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		{
+			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
-			this.command = new SqlCeCommand(sql);
+			this.command = new SqlCeCommand();
 			this.connection = new SqlCeConnection(connectionString.ConnectionString);
 			this.command.Connection = connection;
 
 			if (args == null)
 				return;
 
-			if (args is string)
-			{
-				//The parameters could be JSON
-				return;
-			}
+			this.facet = ParameterFacet.Create(args);
 
-			this.parameters = ParameterFactory.Create(args);
-
-			List<IDataParameter> items = this.parameters.CreateParameters();
-			foreach (IDataParameter item in items)
+			List<IDataParameter> parameters = this.facet.CreateParameters();
+			foreach (IDataParameter parameter in parameters)
 			{
-				object value = item.Value ?? DBNull.Value;
-				SqlCeParameter _parameter = NewParameter("@" + item.ParameterName, value, item.Direction);
+				object value = parameter.Value ?? DBNull.Value;
+				SqlCeParameter _parameter = NewParameter("@" + parameter.ParameterName, value, parameter.Direction);
 				command.Parameters.Add(_parameter);
 			}
 		}
@@ -87,8 +87,16 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
-				return adapter.Fill(dataSet);
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
+					DataTable dt = new DataTable();
+					count += adapter.Fill(dt);
+					dataSet.Tables.Add(dt);
+				}
+				return count;
 			}
 			finally
 			{
@@ -115,8 +123,15 @@ namespace Sys.Data
 			try
 			{
 				connection.Open();
-				int count = command.ExecuteNonQuery();
-				parameters?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+
+				int count = 0;
+				foreach (string statement in statements)
+				{
+					command.CommandText = statement;
+					count += command.ExecuteNonQuery();
+					facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
+				}
+
 				return count;
 			}
 			finally
@@ -137,6 +152,41 @@ namespace Sys.Data
 			{
 				connection.Close();
 			}
+		}
+
+
+		public override void ExecuteTransaction()
+		{
+			if (statements.Count() == 0)
+				return;
+
+			try
+			{
+				connection.Open();
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						foreach (string line in statements)
+						{
+							command.CommandText = line;
+							command.ExecuteNonQuery();
+						}
+
+						transaction.Commit();
+					}
+					catch (Exception)
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
+			}
+			finally
+			{
+				connection.Close();
+			}
+
 		}
 
 	}

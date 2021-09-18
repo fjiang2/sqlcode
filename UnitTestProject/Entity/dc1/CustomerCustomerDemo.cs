@@ -68,9 +68,11 @@ namespace UnitTestProject.Northwind.dc1
 		
 		public static DataTable CreateTable()
 		{
-			DataTable dt = new DataTable();
-			dt.Columns.Add(new DataColumn(_CUSTOMERID, typeof(string)));
-			dt.Columns.Add(new DataColumn(_CUSTOMERTYPEID, typeof(string)));
+			DataTable dt = new DataTable { TableName = TableName };
+			dt.Columns.Add(new DataColumn(_CUSTOMERID, typeof(string)) { AllowDBNull = false, MaxLength = 5 });
+			dt.Columns.Add(new DataColumn(_CUSTOMERTYPEID, typeof(string)) { AllowDBNull = false, MaxLength = 10 });
+			
+			dt.PrimaryKey = dt.Columns.OfType<DataColumn>().Where(column => Keys.Contains(column.ColumnName)).ToArray();
 			
 			return dt;
 		}

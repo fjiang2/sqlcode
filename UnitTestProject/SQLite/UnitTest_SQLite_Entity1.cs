@@ -7,7 +7,7 @@ using System.Linq;
 using System.IO;
 
 using UnitTestProject.Northwind.dc1;
-using UnitTestProject.SQLite;
+using Sys.Data.SQLite;
 using Sys.Data.Entity;
 using Sys.Data;
 
@@ -17,19 +17,20 @@ namespace UnitTestProject
 	/// Summary description for UnitTestDataContext
 	/// </summary>
 	[TestClass]
-	public class UnitTest_SQLite
+	public class UnitTest_SQLite_Entity1
 	{
 		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
 		private string connectionString;
-		private readonly Query Query;
+		private readonly DataQuery Query;
 
-		public UnitTest_SQLite()
+		public UnitTest_SQLite_Entity1()
 		{
 			string fileName = Path.Combine(PATH_PROJECT, "db\\Northwind.db");
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new Query(new SQLiteAgent(fileName));
+			//Query = new Query(new SQLiteAgent(fileName));
+			Query = SQLiteAgent.Query(connectionString);
 		}
 
 		//[TestMethod]
@@ -41,7 +42,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.NewDbCmd(new SqlUnit(line)).ExecuteNonQuery();
+				Query.NewDbAccess(new SqlUnit(line)).ExecuteNonQuery();
 			}
 		}
 
@@ -535,7 +536,8 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-			Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
+			var L = Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages").ToArray();
+			Debug.Assert(L[0].CategoryID == 1 && L[0].Description == null);
 
 			using (var db = new DbContext(connectionString))
 			{
