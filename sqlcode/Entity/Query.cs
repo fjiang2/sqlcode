@@ -20,7 +20,7 @@ namespace Sys.Data.Entity
 		/// <summary>
 		/// Create DbCommand
 		/// </summary>
-		/// <param name="sql"></param>
+		/// <param name="unit"></param>
 		/// <returns></returns>
 		public static DbAccess NewDbAccess(SqlUnit unit)
 			=> new DbAccessDelegate(DefaultAgent, unit);

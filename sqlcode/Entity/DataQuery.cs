@@ -20,7 +20,7 @@ namespace Sys.Data.Entity
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="sql"></param>
+		/// <param name="unit"></param>
 		/// <returns></returns>
 		public DbAccess NewDbAccess(SqlUnit unit)
 		{

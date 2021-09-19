@@ -22,8 +22,16 @@ using System.Data;
 
 namespace Sys.Data.Text
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public static class FluentExpression
 	{
+		/// <summary>
+		/// Convert object value to Expression
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static Expression AsValue(this object value)
 		{
 			return new Expression(new SqlValue(value));
@@ -140,6 +148,12 @@ namespace Sys.Data.Text
 			return new Expression(new ColumnName(tableName, columnName));
 		}
 
+		/// <summary>
+		/// Convert column name value to Expression
+		/// </summary>
+		/// <param name="columnName"></param>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public static Expression AsColumn(this string columnName, ITableName tableName)
 		{
 			return new Expression(new ColumnName(tableName.FullName, columnName));
