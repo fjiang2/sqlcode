@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode</id>
-    <version>1.0.6.0</version>
+    <version>1.0.7.0</version>
     <title>SQL code generator</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,7 +13,7 @@
     </description>
     <summary>SQL code generator</summary>
     <releaseNotes>
-		9/12/2021 v1.0.6
+		9/18/2021 v1.0.7
 		Improvements:
 		1. Support CREATE TABLE statement with PRIMARY KEY and FOREIGN KEY on SqlBuilder
 		

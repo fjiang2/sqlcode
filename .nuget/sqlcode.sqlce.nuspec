@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>sqlcode.sqlce</id>
+    <version>1.0.7.0</version>
+    <title>SQL CE SQL agent</title>
+    <authors>datconn</authors>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+      Generate SQL code by SqlBuilder or SqlGenerator
+    </description>
+    <summary>SQL code generator</summary>
+    <releaseNotes>
+		9/18/2021 v1.0.7
+		Improvements:
+		1. First release
+	</releaseNotes>
+	<dependencies>
+		  <group targetFramework=".NETFramework4.8">
+			  <dependency id="sqlcode" version="1.0.7" />
+		  </group>
+	</dependencies>
+</metadata>
+<files>
+    <file src="..\sqlcode.sqlce\bin\Release\sqlcode.sqlce.dll" target="lib\net48\sqlcode.sqlce.dll" />
+  </files>
+</package>

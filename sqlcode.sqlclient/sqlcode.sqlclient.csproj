@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0;net48</TargetFrameworks>
     <RootNamespace>Sys.Data.SqlClient</RootNamespace>
+    <Version>1.0.7</Version>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
