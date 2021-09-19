@@ -112,6 +112,7 @@ namespace Sys.Data.SQLite
 			try
 			{
 				connection.Open();
+				command.CommandText = statements.FirstOrDefault();
 				SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}
