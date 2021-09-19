@@ -8,7 +8,8 @@ using System.Data.SqlClient;
 namespace Sys.Data.SqlClient
 {
 
-	public class SqlAccess : DbAccess, IDbAccess
+	public class SqlDbAccess
+		: DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;
@@ -16,12 +17,12 @@ namespace Sys.Data.SqlClient
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SqlAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
+		public SqlDbAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
 		{
 		}
 
-		public SqlAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlDbAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;

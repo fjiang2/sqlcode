@@ -109,6 +109,7 @@ namespace Sys.Data.SqlCe
 			try
 			{
 				connection.Open();
+				command.CommandText = statements.FirstOrDefault();
 				SqlCeDataAdapter adapter = new SqlCeDataAdapter(command);
 				return adapter.Fill(startRecord, maxRecords, dataTable);
 			}

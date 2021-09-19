@@ -3,19 +3,20 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlClient
 {
-	public class SqlAgent : DbAgent
+	public class SqlDbAgent
+		: DbAgent
 	{
 		private SqlConnectionStringBuilder connectionString;
 
-		public SqlAgent(SqlConnectionStringBuilder connectionString)
+		public SqlDbAgent(SqlConnectionStringBuilder connectionString)
 		{
 			this.connectionString = connectionString;
 		}
 
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
-		public override IDbAccess Proxy(SqlUnit unit) => new SqlAccess(connectionString, unit);
+		public override IDbAccess Proxy(SqlUnit unit) => new SqlDbAccess(connectionString, unit);
 
 		public static DataQuery Query(string connectionString) 
-			=> new DataQuery(new SqlAgent(new SqlConnectionStringBuilder(connectionString)));
+			=> new DataQuery(new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)));
 	}
 }

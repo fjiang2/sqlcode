@@ -30,7 +30,7 @@ namespace UnitTestProject
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
 
 #if USE_Query_Class
-			Query.DefaultAgent = new SqlAgent(new SqlConnectionStringBuilder(connectionString));
+			Query.DefaultAgent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
 #else
 			Query = SqlAgent.Query(connectionString);
 #endif
@@ -483,7 +483,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestAssoicationClass()
 		{
-			var query = SqlAgent.Query(connectionString);
+			var query = SqlDbAgent.Query(connectionString);
 			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
 			var A = product.GetAssociation(query);
 			var D = A.Order_Details;
