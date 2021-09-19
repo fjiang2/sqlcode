@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{67CE76
 	ProjectSection(SolutionItems) = preProject
 		.nuget\sqlcode.nuspec = .nuget\sqlcode.nuspec
 		.nuget\sqlcode.sqlce.nuspec = .nuget\sqlcode.sqlce.nuspec
+		.nuget\sqlcode.sqlite.nuspec = .nuget\sqlcode.sqlite.nuspec
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlclient", "sqlcode.sqlclient\sqlcode.sqlclient.csproj", "{A47A2228-AB09-4E9A-B403-E027F9F42487}"
