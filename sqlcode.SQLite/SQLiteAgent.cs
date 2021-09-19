@@ -7,11 +7,6 @@ namespace Sys.Data.SQLite
 	{
 		private SQLiteConnectionStringBuilder connectionString;
 
-		public SQLiteAgent(string fileName)
-		{
-			this.connectionString = new SQLiteConnectionStringBuilder($"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;");
-		}
-
 		public SQLiteAgent(SQLiteConnectionStringBuilder connectionString)
 		{
 			this.connectionString = connectionString;

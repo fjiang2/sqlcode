@@ -42,7 +42,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.NewDbAccess(new SqlUnit(line)).ExecuteNonQuery();
+				Query.DbAccess(new SqlUnit(line)).ExecuteNonQuery();
 			}
 		}
 

@@ -28,20 +28,9 @@ namespace Sys.Data
 
 		public abstract IDbAccess Proxy(SqlUnit unit);
 
-		public DataContext DataContext() => new DataContext(this);
+		public DataContext Context() => new DataContext(this);
 
 		public DataQuery Query() => new DataQuery(this);
-
-		public DbAccess Query(string sql, object args = null)
-		{
-			var unit = new SqlUnit(sql, args);
-			
-			var proxy = Proxy(unit);
-			if (proxy is DbAccess access)
-				return access;
-			else
-				return new DbAccessDelegate(this, unit);
-		}
 
 		public override string ToString()
 		{

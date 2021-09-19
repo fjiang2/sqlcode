@@ -7,11 +7,6 @@ namespace Sys.Data.SqlCe
 	{
 		private SqlCeConnectionStringBuilder connectionString;
 
-		public SqlCeAgent(string fileName)
-		{
-			this.connectionString = new SqlCeConnectionStringBuilder($"Data Source={fileName};Max Buffer Size=1024;Persist Security Info=False;");
-		}
-
 		public SqlCeAgent(SqlCeConnectionStringBuilder connectionString)
 		{
 			this.connectionString = connectionString;
@@ -20,6 +15,9 @@ namespace Sys.Data.SqlCe
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
 		public override IDbAccess Proxy(SqlUnit unit) => new SqlCeAccess(connectionString, unit);
 
+		public static DataQuery Query(string connectionString)
+			=> new DataQuery(new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)));
+
 		public void CreateDatabase()
 		{
 			using (SqlCeEngine engine = new SqlCeEngine(connectionString.ConnectionString))
@@ -27,10 +25,5 @@ namespace Sys.Data.SqlCe
 				engine.CreateDatabase();
 			}
 		}
-
-		public static DataQuery Query(string connectionString)
-			=> new DataQuery(new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)));
-
-
 	}
 }
