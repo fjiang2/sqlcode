@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Data;
+using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
@@ -184,7 +185,11 @@ namespace Sys.Data.Entity
 			return Invoke(db =>
 			{
 				var dt = db.GetTable<TEntity>();
-				string SQL = $"{_resultSelector} IN (SELECT {_keySelector} FROM {dt} WHERE {_where})";
+				string SQL = _resultSelector
+					.AsColumn()
+					.IN(new SqlBuilder().SELECT().COLUMNS(_keySelector).FROM(dt.ToString()).WHERE(_where))
+					.ToScript(db.Style);
+
 				return db.GetTable<TResult>().Select(SQL);
 			});
 		}
