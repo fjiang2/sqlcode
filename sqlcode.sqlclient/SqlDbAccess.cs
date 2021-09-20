@@ -23,11 +23,11 @@ namespace Sys.Data.SqlClient
 			string sql = unit.Statement;
 
 			this.connection = new SqlConnection(connectionString);
-
-			this.command = new SqlCommand(sql);
-			this.command.Connection = connection;
-			if (!sql.Contains(' '))
-				command.CommandType = CommandType.StoredProcedure;
+			this.command = new SqlCommand(sql)
+			{
+				CommandType = unit.CommandType,
+				Connection = connection,
+			};
 
 			if (args == null)
 				return;

@@ -20,9 +20,13 @@ namespace Sys.Data.SQLite
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
-			this.command = new SQLiteCommand();
 			this.connection = new SQLiteConnection(connectionString);
-			this.command.Connection = connection;
+			this.command = new SQLiteCommand()
+			{
+				CommandType = unit.CommandType,
+				Connection = connection,
+			};
+
 
 			if (args == null)
 				return;
