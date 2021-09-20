@@ -16,13 +16,13 @@ namespace Sys.Data.SqlClient
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SqlDbAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlDbAccess(string connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 			string sql = unit.Statement;
 
-			this.connection = new SqlConnection(connectionString.ConnectionString);
+			this.connection = new SqlConnection(connectionString);
 
 			this.command = new SqlCommand(sql);
 			this.command.Connection = connection;

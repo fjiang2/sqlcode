@@ -14,6 +14,9 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
+
+using System;
+using System.Data.Common;
 using Sys.Data.Entity;
 
 namespace Sys.Data
@@ -23,49 +26,31 @@ namespace Sys.Data
 	/// </summary>
 	public abstract class DbAgent : IDbAgent
 	{
-		protected DbAgent()
+		protected readonly DbConnectionStringBuilder ConnectionString;
+
+		protected DbAgent(DbConnectionStringBuilder connectionString)
 		{
+			this.ConnectionString = connectionString;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
 		public abstract DbAgentOption Option { get; }
 
-		/// <summary>
-		/// proxy connects to database
-		/// </summary>
-		/// <param name="unit">Sql code unit</param>
-		/// <returns></returns>
-		public abstract IDbAccess Proxy(SqlUnit unit);
+		public IDbAccess Proxy(SqlUnit unit) => Access(unit);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="query"></param>
-		/// <param name="args"></param>
-		/// <returns></returns>
-		public abstract DbAccess Unit(string query, object args);
+		public abstract DbAccess Access(SqlUnit unit);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
+
+		public DbAccess Access(string query) => Access(new SqlUnit(query));
+		public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
+
 		public DataContext Context() => new DataContext(this);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
 		public DataQuery Query() => new DataQuery(this);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
+
 		public override string ToString()
 		{
-			return Option.ToString();
+			return ConnectionString.ToString();
 		}
 	}
 }

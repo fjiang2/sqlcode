@@ -14,13 +14,13 @@ namespace Sys.Data.SqlCe
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlCeAccess(string connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
 			this.command = new SqlCeCommand();
-			this.connection = new SqlCeConnection(connectionString.ConnectionString);
+			this.connection = new SqlCeConnection(connectionString);
 			this.command.Connection = connection;
 
 			if (args == null)

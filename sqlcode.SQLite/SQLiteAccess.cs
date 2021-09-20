@@ -15,13 +15,13 @@ namespace Sys.Data.SQLite
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
+		public SQLiteAccess(string connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
 			this.command = new SQLiteCommand();
-			this.connection = new SQLiteConnection(connectionString.ConnectionString);
+			this.connection = new SQLiteConnection(connectionString);
 			this.command.Connection = connection;
 
 			if (args == null)
