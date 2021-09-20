@@ -7,8 +7,7 @@ using System.Data.SQLite;
 
 namespace Sys.Data.SQLite
 {
-
-	public class SQLiteAccess : DbAccess, IDbAccess
+	class SQLiteAccess : DbAccess, IDbAccess
 	{
 		private readonly SQLiteCommand command;
 		private readonly SQLiteConnection connection;
@@ -16,18 +15,13 @@ namespace Sys.Data.SQLite
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
-		{
-		}
-
-		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
+		public SQLiteAccess(string connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
 			this.command = new SQLiteCommand();
-			this.connection = new SQLiteConnection(connectionString.ConnectionString);
+			this.connection = new SQLiteConnection(connectionString);
 			this.command.Connection = connection;
 
 			if (args == null)
@@ -44,7 +38,7 @@ namespace Sys.Data.SQLite
 			}
 		}
 
-		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private static SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;
 			if (value is int)
@@ -158,10 +152,10 @@ namespace Sys.Data.SQLite
 			}
 		}
 
-		
+
 		public override void ExecuteTransaction()
 		{
-			if (statements.Count() == 0)
+			if (statements.Length == 0)
 				return;
 
 			try
@@ -179,7 +173,7 @@ namespace Sys.Data.SQLite
 
 						transaction.Commit();
 					}
-					catch(Exception)
+					catch (Exception)
 					{
 						transaction.Rollback();
 						throw;

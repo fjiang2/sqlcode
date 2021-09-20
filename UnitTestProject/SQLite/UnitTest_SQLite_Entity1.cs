@@ -7,6 +7,7 @@ using System.Linq;
 using System.IO;
 
 using UnitTestProject.Northwind.dc1;
+using System.Data.SQLite;
 using Sys.Data.SQLite;
 using Sys.Data.Entity;
 using Sys.Data;
@@ -19,8 +20,8 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SQLite_Entity1
 	{
-		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
-		private string connectionString;
+		private readonly string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
+		private readonly string connectionString;
 		private readonly DataQuery Query;
 
 		public UnitTest_SQLite_Entity1()
@@ -29,8 +30,7 @@ namespace UnitTestProject
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			//Query = new Query(new SQLiteAgent(fileName));
-			Query = SQLiteAgent.Query(connectionString);
+			Query = new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)).Query();
 		}
 
 		//[TestMethod]
@@ -42,7 +42,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.NewDbAccess(new SqlUnit(line)).ExecuteNonQuery();
+				Query.DbAccess(new SqlUnit(line)).ExecuteNonQuery();
 			}
 		}
 

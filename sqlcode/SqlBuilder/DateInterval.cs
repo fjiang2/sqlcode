@@ -17,18 +17,64 @@
 
 namespace Sys.Data.Text
 {
+    /// <summary>
+    /// Date interval defined in SQL Server
+    /// </summary>
     public enum DateInterval
     {
-        year, //yyyy, yy = Year
-        quarter, //qq, q = Quarter
-        month, //mm, m = month
-        dayofyear, //dy, y = Day of the year
-        day, //dd, d = Day
-        week, //ww, wk = Week
-        weekday, //dw, w = Weekday
-        hour, //hh = hour
-        minute, //mi, n = Minute
-        second, //ss, s = Second
-        millisecond, //ms = Millisecond
+        /// <summary>
+        /// yyyy, yy = Year
+        /// </summary>
+        year,
+
+        /// <summary>
+        /// qq, q = Quarter
+        /// </summary>
+        quarter,
+
+        /// <summary>
+        /// mm, m = month
+        /// </summary>
+        month,
+
+        /// <summary>
+        /// dy, y = Day of the year
+        /// </summary>
+        dayofyear,
+
+        /// <summary>
+        /// dd, d = Day
+        /// </summary>
+        day,
+
+        /// <summary>
+        /// ww, wk = Week
+        /// </summary>
+        week,
+
+        /// <summary>
+        /// dw, w = Weekday
+        /// </summary>
+        weekday,
+
+        /// <summary>
+        /// hh = hour
+        /// </summary>
+        hour,
+
+        /// <summary>
+        /// mi, n = Minute
+        /// </summary>
+        minute,
+
+        /// <summary>
+        /// ss, s = Second
+        /// </summary>
+        second,
+
+        /// <summary>
+        /// ms = Millisecond
+        /// </summary>
+        millisecond, 
     }
 }

@@ -20,9 +20,9 @@ namespace Sys.Data.Entity
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="sql"></param>
+		/// <param name="unit"></param>
 		/// <returns></returns>
-		public DbAccess NewDbAccess(SqlUnit unit)
+		public DbAccess DbAccess(SqlUnit unit)
 		{
 			return new DbAccessDelegate(agent, unit);
 		}

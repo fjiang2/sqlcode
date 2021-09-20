@@ -23,7 +23,7 @@ namespace UnitTestProject
 		private readonly static string connectionString = Setting.ConnectionString;
 
 #if !USE_Query_Class
-		private readonly DataQuery Query = SqlAgent.Query(connectionString);
+		private readonly DataQuery Query;
 #endif
 		public UnitTest_SqlServer_Entity1()
 		{
@@ -32,7 +32,7 @@ namespace UnitTestProject
 #if USE_Query_Class
 			Query.DefaultAgent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
 #else
-			Query = SqlAgent.Query(connectionString);
+			Query = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Query();
 #endif
 		}
 
@@ -483,7 +483,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestAssoicationClass()
 		{
-			var query = SqlDbAgent.Query(connectionString);
+			var query = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Query();
 			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
 			var A = product.GetAssociation(query);
 			var D = A.Order_Details;

@@ -14,27 +14,43 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
+
+using System;
+using System.Data.Common;
 using Sys.Data.Entity;
 
 namespace Sys.Data
 {
+	/// <summary>
+	/// Agent to access database engine/server
+	/// </summary>
 	public abstract class DbAgent : IDbAgent
 	{
-		protected DbAgent()
+		protected readonly DbConnectionStringBuilder ConnectionString;
+
+		protected DbAgent(DbConnectionStringBuilder connectionString)
 		{
+			this.ConnectionString = connectionString;
 		}
 
 		public abstract DbAgentOption Option { get; }
 
-		public abstract IDbAccess Proxy(SqlUnit unit);
+		public IDbAccess Proxy(SqlUnit unit) => Access(unit);
 
-		public DataContext DataContext() => new DataContext(this);
+		public abstract DbAccess Access(SqlUnit unit);
+
+
+		public DbAccess Access(string query) => Access(new SqlUnit(query));
+		public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
+
+		public DataContext Context() => new DataContext(this);
 
 		public DataQuery Query() => new DataQuery(this);
 
+
 		public override string ToString()
 		{
-			return Option.ToString();
+			return ConnectionString.ToString();
 		}
 	}
 }
