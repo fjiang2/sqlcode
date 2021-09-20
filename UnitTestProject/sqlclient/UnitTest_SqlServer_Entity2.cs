@@ -389,6 +389,22 @@ namespace UnitTestProject
 		}
 
 		[TestMethod]
+		public void TestExpand_Without_Constraint()
+		{
+			using (var db = new DbContext(connectionString))
+			{
+				var orders = db.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
+
+				var order_details = db.Expand<Orders, int, Order_Details>(orders, x => x.OrderID, y => y.OrderID);
+				var products = db.Expand<Order_Details, int, Products>(order_details, x => x.ProductID, y => y.ProductID);
+
+				var product = products.First(row => row.ProductName == "Tarte au sucre");
+				Debug.Assert(product.UnitsInStock == 17);
+			}
+		}
+
+
+		[TestMethod]
 		public void TestExpandAllOrders2()
 		{
 			using (var db = new DbContext(connectionString))
@@ -414,7 +430,6 @@ namespace UnitTestProject
 			}
 
 		}
-
 
 		[TestMethod]
 		public void TestQueryExtension()

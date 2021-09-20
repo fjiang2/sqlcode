@@ -18,10 +18,7 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public IEnumerable<TSubEntity> Expand<TSubEntity>(TEntity entity) where TSubEntity : class
 		{
-			string where = AssociationWhere<TSubEntity>(entity).ToScript(Context.Style);
-
-			var table = Context.GetTable<TSubEntity>();
-			return table.Select(where);
+			return Expand<TSubEntity>(new TEntity[] { entity });
 		}
 
 		/// <summary>
@@ -38,6 +35,12 @@ namespace Sys.Data.Entity
 			return table.Select(where);
 		}
 
+		public IEnumerable<TSubEntity> Expand<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
+		{
+			string where = otherKey.AsColumn().IN(entities.Select(entity => broker.ToDictionary(entity)[thisKey])).ToScript(Context.Style);
+			var table = Context.GetTable<TSubEntity>();
+			return table.Select(where);
+		}
 
 		/// <summary>
 		/// Expand single association
@@ -46,10 +49,7 @@ namespace Sys.Data.Entity
 		/// <param name="entity"></param>
 		public void ExpandOnSubmit<TSubEntity>(TEntity entity) where TSubEntity : class
 		{
-			string where = AssociationWhere<TSubEntity>(entity).ToScript(Context.Style);
-
-			var table = Context.GetTable<TSubEntity>();
-			table.SelectOnSubmit(where);
+			ExpandOnSubmit<TSubEntity>(new TEntity[] { entity });
 		}
 
 		/// <summary>
@@ -116,16 +116,6 @@ namespace Sys.Data.Entity
 			return types.ToArray();
 		}
 
-		private Expression AssociationWhere<TSubEntity>(TEntity entity)
-		{
-			IConstraint a = schema.Constraints?.FirstOrDefault(x => x.OtherType == typeof(TSubEntity));
-			if (a == null)
-				throw new InvalidConstraintException($"invalid assoication from {typeof(TEntity)} to {typeof(TSubEntity)}");
-
-			var dict = broker.ToDictionary(entity);
-			object value = dict[a.ThisKey];
-			return Compare(a.OtherKey, value);
-		}
 
 		private Expression AssociationWhere<TSubEntity>(IEnumerable<TEntity> entities)
 		{
@@ -145,5 +135,6 @@ namespace Sys.Data.Entity
 		{
 			return column.AsColumn().IN(values);
 		}
+
 	}
 }

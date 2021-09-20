@@ -303,6 +303,20 @@ namespace Sys.Data.Entity
 			=> query.Expand(entities);
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <typeparam name="TKey"></typeparam>
+		/// <typeparam name="TSubEntity"></typeparam>
+		/// <param name="entities"></param>
+		/// <param name="keySelector"></param>
+		/// <param name="resultSelector"></param>
+		/// <returns></returns>
+		public static IEnumerable<TSubEntity> Expand<TEntity, TKey, TSubEntity>(this IEnumerable<TEntity> entities, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TSubEntity, TKey>> resultSelector) where TEntity : class where TSubEntity : class
+			=> Invoke(db => db.Expand(entities, keySelector, resultSelector));
+
+
+		/// <summary>
 		/// Support SqlCe and SQL server, use primary key to check row existence
 		/// </summary>
 		/// <typeparam name="TEntity"></typeparam>
