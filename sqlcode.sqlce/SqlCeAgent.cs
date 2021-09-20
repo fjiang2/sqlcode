@@ -22,7 +22,11 @@ namespace Sys.Data.SqlCe
 		public override DbAccess Unit(string query, object args) => new SqlCeAccess(connectionString, new SqlUnit(query, args));
 
 		public static DataQuery Query(string connectionString)
-			=> new DataQuery(new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)));
+			=> new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)).Query();
+
+		public static DataContext Context(string connectionString)
+			=> new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)).Context();
+
 
 		public void CreateDatabase()
 		{

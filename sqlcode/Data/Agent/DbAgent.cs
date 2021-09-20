@@ -18,22 +18,51 @@ using Sys.Data.Entity;
 
 namespace Sys.Data
 {
+	/// <summary>
+	/// Agent to access database engine/server
+	/// </summary>
 	public abstract class DbAgent : IDbAgent
 	{
 		protected DbAgent()
 		{
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public abstract DbAgentOption Option { get; }
 
+		/// <summary>
+		/// proxy connects to database
+		/// </summary>
+		/// <param name="unit">Sql code unit</param>
+		/// <returns></returns>
 		public abstract IDbAccess Proxy(SqlUnit unit);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="query"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		public abstract DbAccess Unit(string query, object args);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public DataContext Context() => new DataContext(this);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public DataQuery Query() => new DataQuery(this);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return Option.ToString();

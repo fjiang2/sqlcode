@@ -8,6 +8,11 @@ namespace Sys.Data.SqlClient
 	{
 		private readonly SqlConnectionStringBuilder connectionString;
 
+		public SqlDbAgent(string connectionString)
+		{
+			this.connectionString = new SqlConnectionStringBuilder(connectionString);
+		}
+
 		public SqlDbAgent(SqlConnectionStringBuilder connectionString)
 		{
 			this.connectionString = connectionString;
@@ -18,6 +23,10 @@ namespace Sys.Data.SqlClient
 		public override DbAccess Unit(string query, object args) => new SqlDbAccess(connectionString, new SqlUnit(query, args));
 
 		public static DataQuery Query(string connectionString)
-			=> new DataQuery(new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)));
+			=> new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Query();
+
+		public static DataContext Context(string connectionString)
+			=> new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Context();
+
 	}
 }

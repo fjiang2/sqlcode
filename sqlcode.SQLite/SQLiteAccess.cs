@@ -7,19 +7,13 @@ using System.Data.SQLite;
 
 namespace Sys.Data.SQLite
 {
-
-	public class SQLiteAccess : DbAccess, IDbAccess
+	class SQLiteAccess : DbAccess, IDbAccess
 	{
 		private readonly SQLiteCommand command;
 		private readonly SQLiteConnection connection;
 
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
-
-		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
-		{
-		}
 
 		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, SqlUnit unit)
 		{

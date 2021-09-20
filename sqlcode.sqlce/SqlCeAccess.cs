@@ -6,18 +6,13 @@ using System.Data.SqlServerCe;
 
 namespace Sys.Data.SqlCe
 {
-	public class SqlCeAccess : DbAccess, IDbAccess
+	class SqlCeAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCeCommand command;
 		private readonly SqlCeConnection connection;
 
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
-
-		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
-		{
-		}
 
 		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
 		{

@@ -8,19 +8,13 @@ using System.Data.SqlClient;
 namespace Sys.Data.SqlClient
 {
 
-	public class SqlDbAccess
-		: DbAccess, IDbAccess
+	class SqlDbAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;
-		
+
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
-
-		public SqlDbAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
-		{
-		}
 
 		public SqlDbAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
 		{
@@ -147,8 +141,8 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
-		
-		public override void ExecuteTransaction() 
+
+		public override void ExecuteTransaction()
 		{
 			if (statements.Length == 0)
 				return;

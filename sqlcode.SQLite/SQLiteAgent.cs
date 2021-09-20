@@ -22,6 +22,9 @@ namespace Sys.Data.SQLite
 		public override DbAccess Unit(string query, object args) => new SQLiteAccess(connectionString, new SqlUnit(query, args));
 
 		public static DataQuery Query(string connectionString)
-			=> new DataQuery(new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)));
+			=> new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)).Query();
+
+		public static DataContext Context(string connectionString)
+			=> new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)).Context();
 	}
 }
