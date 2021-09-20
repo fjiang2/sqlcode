@@ -49,7 +49,7 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
-		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private static SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			SqlDbType dbType = SqlDbType.NVarChar;
 			if (value is int)
@@ -150,7 +150,7 @@ namespace Sys.Data.SqlClient
 		
 		public override void ExecuteTransaction() 
 		{
-			if (statements.Count() == 0)
+			if (statements.Length == 0)
 				return;
 
 			try

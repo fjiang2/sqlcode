@@ -10,18 +10,11 @@ namespace Sys.Data.SQLite
 
 	public class SQLiteAccess : DbAccess, IDbAccess
 	{
-		private const string connectionStringFormat = "provider=sqlite;Data Source={0};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
-
 		private readonly SQLiteCommand command;
 		private readonly SQLiteConnection connection;
 
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
-
-		public SQLiteAccess(string fileName, string sql, object args)
-			: this(new SQLiteConnectionStringBuilder(string.Format(connectionStringFormat, fileName)), new SqlUnit(sql, args))
-		{
-		}
 
 		public SQLiteAccess(SQLiteConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
@@ -51,7 +44,7 @@ namespace Sys.Data.SQLite
 			}
 		}
 
-		private SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private static SQLiteParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;
 			if (value is int)
@@ -168,7 +161,7 @@ namespace Sys.Data.SQLite
 
 		public override void ExecuteTransaction()
 		{
-			if (statements.Count() == 0)
+			if (statements.Length == 0)
 				return;
 
 			try

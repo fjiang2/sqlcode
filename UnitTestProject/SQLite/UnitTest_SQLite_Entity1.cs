@@ -19,8 +19,8 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SQLite_Entity1
 	{
-		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
-		private string connectionString;
+		private readonly string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
+		private readonly string connectionString;
 		private readonly DataQuery Query;
 
 		public UnitTest_SQLite_Entity1()

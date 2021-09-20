@@ -5,7 +5,12 @@ namespace Sys.Data.SQLite
 {
 	public class SQLiteAgent : DbAgent
 	{
-		private SQLiteConnectionStringBuilder connectionString;
+		private readonly SQLiteConnectionStringBuilder connectionString;
+
+		public SQLiteAgent(string fileName)
+		{
+			this.connectionString = new SQLiteConnectionStringBuilder($"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;");
+		}
 
 		public SQLiteAgent(SQLiteConnectionStringBuilder connectionString)
 		{
@@ -14,6 +19,7 @@ namespace Sys.Data.SQLite
 
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SQLite };
 		public override IDbAccess Proxy(SqlUnit unit) => new SQLiteAccess(connectionString, unit);
+		public override DbAccess Unit(string query, object args) => new SQLiteAccess(connectionString, new SqlUnit(query, args));
 
 		public static DataQuery Query(string connectionString)
 			=> new DataQuery(new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)));

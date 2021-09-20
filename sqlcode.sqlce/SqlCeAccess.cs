@@ -8,18 +8,11 @@ namespace Sys.Data.SqlCe
 {
 	public class SqlCeAccess : DbAccess, IDbAccess
 	{
-		private const string connectionStringFormat = "Data Source={0};Max Buffer Size=1024;Persist Security Info=False;";
-
 		private readonly SqlCeCommand command;
 		private readonly SqlCeConnection connection;
 
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
-
-		public SqlCeAccess(string fileName, string sql, object args)
-			: this(new SqlCeConnectionStringBuilder(string.Format(connectionStringFormat, fileName)), new SqlUnit(sql, args))
-		{
-		}
 
 		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, string sql, object args)
 			: this(connectionString, new SqlUnit(sql, args))
@@ -49,7 +42,7 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
-		private SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private static SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;
 			if (value is int)

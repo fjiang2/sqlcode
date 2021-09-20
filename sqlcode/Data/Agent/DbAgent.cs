@@ -28,6 +28,8 @@ namespace Sys.Data
 
 		public abstract IDbAccess Proxy(SqlUnit unit);
 
+		public abstract DbAccess Unit(string query, object args);
+
 		public DataContext Context() => new DataContext(this);
 
 		public DataQuery Query() => new DataQuery(this);
