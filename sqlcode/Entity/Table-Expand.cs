@@ -17,9 +17,7 @@ namespace Sys.Data.Entity
 		/// <param name="entity"></param>
 		/// <returns></returns>
 		public IEnumerable<TSubEntity> Expand<TSubEntity>(TEntity entity) where TSubEntity : class
-		{
-			return Expand<TSubEntity>(new TEntity[] { entity });
-		}
+			=> Expand<TSubEntity>(new TEntity[] { entity });
 
 		/// <summary>
 		/// Expand single assoication immediately
@@ -29,15 +27,13 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public IEnumerable<TSubEntity> Expand<TSubEntity>(IEnumerable<TEntity> entities) where TSubEntity : class
 		{
-			string where = AssociationWhere<TSubEntity>(entities).ToScript(Context.Style);
-
-			var table = Context.GetTable<TSubEntity>();
-			return table.Select(where);
+			IConstraint a = Constraint<TSubEntity>();
+			return Expand<TSubEntity>(entities, a.ThisKey, a.OtherKey);
 		}
 
 		public IEnumerable<TSubEntity> Expand<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
 		{
-			string where = otherKey.AsColumn().IN(entities.Select(entity => broker.ToDictionary(entity)[thisKey])).ToScript(Context.Style);
+			var where = Contains(entities, thisKey, otherKey).ToScript(Context.Style);
 			var table = Context.GetTable<TSubEntity>();
 			return table.Select(where);
 		}
@@ -48,9 +44,7 @@ namespace Sys.Data.Entity
 		/// <typeparam name="TSubEntity"></typeparam>
 		/// <param name="entity"></param>
 		public void ExpandOnSubmit<TSubEntity>(TEntity entity) where TSubEntity : class
-		{
-			ExpandOnSubmit<TSubEntity>(new TEntity[] { entity });
-		}
+			=> ExpandOnSubmit<TSubEntity>(new TEntity[] { entity });
 
 		/// <summary>
 		/// Expand single association
@@ -59,12 +53,16 @@ namespace Sys.Data.Entity
 		/// <param name="entities"></param>
 		public void ExpandOnSubmit<TSubEntity>(IEnumerable<TEntity> entities) where TSubEntity : class
 		{
-			string where = AssociationWhere<TSubEntity>(entities).ToScript(Context.Style);
+			IConstraint a = Constraint<TSubEntity>();
+			ExpandOnSubmit<TSubEntity>(entities, a.ThisKey, a.OtherKey);
+		}
 
+		public void ExpandOnSubmit<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
+		{
+			var where = Contains(entities, thisKey, otherKey).ToScript(Context.Style);
 			var table = Context.GetTable<TSubEntity>();
 			table.SelectOnSubmit(where);
 		}
-
 
 		/// <summary>
 		/// Expand all associations
@@ -73,23 +71,7 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public Type[] ExpandOnSubmit(TEntity entity)
 		{
-			List<Type> types = new List<Type>();
-			var dict = broker.ToDictionary(entity);
-
-			foreach (var a in schema.Constraints)
-			{
-				var schema = broker.GetSchmea(a.OtherType);
-				var formalName = schema.FormalTableName();
-
-				object value = dict[a.ThisKey];
-				Expression where = Compare(a.OtherKey, value);
-				var SQL = new SqlBuilder().SELECT().COLUMNS().FROM(formalName).WHERE(where).ToScript(Context.Style);
-
-				Context.CodeBlock.AppendQuery(a.OtherType, SQL);
-				types.Add(a.OtherType);
-			}
-
-			return types.ToArray();
+			return ExpandOnSubmit(new TEntity[] { entity });
 		}
 
 		/// <summary>
@@ -106,7 +88,8 @@ namespace Sys.Data.Entity
 				var schema = broker.GetSchmea(a.OtherType);
 				var formalName = schema.FormalTableName();
 
-				Expression where = Compare(a.OtherKey, entities.Select(entity => broker.ToDictionary(entity)[a.ThisKey]));
+				Expression where = Contains(entities,a.ThisKey, a.OtherKey);
+
 				var SQL = new SqlBuilder().SELECT().COLUMNS().FROM(formalName).WHERE(where).ToScript(Context.Style);
 
 				Context.CodeBlock.AppendQuery(a.OtherType, SQL);
@@ -116,25 +99,29 @@ namespace Sys.Data.Entity
 			return types.ToArray();
 		}
 
-
-		private Expression AssociationWhere<TSubEntity>(IEnumerable<TEntity> entities)
+		private IConstraint Constraint<TSubEntity>()
 		{
 			IConstraint a = schema.Constraints?.FirstOrDefault(x => x.OtherType == typeof(TSubEntity));
 			if (a == null)
 				throw new InvalidConstraintException($"invalid assoication from {typeof(TEntity)} to {typeof(TSubEntity)}");
-
-			return Compare(a.OtherKey, entities.Select(entity => broker.ToDictionary(entity)[a.ThisKey]));
+			return a;
 		}
 
-		private static Expression Compare(string column, object value)
+		private Expression Contains(IEnumerable<TEntity> entities, string thisKey, string otherKey)
+		{
+			return otherKey.AsColumn().IN(Values(entities, thisKey));
+		}
+
+		public IEnumerable<object> Values(IEnumerable<TEntity> entities, string column)
+		{
+			return entities.Select(entity => broker.ToDictionary(entity)[column]).ToList();
+		}
+
+		private static Expression EQUALS(string column, object value)
 		{
 			return column.AsColumn() == new Expression(new SqlValue(value));
 		}
 
-		private static Expression Compare(string column, IEnumerable<object> values)
-		{
-			return column.AsColumn().IN(values);
-		}
 
 	}
 }
