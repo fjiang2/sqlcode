@@ -369,6 +369,12 @@ namespace Sys.Data.Text
 			return ToScript(style);
 		}
 
+		public DbAccess Access(DbAgent agent, object args = null)
+		{
+			string SQL = ToScript(agent.Option.Style);
+			return agent.Access(SQL, args);
+		}
+
 		public override string ToString()
 		{
 			return ToScript(DbAgentOption.DefaultStyle);
