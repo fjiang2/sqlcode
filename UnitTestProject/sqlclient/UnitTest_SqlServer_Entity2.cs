@@ -393,17 +393,33 @@ namespace UnitTestProject
 		{
 			using (var db = new DbContext(connectionString))
 			{
+
+				// SELECT * FROM Order_Details WHERE OrderID IN (SELECT OrderID FROM Orders WHERE OrderID IN(10254, 10260))
+				// TWO STEPS
 				var orders = db.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
 
-				var order_details = db.Expand<Orders, Order_Details>(orders, x => x.OrderID, y => y.OrderID);
-				var products = db.Expand<Order_Details, Products>(order_details, x => x.ProductID, y => y.ProductID);
-
-				//var L1 = orders.Select(x => x.OrderID);
-				//var order_details = db.Select<Order_Details>(row => L1.Contains(row.OrderID));
-				//var L2 = order_details.Select(row => row.ProductID);
-				//var products = db.Select<Products>(row => L2.Contains(row.ProductID));
-
+				var L1 = orders.Select(x => x.OrderID);
+				var order_details = db.Select<Order_Details>(row => L1.Contains(row.OrderID));
+				var L2 = order_details.Select(row => row.ProductID);
+				var products = db.Select<Products>(row => L2.Contains(row.ProductID));
+				
 				var product = products.First(row => row.ProductName == "Tarte au sucre");
+				Debug.Assert(product.UnitsInStock == 17);
+
+				// ONE STEP in SqlBuilder
+				var OrderID = nameof(Orders.OrderID).AsColumn();  // == nameof(Order_Details.OrderID).AsColumn();
+				order_details = db.Select<Order_Details>(OrderID.IN(new SqlBuilder().SELECT().COLUMNS(OrderID).FROM(nameof(Orders)).WHERE(OrderID == 10254 | OrderID == 10260)));
+				products = db.Select<Products>(nameof(Products.ProductID).AsColumn().IN(order_details.Select(x => x.ProductID)));
+
+				product = products.First(row => row.ProductName == "Tarte au sucre");
+				Debug.Assert(product.UnitsInStock == 17);
+
+				// ONE STEP
+				order_details = Query.Select<Orders, Order_Details>(row => row.OrderID == 10254 || row.OrderID == 10260, row => row.OrderID, row => row.OrderID);
+				L2 = order_details.Select(row => row.ProductID);
+				products = db.Select<Products>(row => L2.Contains(row.ProductID));
+
+				product = products.First(row => row.ProductName == "Tarte au sucre");
 				Debug.Assert(product.UnitsInStock == 17);
 			}
 		}

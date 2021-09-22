@@ -22,16 +22,6 @@ namespace Sys.Data.Entity
 			return table.Expand<TSubEntity>(entities);
 		}
 
-		public IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(IEnumerable<TEntity> entities, Expression<Func<TEntity, object>> keySelector, Expression<Func<TSubEntity, object>> resultSelector) where TEntity : class where TSubEntity : class
-		{
-			var translator = new QueryTranslator(agent.Option.Style);
-			string _keySelector = translator.Translate(keySelector);
-			string _resultSelector = translator.Translate(resultSelector);
-
-			var table = GetTable<TEntity>();
-			return table.Expand<TSubEntity>(entities, _keySelector, _resultSelector);
-		}
-
 		public IQueryResultReader Expand<TEntity>(TEntity entity) where TEntity : class
 		{
 			ExpandOnSubmit(entity);

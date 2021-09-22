@@ -93,6 +93,11 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
 
+		public IEnumerable<TEntity> Select<TEntity>(Text.Expression where) where TEntity : class
+		{
+			return Invoke(db => db.Select<TEntity>(where));
+		}
+
 		/// <summary>
 		/// Select single entity by primary key. Properties of primary key must have values
 		/// </summary>

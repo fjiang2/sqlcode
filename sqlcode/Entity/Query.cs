@@ -108,6 +108,10 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public static IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
 			=> query.Select<TEntity>(where);
+		
+		
+		public static IEnumerable<TEntity> Select<TEntity>(Text.Expression where) where TEntity : class
+			=> query.Select<TEntity>(where);
 
 		/// <summary>
 		/// Select single entity by primary key. Properties of primary key must have values
@@ -290,20 +294,7 @@ namespace Sys.Data.Entity
 		public static IQueryResultReader Expand<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> query.Expand(entities);
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <typeparam name="TKey"></typeparam>
-		/// <typeparam name="TSubEntity"></typeparam>
-		/// <param name="entities"></param>
-		/// <param name="keySelector"></param>
-		/// <param name="resultSelector"></param>
-		/// <returns></returns>
-		public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(this IEnumerable<TEntity> entities, Expression<Func<TEntity, object>> keySelector, Expression<Func<TSubEntity, object>> resultSelector) where TEntity : class where TSubEntity : class
-			=> Invoke(db => db.Expand(entities, keySelector, resultSelector));
-
-
+		
 		/// <summary>
 		/// Support SqlCe and SQL server, use primary key to check row existence
 		/// </summary>
