@@ -19,9 +19,13 @@ namespace Sys.Data.SqlCe
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
-			this.command = new SqlCeCommand();
 			this.connection = new SqlCeConnection(connectionString);
-			this.command.Connection = connection;
+			this.command = new SqlCeCommand()
+			{
+				CommandType = unit.CommandType,
+				Connection = connection,
+			};
+
 
 			if (args == null)
 				return;

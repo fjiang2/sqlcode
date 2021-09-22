@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using UnitTestProject.Northwind.dc2;
 using Sys.Data.SqlClient;
 using Sys.Data.Entity;
-using Sys.Data;
+using Sys.Data.Text;
 
 namespace UnitTestProject
 {
@@ -389,6 +389,43 @@ namespace UnitTestProject
 		}
 
 		[TestMethod]
+		public void TestExpand_Without_Constraint()
+		{
+			using (var db = new DbContext(connectionString))
+			{
+
+				// SELECT * FROM Order_Details WHERE OrderID IN (SELECT OrderID FROM Orders WHERE OrderID IN(10254, 10260))
+				// TWO STEPS
+				var orders = db.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
+
+				var L1 = orders.Select(x => x.OrderID);
+				var order_details = db.Select<Order_Details>(row => L1.Contains(row.OrderID));
+				var L2 = order_details.Select(row => row.ProductID);
+				var products = db.Select<Products>(row => L2.Contains(row.ProductID));
+				
+				var product = products.First(row => row.ProductName == "Tarte au sucre");
+				Debug.Assert(product.UnitsInStock == 17);
+
+				// ONE STEP in SqlBuilder
+				var OrderID = nameof(Orders.OrderID).AsColumn();  // == nameof(Order_Details.OrderID).AsColumn();
+				order_details = db.Select<Order_Details>(OrderID.IN(new SqlBuilder().SELECT().COLUMNS(OrderID).FROM(nameof(Orders)).WHERE(OrderID == 10254 | OrderID == 10260)));
+				products = db.Select<Products>(nameof(Products.ProductID).AsColumn().IN(order_details.Select(x => x.ProductID)));
+
+				product = products.First(row => row.ProductName == "Tarte au sucre");
+				Debug.Assert(product.UnitsInStock == 17);
+
+				// ONE STEP
+				order_details = Query.Select<Orders, Order_Details>(row => row.OrderID == 10254 || row.OrderID == 10260, row => row.OrderID, row => row.OrderID);
+				L2 = order_details.Select(row => row.ProductID);
+				products = db.Select<Products>(row => L2.Contains(row.ProductID));
+
+				product = products.First(row => row.ProductName == "Tarte au sucre");
+				Debug.Assert(product.UnitsInStock == 17);
+			}
+		}
+
+
+		[TestMethod]
 		public void TestExpandAllOrders2()
 		{
 			using (var db = new DbContext(connectionString))
@@ -414,7 +451,6 @@ namespace UnitTestProject
 			}
 
 		}
-
 
 		[TestMethod]
 		public void TestQueryExtension()
@@ -545,7 +581,7 @@ namespace UnitTestProject
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
-				var products = Query.Select<Categories, int, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
+				var products = Query.Select<Categories, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
 				string text = string.Join(",", products.Select(row => row.ProductID));
 
 				Debug.Assert(text == "1,2,24,34,35,38,39,43,67,70,75,76");

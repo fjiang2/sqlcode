@@ -536,13 +536,10 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-			var L = Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages").ToArray();
-			Debug.Assert(L[0].CategoryID == 1 && L[0].Description == null);
-
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
-				var products = Query.Select<Categories, int, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
+				var products = Query.Select<Categories, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
 				string text = string.Join(",", products.Select(row => row.ProductID));
 
 				Debug.Assert(text == "1,2,24,34,35,38,39,43,67,70,75,76");

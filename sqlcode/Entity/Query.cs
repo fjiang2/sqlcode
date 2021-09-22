@@ -108,6 +108,10 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public static IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
 			=> query.Select<TEntity>(where);
+		
+		
+		public static IEnumerable<TEntity> Select<TEntity>(Text.Expression where) where TEntity : class
+			=> query.Select<TEntity>(where);
 
 		/// <summary>
 		/// Select single entity by primary key. Properties of primary key must have values
@@ -127,18 +131,6 @@ namespace Sys.Data.Entity
 		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
 			=> query.Select(where);
 
-		/// <summary>
-		/// SELECT col1,col2,... FROM entity-table WHERE ...
-		/// e.g.
-		///   Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
-		///   SELECT CategoryID,CategoryName,... FROM Categories WHERE CategoryName = 'Beverages'
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <param name="selectedColumns"></param>
-		/// <param name="where"></param>
-		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
-			=> query.Select(selectedColumns, where);
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)
@@ -153,7 +145,7 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public static IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
+		public static IEnumerable<TResult> Select<TEntity, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, object>> keySelector, Expression<Func<TResult, object>> resultSelector)
 			where TEntity : class
 			where TResult : class
 			=> query.Select(where, keySelector, resultSelector);
@@ -302,6 +294,7 @@ namespace Sys.Data.Entity
 		public static IQueryResultReader Expand<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
 			=> query.Expand(entities);
 
+		
 		/// <summary>
 		/// Support SqlCe and SQL server, use primary key to check row existence
 		/// </summary>

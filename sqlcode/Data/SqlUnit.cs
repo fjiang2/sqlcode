@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 
 namespace Sys.Data
 {
@@ -7,6 +8,8 @@ namespace Sys.Data
 	/// </summary>
 	public class SqlUnit
 	{
+		public CommandType CommandType { get; set; } = CommandType.Text;
+
 		/// <summary>
 		/// SQL statements which could be SELECT, INSERT, UPDATE, DELETE statements
 		/// </summary>

@@ -18,6 +18,7 @@
 using System;
 using System.Data.Common;
 using Sys.Data.Entity;
+using Sys.Data.Text;
 
 namespace Sys.Data
 {
@@ -40,6 +41,7 @@ namespace Sys.Data
 		public abstract DbAccess Access(SqlUnit unit);
 
 
+		public DbAccess Access(SqlBuilder sql, object args) => Access(new SqlUnit(sql.ToScript(Option.Style), args));
 		public DbAccess Access(string query) => Access(new SqlUnit(query));
 		public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
 
