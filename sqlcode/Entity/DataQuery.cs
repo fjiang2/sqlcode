@@ -119,46 +119,6 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
 
-		/// <summary>
-		/// SELECT col1,col2,... FROM entity-table WHERE ...
-		/// e.g.
-		///   Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
-		///   SELECT CategoryID,CategoryName,... FROM Categories WHERE CategoryName = 'Beverages'
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <param name="selectedColumns"></param>
-		/// <param name="where"></param>
-		/// <returns></returns>
-		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
-		{
-			TEntity CreateInstance(System.Reflection.PropertyInfo[] properties, DataRow row, IEnumerable<string> columns)
-			{
-				TEntity entity = new TEntity();
-				foreach (var property in properties)
-				{
-					if (columns.Contains(property.Name))
-						property.SetValue(entity, Convert.ChangeType(row[property.Name], property.PropertyType));
-				}
-
-				return entity;
-			}
-
-			return Invoke(db =>
-			{
-				var table = db.GetTable<TEntity>();
-
-				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
-				string _where = new QueryTranslator(db.Style).Translate(where);
-				string SQL = table.SelectFromWhere(_where, _columns);
-
-				var dt = db.FillDataTable(SQL);
-				if (dt == null || dt.Rows.Count == 0)
-					return new List<TEntity>();
-
-				var properties = typeof(TEntity).GetProperties();
-				return dt.ToList(row => CreateInstance(properties, row, _columns));
-			});
-		}
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)

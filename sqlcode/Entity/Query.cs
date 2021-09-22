@@ -127,18 +127,6 @@ namespace Sys.Data.Entity
 		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
 			=> query.Select(where);
 
-		/// <summary>
-		/// SELECT col1,col2,... FROM entity-table WHERE ...
-		/// e.g.
-		///   Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
-		///   SELECT CategoryID,CategoryName,... FROM Categories WHERE CategoryName = 'Beverages'
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <param name="selectedColumns"></param>
-		/// <param name="where"></param>
-		/// <returns></returns>
-		public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
-			=> query.Select(selectedColumns, where);
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)
