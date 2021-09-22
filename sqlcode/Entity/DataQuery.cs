@@ -173,7 +173,7 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
+		public IEnumerable<TResult> Select<TEntity, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, object>> keySelector, Expression<Func<TResult, object>> resultSelector)
 			where TEntity : class
 			where TResult : class
 		{
@@ -342,22 +342,6 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Invoke(db => db.Expand(entities));
-
-
-		/// <summary>
-		/// SELECT * FROM result-table WHERE result-selector IN (SELECT key-selector FROM source)
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <typeparam name="TKey"></typeparam>
-		/// <typeparam name="TResult"></typeparam>
-		/// <param name="source"></param>
-		/// <param name="keySelector"></param>
-		/// <param name="resultSelector"></param>
-		/// <returns></returns>
-		public IEnumerable<TResult> Expand<TEntity, TKey, TResult>(IEnumerable<TEntity> source, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
-			where TEntity : class
-			where TResult : class
-			=> Invoke(db => db.Expand<TEntity, TKey, TResult>(source, keySelector, resultSelector));
 
 
 		/// <summary>

@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using UnitTestProject.Northwind.dc2;
 using Sys.Data.SqlClient;
 using Sys.Data.Entity;
-using Sys.Data;
+using Sys.Data.Text;
 
 namespace UnitTestProject
 {
@@ -395,8 +395,13 @@ namespace UnitTestProject
 			{
 				var orders = db.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
 
-				var order_details = db.Expand<Orders, int, Order_Details>(orders, x => x.OrderID, y => y.OrderID);
-				var products = db.Expand<Order_Details, int, Products>(order_details, x => x.ProductID, y => y.ProductID);
+				var order_details = db.Expand<Orders, Order_Details>(orders, x => x.OrderID, y => y.OrderID);
+				var products = db.Expand<Order_Details, Products>(order_details, x => x.ProductID, y => y.ProductID);
+
+				//var L1 = orders.Select(x => x.OrderID);
+				//var order_details = db.Select<Order_Details>(row => L1.Contains(row.OrderID));
+				//var L2 = order_details.Select(row => row.ProductID);
+				//var products = db.Select<Products>(row => L2.Contains(row.ProductID));
 
 				var product = products.First(row => row.ProductName == "Tarte au sucre");
 				Debug.Assert(product.UnitsInStock == 17);
@@ -560,7 +565,7 @@ namespace UnitTestProject
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
-				var products = Query.Select<Categories, int, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
+				var products = Query.Select<Categories, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
 				string text = string.Join(",", products.Select(row => row.ProductID));
 
 				Debug.Assert(text == "1,2,24,34,35,38,39,43,67,70,75,76");

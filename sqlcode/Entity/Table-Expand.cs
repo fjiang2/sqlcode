@@ -31,7 +31,7 @@ namespace Sys.Data.Entity
 			return Expand<TSubEntity>(entities, a.ThisKey, a.OtherKey);
 		}
 
-		public IEnumerable<TSubEntity> Expand<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
+		internal IEnumerable<TSubEntity> Expand<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
 		{
 			var where = Contains(entities, thisKey, otherKey).ToScript(Context.Style);
 			var table = Context.GetTable<TSubEntity>();
@@ -57,7 +57,7 @@ namespace Sys.Data.Entity
 			ExpandOnSubmit<TSubEntity>(entities, a.ThisKey, a.OtherKey);
 		}
 
-		public void ExpandOnSubmit<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
+		private void ExpandOnSubmit<TSubEntity>(IEnumerable<TEntity> entities, string thisKey, string otherKey) where TSubEntity : class
 		{
 			var where = Contains(entities, thisKey, otherKey).ToScript(Context.Style);
 			var table = Context.GetTable<TSubEntity>();

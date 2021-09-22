@@ -153,7 +153,7 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public static IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
+		public static IEnumerable<TResult> Select<TEntity, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, object>> keySelector, Expression<Func<TResult, object>> resultSelector)
 			where TEntity : class
 			where TResult : class
 			=> query.Select(where, keySelector, resultSelector);
@@ -312,7 +312,7 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public static IEnumerable<TSubEntity> Expand<TEntity, TKey, TSubEntity>(this IEnumerable<TEntity> entities, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TSubEntity, TKey>> resultSelector) where TEntity : class where TSubEntity : class
+		public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(this IEnumerable<TEntity> entities, Expression<Func<TEntity, object>> keySelector, Expression<Func<TSubEntity, object>> resultSelector) where TEntity : class where TSubEntity : class
 			=> Invoke(db => db.Expand(entities, keySelector, resultSelector));
 
 
