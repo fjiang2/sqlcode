@@ -622,7 +622,7 @@ SET @CategoryId = @@IDENTITY");
 		[TestMethod]
 		public void Test_CREATE_TABLE()
 		{
-			string sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NOT NULL, [DATA] int NOT NULL, PRIMARY KEY ([Id], [Time], [ENU], [DATA]))";
+			string sql = "CREATE TABLE [Purdue] ([Id] INT NOT NULL, [Time] DATETIME NOT NULL, [ENU] INT NOT NULL, [DATA] INT NOT NULL, PRIMARY KEY ([Id], [Time], [ENU], [DATA]))";
 
 			var Id = "Id".AsColumn();
 			var Time = "Time".AsColumn();
@@ -632,24 +632,24 @@ SET @CategoryId = @@IDENTITY");
 			string query = new SqlBuilder()
 				.CREATE().TABLE("Purdue")
 				.TUPLE(
-		 			  Id.DEFINE_NOT_NULL("int"),
-					Time.DEFINE_NOT_NULL("DateTime"),
-					 ENU.DEFINE_NOT_NULL("int"),
-					DATA.DEFINE_NOT_NULL("int"),
+		 			  Id.DEFINE_NOT_NULL(TYPE.INT),
+					Time.DEFINE_NOT_NULL(TYPE.DATETIME),
+					 ENU.DEFINE_NOT_NULL(TYPE.INT),
+					DATA.DEFINE_NOT_NULL(TYPE.INT),
 		 	  Expression.PRIMARY_KEY(Id, Time, ENU, DATA)
 					)
 				.ToString();
 
 			Debug.Assert(sql == query);
 
-			sql = "CREATE TABLE [Purdue] ([Id] int NOT NULL, [Time] DateTime NOT NULL, [ENU] int NULL, [DATA] int NULL, PRIMARY KEY ([Id], [Time]), FOREIGN KEY ([Id]) REFERENCES Products([ProductID]))";
+			sql = "CREATE TABLE [Purdue] ([Id] INT NOT NULL, [Time] DATETIME NOT NULL, [ENU] INT NULL, [DATA] INT NULL, PRIMARY KEY ([Id], [Time]), FOREIGN KEY ([Id]) REFERENCES Products([ProductID]))";
 			query = new SqlBuilder()
 				.CREATE().TABLE("Purdue")
 				.TUPLE(
-					  Id.DEFINE_NOT_NULL("int"),
-					Time.DEFINE_NOT_NULL("DateTime"),
-					 ENU.DEFINE_NULL("int"),
-					DATA.DEFINE_NULL("int"),
+					  Id.DEFINE_NOT_NULL(TYPE.INT),
+					Time.DEFINE_NOT_NULL(TYPE.DATETIME),
+					 ENU.DEFINE_NULL(TYPE.INT),
+					DATA.DEFINE_NULL(TYPE.INT),
 				Expression.PRIMARY_KEY(Id, Time),
 						 Id.FOREIGN_KEY("Products", "ProductID".AsColumn())
 					)
@@ -692,16 +692,23 @@ GO";
 		public void Test_DECLARE()
 		{
 			string sql = "DECLARE @Age INT = 12, @City VARCHAR(50) = N'London'";
-			string query = new SqlBuilder().DECLARE().PARAMETERS("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
+			string query = new SqlBuilder().DECLARE("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
 				.ToString();
 
 			Debug.Assert(sql == query);
 
 			sql = "DECLARE Age INT = 12, City VARCHAR(50)";
-			query = new SqlBuilder().DECLARE().PARAMETERS("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
+			query = new SqlBuilder().DECLARE("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
 				.ToString();
 
 			Debug.Assert(sql == query);
+
+			sql = "SET Age = 12, City = N'London'";
+			query = new SqlBuilder().SET("Age".AsVariable(12), "City".AsVariable("London"))
+				.ToString();
+
+			Debug.Assert(sql == query);
+
 		}
 	}
 }

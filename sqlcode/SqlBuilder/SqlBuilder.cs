@@ -360,15 +360,15 @@ namespace Sys.Data.Text
 		public SqlBuilder TABLE(ITableName table) => TABLE(table.FullName);
 		public SqlBuilder TABLE(string table) => WithTableName("TABLE", table, alias: null);
 
-		public SqlBuilder DECLARE() => AppendSpace("DECLARE");
+		public SqlBuilder DECLARE(params Expression[] variables) => AppendSpace("DECLARE").Append(new Expression(variables));
 
+		public SqlBuilder EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
 		public SqlBuilder PROCEDURE(string name) => AppendSpace("PROCEDURE").AppendSpace(name);
 		public SqlBuilder AS() => AppendSpace("AS");
-		public SqlBuilder PARAMETERS(params Expression[] columns)
+		public SqlBuilder PARAMETERS(params Expression[] parameters)
 		{
-			return PARAMETERS((IEnumerable<Expression>)columns);
+			return PARAMETERS((IEnumerable<Expression>)parameters);
 		}
-		public SqlBuilder EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
 
 		public SqlBuilder PARAMETERS(IEnumerable<Expression> parameters)
 		{
