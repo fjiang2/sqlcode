@@ -9,21 +9,25 @@
     <projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
-			Access SQLite database engine
-		</description>
+		Access SQLite database engine
+	</description>
     <summary>SQLite database interface</summary>
     <releaseNotes>
-			9/18/2021 v1.0.7
-			Improvements:
-			1. First release
-		</releaseNotes>
+		9/24/2021 v1.0.8
+		Improvements:
+		1. Updated by sqlcode
+		
+		9/18/2021 v1.0.7
+		Improvements:
+		1. First release
+	</releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="sqlcode" version="1.0.7" />
+        <dependency id="sqlcode" version="1.0.8" />
         <dependency id="System.Data.SQLite" version="1.0.115" />
       </group>
       <group targetFramework=".NET5.0">
-        <dependency id="sqlcode" version="1.0.7" />
+        <dependency id="sqlcode" version="1.0.8" />
         <dependency id="System.Data.SQLite" version="1.0.115" />
       </group>
     </dependencies>

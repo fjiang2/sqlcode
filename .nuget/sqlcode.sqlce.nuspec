@@ -13,13 +13,17 @@
 		</description>
     <summary>SQL server compact interface</summary>
     <releaseNotes>
-			9/18/2021 v1.0.7
-			Improvements:
-			1. First release
-		</releaseNotes>
+		9/24/2021 v1.0.8
+		Improvements:
+		1. Updated by sqlcode
+
+		9/18/2021 v1.0.7
+		Improvements:
+		1. First release
+	</releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="sqlcode" version="1.0.7" />
+        <dependency id="sqlcode" version="1.0.8" />
         <dependency id="Microsoft.SqlServer.Compact" version="4.0.8876.1" />
       </group>
     </dependencies>
