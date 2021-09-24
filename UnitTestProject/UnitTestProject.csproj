@@ -1,11 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net5.0;net48</TargetFrameworks>
-
     <IsPackable>false</IsPackable>
+    <Version>1.0.8</Version>
   </PropertyGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.5" />
@@ -15,7 +14,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.5" />
@@ -24,18 +22,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <ProjectReference Include="..\sqlcode.sqlce\sqlcode.sqlce.csproj" />
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\sqlcode.sqlclient\sqlcode.sqlclient.csproj" />
     <ProjectReference Include="..\sqlcode.sqlite\sqlcode.sqlite.csproj" />
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
   </ItemGroup>
-  
   <ItemGroup>
     <Folder Include="sqlce\" />
   </ItemGroup>
-
 </Project>
