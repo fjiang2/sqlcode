@@ -376,6 +376,25 @@ namespace Sys.Data.Text
 				return Append(new Expression(parameters)).AppendSpace();
 		}
 
+		public SqlBuilder PARAMETERS(IDictionary<string, object> args)
+		{
+			List<Expression> list = new List<Expression>();
+			foreach (var kvp in args)
+			{
+				object value = kvp.Value;
+				list.Add(new Expression(new ParameterName(kvp.Key)).LET(value));
+			}
+
+			return PARAMETERS(list);
+		}
+
+		public SqlBuilder PARAMETERS(object args)
+		{
+			var properties = args.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(args));
+			return PARAMETERS(properties);
+		}
+
+		public SqlBuilder COMMENTS(string text) => Append("--").Append(text).AppendLine();
 
 		private static string JoinColumns(IEnumerable<string> columns)
 		{

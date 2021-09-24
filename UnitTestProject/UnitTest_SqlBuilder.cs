@@ -650,8 +650,8 @@ SET @CategoryId = @@IDENTITY");
 					Time.DEFINE_NOT_NULL("DateTime"),
 					 ENU.DEFINE_NULL("int"),
 					DATA.DEFINE_NULL("int"),
-	  	      Expression.PRIMARY_KEY(Id, Time),
-				   	  Id.FOREIGN_KEY("Products", "ProductID".AsColumn())
+				Expression.PRIMARY_KEY(Id, Time),
+						 Id.FOREIGN_KEY("Products", "ProductID".AsColumn())
 					)
 				.ToString();
 
@@ -668,16 +668,23 @@ SELECT * FROM [Customers] WHERE ([City] = @City) AND ([PostalCode] = @PostalCode
 GO";
 			string query = new SqlBuilder().CREATE().PROCEDURE("SelectAllCustomers").PARAMETERS("City".AsParameter("nvarchar(30)"), "PostalCode".AsParameter("nvarchar(10)")).AppendLine()
 				.AS().AppendLine()
-				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn()=="City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
+				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn() == "City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
 				.GO()
 				.ToString();
 
 			Debug.Assert(sql == query);
 
 			sql = "EXEC SelectAllCustomers @City = N'London'";
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London"))
-				.ToString();
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
+			Debug.Assert(sql == query);
 
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter(null, "London")).ToString();
+			Debug.Assert(sql == query);
+
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
+			Debug.Assert(sql == query);
+
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string,object> { ["City"] = "London" }).ToString();
 			Debug.Assert(sql == query);
 		}
 

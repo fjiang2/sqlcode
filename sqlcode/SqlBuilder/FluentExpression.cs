@@ -128,11 +128,14 @@ namespace Sys.Data.Text
 		/// <param name="parameterName"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		public static Expression AsParameter(this string parameterName, string type = null)
+		public static Expression AsParameter(this string parameterName, string type = null, object value = null)
 		{
 			var arg = new Expression(new ParameterName(parameterName));
 			if (type != null)
 				arg = arg.PARAMETER(type);
+
+			if (value != null)
+				arg = arg.LET(value);
 
 			return arg;
 		}
