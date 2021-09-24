@@ -188,7 +188,8 @@ namespace Sys.Data.Text
 		public static Expression FOREIGN_KEY(Expression fkColumn, string pkTable, Expression pKColumn)
 			=> new Expression().AppendSpace("FOREIGN KEY").TUPLE(fkColumn).AppendSpace().AppendSpace("REFERENCES").Append(pkTable).TUPLE(pKColumn);
 		public Expression FOREIGN_KEY(string pkTable, Expression pKColumn) => FOREIGN_KEY(this, pkTable, pKColumn);
-			
+
+		internal Expression PARAMETER(string type) => new Expression(this).AppendSpace().Append(type);
 
 		public string ToScript(DbAgentStyle style)
 		{

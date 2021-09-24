@@ -122,6 +122,20 @@ namespace Sys.Data.Text
 			return new Expression(new ParameterName(parameter.ParameterName));
 		}
 
+		/// <summary>
+		/// Used to define stored procedure
+		/// </summary>
+		/// <param name="parameterName"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Expression AsParameter(this string parameterName, string type = null)
+		{
+			var arg = new Expression(new ParameterName(parameterName));
+			if (type != null)
+				arg = arg.PARAMETER(type);
+
+			return arg;
+		}
 
 		/// <summary>
 		/// Create expression of  column name: "name" -> [name]

@@ -346,6 +346,7 @@ namespace Sys.Data.Text
 			return AppendSpace($"ORDER BY {JoinColumns(columns)}");
 		}
 
+		public SqlBuilder GO() => AppendSpace("GO");
 		public SqlBuilder UNION() => AppendSpace("UNION");
 		public SqlBuilder DESC() => AppendSpace("DESC");
 		public SqlBuilder ASC() => AppendSpace("ASC");
@@ -358,6 +359,22 @@ namespace Sys.Data.Text
 		public SqlBuilder CREATE() => AppendSpace("CREATE");
 		public SqlBuilder TABLE(ITableName table) => TABLE(table.FullName);
 		public SqlBuilder TABLE(string table) => WithTableName("TABLE", table, alias: null);
+
+		public SqlBuilder PROCEDURE(string name) => AppendSpace("PROCEDURE").AppendSpace(name);
+		public SqlBuilder AS() => AppendSpace("AS");
+		public SqlBuilder PARAMETERS(params Expression[] columns)
+		{
+			return PARAMETERS((IEnumerable<Expression>)columns);
+		}
+
+		public SqlBuilder PARAMETERS(IEnumerable<Expression> parameters)
+		{
+			if (parameters == null || parameters.Count() == 0)
+				return this;
+			else
+				return Append(new Expression(parameters)).AppendSpace();
+		}
+
 
 		private static string JoinColumns(IEnumerable<string> columns)
 		{

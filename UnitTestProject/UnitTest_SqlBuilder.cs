@@ -659,6 +659,23 @@ SET @CategoryId = @@IDENTITY");
 			Debug.Assert(sql == query);
 		}
 
+		[TestMethod]
+		public void Test_STORED_PROC()
+		{
+			string sql = @"CREATE PROCEDURE SelectAllCustomers @City nvarchar(30), @PostalCode nvarchar(10)
+AS
+SELECT * FROM [Customers] WHERE ([City] = @City) AND ([PostalCode] = @PostalCode)
+GO";
+			string query = new SqlBuilder().CREATE().PROCEDURE("SelectAllCustomers").PARAMETERS("City".AsParameter("nvarchar(30)"), "PostalCode".AsParameter("nvarchar(10)")).AppendLine()
+				.AS().AppendLine()
+				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn()=="City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
+				.GO()
+				.ToString();
+
+			Debug.Assert(sql == query);
+		}
+
+
 	}
 }
 
