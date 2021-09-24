@@ -53,10 +53,23 @@ namespace Sys.Data.Text
 		/// <param name="variableName"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static Expression AssignVarible(this string variableName, object value)
+		public static Expression AsVariable(this string variableName, object value)
 		{
 			return variableName.AsVariable().LET(value);
 		}
+
+		public static Expression AsVariable(this string variableName, TYPE type, object value = null)
+		{
+			var arg = new Expression(new VariableName(variableName));
+			if (type != null)
+				arg = arg.TYPE(type);
+
+			if (value != null)
+				arg = arg.LET(value);
+
+			return arg;
+		}
+
 
 		/// <summary>
 		/// Create parameter: @parameterName with value
@@ -122,6 +135,30 @@ namespace Sys.Data.Text
 			return new Expression(new ParameterName(parameter.ParameterName));
 		}
 
+		public static Expression AsParameter(this string parameterName, object value = null)
+		{
+			var arg = new Expression(new ParameterName(parameterName));
+			if (value != null)
+				arg = arg.LET(value);
+
+			return arg;
+		}
+
+		/// <summary>
+		/// Used to define stored procedure
+		/// </summary>
+		/// <param name="parameterName"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Expression AsParameter(this string parameterName, TYPE type, object value = null)
+		{
+			var arg = new Expression(new ParameterName(parameterName)).TYPE(type);
+
+			if (value != null)
+				arg = arg.LET(value);
+
+			return arg;
+		}
 
 		/// <summary>
 		/// Create expression of  column name: "name" -> [name]
