@@ -673,6 +673,12 @@ GO";
 				.ToString();
 
 			Debug.Assert(sql == query);
+
+			sql = "EXEC SelectAllCustomers @City = N'London'";
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London"))
+				.ToString();
+
+			Debug.Assert(sql == query);
 		}
 
 

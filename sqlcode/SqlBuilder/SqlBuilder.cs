@@ -366,6 +366,7 @@ namespace Sys.Data.Text
 		{
 			return PARAMETERS((IEnumerable<Expression>)columns);
 		}
+		public SqlBuilder EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
 
 		public SqlBuilder PARAMETERS(IEnumerable<Expression> parameters)
 		{
