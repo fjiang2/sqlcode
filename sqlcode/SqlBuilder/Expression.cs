@@ -189,7 +189,7 @@ namespace Sys.Data.Text
 			=> new Expression().AppendSpace("FOREIGN KEY").TUPLE(fkColumn).AppendSpace().AppendSpace("REFERENCES").Append(pkTable).TUPLE(pKColumn);
 		public Expression FOREIGN_KEY(string pkTable, Expression pKColumn) => FOREIGN_KEY(this, pkTable, pKColumn);
 
-		internal Expression PARAMETER(string type) => new Expression(this).AppendSpace().Append(type);
+		public Expression TYPE(TYPE type) => new Expression(this).AppendSpace().Append(type);
 
 		public string ToScript(DbAgentStyle style)
 		{

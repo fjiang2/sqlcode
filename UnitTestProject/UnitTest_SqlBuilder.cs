@@ -662,11 +662,11 @@ SET @CategoryId = @@IDENTITY");
 		[TestMethod]
 		public void Test_STORED_PROC()
 		{
-			string sql = @"CREATE PROCEDURE SelectAllCustomers @City nvarchar(30), @PostalCode nvarchar(10)
+			string sql = @"CREATE PROCEDURE SelectAllCustomers @City NVARCHAR(30), @PostalCode NVARCHAR(10)
 AS
 SELECT * FROM [Customers] WHERE ([City] = @City) AND ([PostalCode] = @PostalCode)
 GO";
-			string query = new SqlBuilder().CREATE().PROCEDURE("SelectAllCustomers").PARAMETERS("City".AsParameter("nvarchar(30)"), "PostalCode".AsParameter("nvarchar(10)")).AppendLine()
+			string query = new SqlBuilder().CREATE().PROCEDURE("SelectAllCustomers").PARAMETERS("City".AsParameter(TYPE.NVARCHAR(30)), "PostalCode".AsParameter(TYPE.NVARCHAR(10))).AppendLine()
 				.AS().AppendLine()
 				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn() == "City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
 				.GO()
@@ -678,17 +678,31 @@ GO";
 			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter(null, "London")).ToString();
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
 			Debug.Assert(sql == query);
 
 			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string,object> { ["City"] = "London" }).ToString();
+			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
 			Debug.Assert(sql == query);
 		}
 
+		[TestMethod]
+		public void Test_DECLARE()
+		{
+			string sql = "DECLARE @Age INT = 12, @City VARCHAR(50) = N'London'";
+			string query = new SqlBuilder().DECLARE().PARAMETERS("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
+				.ToString();
 
+			Debug.Assert(sql == query);
+
+			sql = "DECLARE Age INT = 12, City VARCHAR(50)";
+			query = new SqlBuilder().DECLARE().PARAMETERS("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
+				.ToString();
+
+			Debug.Assert(sql == query);
+		}
 	}
 }
 

@@ -360,6 +360,8 @@ namespace Sys.Data.Text
 		public SqlBuilder TABLE(ITableName table) => TABLE(table.FullName);
 		public SqlBuilder TABLE(string table) => WithTableName("TABLE", table, alias: null);
 
+		public SqlBuilder DECLARE() => AppendSpace("DECLARE");
+
 		public SqlBuilder PROCEDURE(string name) => AppendSpace("PROCEDURE").AppendSpace(name);
 		public SqlBuilder AS() => AppendSpace("AS");
 		public SqlBuilder PARAMETERS(params Expression[] columns)
@@ -393,6 +395,7 @@ namespace Sys.Data.Text
 			var properties = args.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(args));
 			return PARAMETERS(properties);
 		}
+
 
 		public SqlBuilder COMMENTS(string text) => Append("--").Append(text).AppendLine();
 
