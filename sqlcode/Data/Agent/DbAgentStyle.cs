@@ -17,10 +17,24 @@
 
 namespace Sys.Data
 {
+	/// <summary>
+	/// Database type
+	/// </summary>
 	public enum DbAgentStyle
 	{
+		/// <summary>
+		/// SQL Server, SQL LocalDb, SQL Express
+		/// </summary>
 		SqlServer,
+
+		/// <summary>
+		/// SQL Server Compact
+		/// </summary>
 		SqlCe,
+
+		/// <summary>
+		/// SQLite database engine
+		/// </summary>
 		SQLite,
 	}
 }

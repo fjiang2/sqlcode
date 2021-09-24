@@ -6,7 +6,7 @@ using System.Data.SqlServerCe;
 
 namespace Sys.Data.SqlCe
 {
-	public class SqlCeAccess : DbAccess, IDbAccess
+	class SqlCeAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCeCommand command;
 		private readonly SqlCeConnection connection;
@@ -14,19 +14,18 @@ namespace Sys.Data.SqlCe
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
-		{
-		}
-
-		public SqlCeAccess(SqlCeConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlCeAccess(string connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 
-			this.command = new SqlCeCommand();
-			this.connection = new SqlCeConnection(connectionString.ConnectionString);
-			this.command.Connection = connection;
+			this.connection = new SqlCeConnection(connectionString);
+			this.command = new SqlCeCommand()
+			{
+				CommandType = unit.CommandType,
+				Connection = connection,
+			};
+
 
 			if (args == null)
 				return;
@@ -42,7 +41,7 @@ namespace Sys.Data.SqlCe
 			}
 		}
 
-		private SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private static SqlCeParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			DbType dbType = DbType.AnsiString;
 			if (value is int)

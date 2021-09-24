@@ -7,6 +7,9 @@ using System.Linq;
 namespace Sys.Data.Entity
 {
 
+	/// <summary>
+	/// Database context
+	/// </summary>
 	public partial class DataContext : IDisposable
 	{
 		private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
@@ -15,6 +18,9 @@ namespace Sys.Data.Entity
 		internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
 		internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
 
+		/// <summary>
+		/// The description of data context
+		/// </summary>
 		public string Description { get; set; }
 
 		/// <summary>
@@ -32,31 +38,58 @@ namespace Sys.Data.Entity
 		/// </summary>
 		public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="agent"></param>
 		public DataContext(IDbAgent agent)
 		{
 			this.agent = agent;
 			this.Description = nameof(DataContext);
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void Dispose()
 		{
 			CodeBlock.Clear();
 			tables.Clear();
 		}
 
+		/// <summary>
+		/// Database agent option
+		/// </summary>
 		public DbAgentOption Option => agent.Option;
+
+		/// <summary>
+		/// Database engine/server type
+		/// </summary>
 		public DbAgentStyle Style => agent.Option.Style;
 
+		/// <summary>
+		/// Event trigger before commit
+		/// </summary>
+		/// <param name="evt"></param>
 		protected void OnRowChanging(IEnumerable<RowEvent> evt)
 		{
 			RowChanging?.Invoke(this, new RowEventArgs(evt));
 		}
 
+		/// <summary>
+		/// Event trigger after commit
+		/// </summary>
+		/// <param name="evt"></param>
 		protected void OnRowChanged(IEnumerable<RowEvent> evt)
 		{
 			RowChanged?.Invoke(this, new RowEventArgs(evt));
 		}
 
+		/// <summary>
+		/// Get the table instance
+		/// </summary>
+		/// <typeparam name="TEntity"></typeparam>
+		/// <returns></returns>
 		public Table<TEntity> GetTable<TEntity>()
 			where TEntity : class
 		{
@@ -69,10 +102,19 @@ namespace Sys.Data.Entity
 			return obj;
 		}
 
+		/// <summary>
+		/// Get all non-query SQL statements 
+		/// </summary>
+		/// <returns></returns>
 		public string GetNonQueryScript()
 		{
 			return string.Join(Environment.NewLine, CodeBlock.GetNonQuery());
 		}
+
+		/// <summary>
+		/// Get all query SQL statements
+		/// </summary>
+		/// <returns></returns>
 
 		public string GetQueryScript()
 		{
@@ -115,6 +157,10 @@ namespace Sys.Data.Entity
 			return ds;
 		}
 
+		/// <summary>
+		/// Sumbit query's changes
+		/// </summary>
+		/// <returns></returns>
 		public IQueryResultReader SumbitQueries()
 		{
 			if (CodeBlock.Length == 0)
@@ -133,6 +179,11 @@ namespace Sys.Data.Entity
 			}
 		}
 
+
+		/// <summary>
+		/// Submit non-query's changes
+		/// </summary>
+		/// <returns></returns>
 		public int SubmitChanges()
 		{
 			if (CodeBlock.Length == 0)
@@ -165,6 +216,10 @@ namespace Sys.Data.Entity
 			RowEvents.Clear();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return Description;

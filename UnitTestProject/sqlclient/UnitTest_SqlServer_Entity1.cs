@@ -23,7 +23,7 @@ namespace UnitTestProject
 		private readonly static string connectionString = Setting.ConnectionString;
 
 #if !USE_Query_Class
-		private readonly DataQuery Query = SqlAgent.Query(connectionString);
+		private readonly DataQuery Query;
 #endif
 		public UnitTest_SqlServer_Entity1()
 		{
@@ -32,7 +32,7 @@ namespace UnitTestProject
 #if USE_Query_Class
 			Query.DefaultAgent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
 #else
-			Query = SqlAgent.Query(connectionString);
+			Query = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Query();
 #endif
 		}
 
@@ -483,7 +483,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestAssoicationClass()
 		{
-			var query = SqlDbAgent.Query(connectionString);
+			var query = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Query();
 			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
 			var A = product.GetAssociation(query);
 			var D = A.Order_Details;
@@ -558,12 +558,10 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-			Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
-
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
-				var products = Query.Select<Categories, int, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
+				var products = Query.Select<Categories, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
 				string text = string.Join(",", products.Select(row => row.ProductID));
 
 				Debug.Assert(text == "1,2,24,34,35,38,39,43,67,70,75,76");

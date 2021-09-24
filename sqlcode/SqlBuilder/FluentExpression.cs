@@ -22,8 +22,16 @@ using System.Data;
 
 namespace Sys.Data.Text
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public static class FluentExpression
 	{
+		/// <summary>
+		/// Convert object value to Expression
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static Expression AsValue(this object value)
 		{
 			return new Expression(new SqlValue(value));
@@ -45,10 +53,23 @@ namespace Sys.Data.Text
 		/// <param name="variableName"></param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static Expression AssignVarible(this string variableName, object value)
+		public static Expression AsVariable(this string variableName, object value)
 		{
 			return variableName.AsVariable().LET(value);
 		}
+
+		public static Expression AsVariable(this string variableName, TYPE type, object value = null)
+		{
+			var arg = new Expression(new VariableName(variableName));
+			if (type != null)
+				arg = arg.TYPE(type);
+
+			if (value != null)
+				arg = arg.LET(value);
+
+			return arg;
+		}
+
 
 		/// <summary>
 		/// Create parameter: @parameterName with value
@@ -114,6 +135,30 @@ namespace Sys.Data.Text
 			return new Expression(new ParameterName(parameter.ParameterName));
 		}
 
+		public static Expression AsParameter(this string parameterName, object value = null)
+		{
+			var arg = new Expression(new ParameterName(parameterName));
+			if (value != null)
+				arg = arg.LET(value);
+
+			return arg;
+		}
+
+		/// <summary>
+		/// Used to define stored procedure
+		/// </summary>
+		/// <param name="parameterName"></param>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Expression AsParameter(this string parameterName, TYPE type, object value = null)
+		{
+			var arg = new Expression(new ParameterName(parameterName)).TYPE(type);
+
+			if (value != null)
+				arg = arg.LET(value);
+
+			return arg;
+		}
 
 		/// <summary>
 		/// Create expression of  column name: "name" -> [name]
@@ -140,6 +185,12 @@ namespace Sys.Data.Text
 			return new Expression(new ColumnName(tableName, columnName));
 		}
 
+		/// <summary>
+		/// Convert column name value to Expression
+		/// </summary>
+		/// <param name="columnName"></param>
+		/// <param name="tableName"></param>
+		/// <returns></returns>
 		public static Expression AsColumn(this string columnName, ITableName tableName)
 		{
 			return new Expression(new ColumnName(tableName.FullName, columnName));

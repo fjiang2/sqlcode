@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>sqlcode.sqlce</id>
+    <id>sqlcode.sqlite</id>
     <version>1.0.8.0</version>
-    <title>SqlCe Agent</title>
+    <title>SQLite Agent</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
-			Access SqlCe database
-		</description>
-    <summary>SQL server compact interface</summary>
+		Access SQLite database engine
+	</description>
+    <summary>SQLite database interface</summary>
     <releaseNotes>
 		9/24/2021 v1.0.8
 		Improvements:
 		1. Updated by sqlcode
-
+		
 		9/18/2021 v1.0.7
 		Improvements:
 		1. First release
@@ -24,11 +24,16 @@
     <dependencies>
       <group targetFramework=".NETFramework4.8">
         <dependency id="sqlcode" version="1.0.8" />
-        <dependency id="Microsoft.SqlServer.Compact" version="4.0.8876.1" />
+        <dependency id="System.Data.SQLite" version="1.0.115" />
+      </group>
+      <group targetFramework=".NET5.0">
+        <dependency id="sqlcode" version="1.0.8" />
+        <dependency id="System.Data.SQLite" version="1.0.115" />
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="..\sqlcode.sqlce\bin\Release\sqlcode.sqlce.dll" target="lib\net48\sqlcode.sqlce.dll" />
+    <file src="..\sqlcode.sqlite\bin\Release\net48\sqlcode.sqlite.dll" target="lib\net48\sqlcode.sqlite.dll" />
+    <file src="..\sqlcode.sqlite\bin\Release\net5.0\sqlcode.sqlite.dll" target="lib\net5.0\sqlcode.sqlite.dll" />
   </files>
 </package>

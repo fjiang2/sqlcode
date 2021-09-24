@@ -17,17 +17,38 @@
 
 namespace Sys.Data
 {
+
+	/// <summary>
+	///  Database agent option
+	/// </summary>
 	public class DbAgentOption
 	{
+		/// <summary>
+		/// The default database agent option
+		/// </summary>
 		public readonly static DbAgentOption DefaultOption = new DbAgentOption() { Style = DefaultStyle };
+
+		/// <summary>
+		/// The default database agent style
+		/// </summary>
 		public readonly static DbAgentStyle DefaultStyle = DbAgentStyle.SqlServer;
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public DbAgentStyle Style { get; set; }
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public DbAgentOption()
 		{
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override string ToString()
 		{
 			return $"{Style}";

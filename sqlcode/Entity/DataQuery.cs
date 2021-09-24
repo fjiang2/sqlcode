@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Data;
+using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
@@ -20,9 +21,9 @@ namespace Sys.Data.Entity
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="sql"></param>
+		/// <param name="unit"></param>
 		/// <returns></returns>
-		public DbAccess NewDbAccess(SqlUnit unit)
+		public DbAccess DbAccess(SqlUnit unit)
 		{
 			return new DbAccessDelegate(agent, unit);
 		}
@@ -92,6 +93,11 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
 
+		public IEnumerable<TEntity> Select<TEntity>(Text.Expression where) where TEntity : class
+		{
+			return Invoke(db => db.Select<TEntity>(where));
+		}
+
 		/// <summary>
 		/// Select single entity by primary key. Properties of primary key must have values
 		/// </summary>
@@ -118,46 +124,6 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
 
-		/// <summary>
-		/// SELECT col1,col2,... FROM entity-table WHERE ...
-		/// e.g.
-		///   Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages");
-		///   SELECT CategoryID,CategoryName,... FROM Categories WHERE CategoryName = 'Beverages'
-		/// </summary>
-		/// <typeparam name="TEntity"></typeparam>
-		/// <param name="selectedColumns"></param>
-		/// <param name="where"></param>
-		/// <returns></returns>
-		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, object>> selectedColumns, Expression<Func<TEntity, bool>> where) where TEntity : class, new()
-		{
-			TEntity CreateInstance(System.Reflection.PropertyInfo[] properties, DataRow row, IEnumerable<string> columns)
-			{
-				TEntity entity = new TEntity();
-				foreach (var property in properties)
-				{
-					if (columns.Contains(property.Name))
-						property.SetValue(entity, Convert.ChangeType(row[property.Name], property.PropertyType));
-				}
-
-				return entity;
-			}
-
-			return Invoke(db =>
-			{
-				var table = db.GetTable<TEntity>();
-
-				List<string> _columns = new PropertyTranslator().Translate(selectedColumns);
-				string _where = new QueryTranslator(db.Style).Translate(where);
-				string SQL = table.SelectFromWhere(_where, _columns);
-
-				var dt = db.FillDataTable(SQL);
-				if (dt == null || dt.Rows.Count == 0)
-					return new List<TEntity>();
-
-				var properties = typeof(TEntity).GetProperties();
-				return dt.ToList(row => CreateInstance(properties, row, _columns));
-			});
-		}
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)
@@ -172,7 +138,7 @@ namespace Sys.Data.Entity
 		/// <param name="keySelector"></param>
 		/// <param name="resultSelector"></param>
 		/// <returns></returns>
-		public IEnumerable<TResult> Select<TEntity, TKey, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> keySelector, Expression<Func<TResult, TKey>> resultSelector)
+		public IEnumerable<TResult> Select<TEntity, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, object>> keySelector, Expression<Func<TResult, object>> resultSelector)
 			where TEntity : class
 			where TResult : class
 		{
@@ -184,7 +150,11 @@ namespace Sys.Data.Entity
 			return Invoke(db =>
 			{
 				var dt = db.GetTable<TEntity>();
-				string SQL = $"{_resultSelector} IN (SELECT {_keySelector} FROM {dt} WHERE {_where})";
+				string SQL = _resultSelector
+					.AsColumn()
+					.IN(new SqlBuilder().SELECT().COLUMNS(_keySelector).FROM(dt.ToString()).WHERE(_where))
+					.ToScript(db.Style);
+
 				return db.GetTable<TResult>().Select(SQL);
 			});
 		}
@@ -337,6 +307,7 @@ namespace Sys.Data.Entity
 		/// <returns></returns>
 		public IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 			=> Invoke(db => db.Expand(entities));
+
 
 		/// <summary>
 		/// Support SqlCe and SQL server, use primary key to check row existence

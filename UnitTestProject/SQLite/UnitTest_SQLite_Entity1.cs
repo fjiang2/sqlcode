@@ -7,6 +7,7 @@ using System.Linq;
 using System.IO;
 
 using UnitTestProject.Northwind.dc1;
+using System.Data.SQLite;
 using Sys.Data.SQLite;
 using Sys.Data.Entity;
 using Sys.Data;
@@ -19,8 +20,8 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_SQLite_Entity1
 	{
-		private string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
-		private string connectionString;
+		private readonly string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
+		private readonly string connectionString;
 		private readonly DataQuery Query;
 
 		public UnitTest_SQLite_Entity1()
@@ -29,8 +30,7 @@ namespace UnitTestProject
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			//Query = new Query(new SQLiteAgent(fileName));
-			Query = SQLiteAgent.Query(connectionString);
+			Query = new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)).Query();
 		}
 
 		//[TestMethod]
@@ -42,7 +42,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.NewDbAccess(new SqlUnit(line)).ExecuteNonQuery();
+				Query.DbAccess(new SqlUnit(line)).ExecuteNonQuery();
 			}
 		}
 
@@ -536,13 +536,10 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-			var L = Query.Select<Categories>(row => new { row.CategoryID, row.CategoryName }, row => row.CategoryName == "Beverages").ToArray();
-			Debug.Assert(L[0].CategoryID == 1 && L[0].Description == null);
-
 			using (var db = new DbContext(connectionString))
 			{
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
-				var products = Query.Select<Categories, int, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
+				var products = Query.Select<Categories, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
 				string text = string.Join(",", products.Select(row => row.ProductID));
 
 				Debug.Assert(text == "1,2,24,34,35,38,39,43,67,70,75,76");

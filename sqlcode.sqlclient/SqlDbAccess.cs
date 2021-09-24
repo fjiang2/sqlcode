@@ -8,32 +8,26 @@ using System.Data.SqlClient;
 namespace Sys.Data.SqlClient
 {
 
-	public class SqlDbAccess
-		: DbAccess, IDbAccess
+	class SqlDbAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;
-		
+
 		private readonly string[] statements;
 		private readonly IParameterFacet facet;
 
-		public SqlDbAccess(SqlConnectionStringBuilder connectionString, string sql, object args)
-			: this(connectionString, new SqlUnit(sql, args))
-		{
-		}
-
-		public SqlDbAccess(SqlConnectionStringBuilder connectionString, SqlUnit unit)
+		public SqlDbAccess(string connectionString, SqlUnit unit)
 		{
 			this.statements = unit.Statements;
 			object args = unit.Arguments;
 			string sql = unit.Statement;
 
-			this.connection = new SqlConnection(connectionString.ConnectionString);
-
-			this.command = new SqlCommand(sql);
-			this.command.Connection = connection;
-			if (!sql.Contains(' '))
-				command.CommandType = CommandType.StoredProcedure;
+			this.connection = new SqlConnection(connectionString);
+			this.command = new SqlCommand(sql)
+			{
+				CommandType = unit.CommandType,
+				Connection = connection,
+			};
 
 			if (args == null)
 				return;
@@ -49,7 +43,7 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
-		private SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
+		private static SqlParameter NewParameter(string parameterName, object value, ParameterDirection direction)
 		{
 			SqlDbType dbType = SqlDbType.NVarChar;
 			if (value is int)
@@ -147,10 +141,10 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
-		
-		public override void ExecuteTransaction() 
+
+		public override void ExecuteTransaction()
 		{
-			if (statements.Count() == 0)
+			if (statements.Length == 0)
 				return;
 
 			try
