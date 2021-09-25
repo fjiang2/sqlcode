@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{67CE76
 	ProjectSection(SolutionItems) = preProject
 		.nuget\sqlcode.nuspec = .nuget\sqlcode.nuspec
 		.nuget\sqlcode.sqlce.nuspec = .nuget\sqlcode.sqlce.nuspec
+		.nuget\sqlcode.sqlclient.nuspec = .nuget\sqlcode.sqlclient.nuspec
 		.nuget\sqlcode.sqlite.nuspec = .nuget\sqlcode.sqlite.nuspec
 	EndProjectSection
 EndProject
@@ -18,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlclient", "sqlcod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlite", "sqlcode.sqlite\sqlcode.sqlite.csproj", "{DF089145-9106-4610-A4EB-5E235C9E6EB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlcode.sqlce", "sqlcode.sqlce\sqlcode.sqlce.csproj", "{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlce", "sqlcode.sqlce\sqlcode.sqlce.csproj", "{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

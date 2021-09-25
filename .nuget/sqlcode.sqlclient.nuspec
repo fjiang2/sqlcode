@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>sqlcode.sqlclient</id>
+    <version>1.0.8.0</version>
+    <title>SqlClient Agent</title>
+    <authors>datconn</authors>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
+		Access Sql Server database engine
+	</description>
+    <summary>SQL Server database interface</summary>
+    <releaseNotes>
+		9/24/2021 v1.0.8
+		Improvements:
+		1. Updated by sqlcode
+		
+		9/18/2021 v1.0.7
+		Improvements:
+		1. First release
+	</releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETFramework4.8">
+        <dependency id="sqlcode" version="1.0.8" />
+      </group>
+      <group targetFramework=".NET5.0">
+        <dependency id="sqlcode" version="1.0.8" />
+        <dependency id="System.Data.SqlClient" version="4.8.3" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\sqlcode.sqlclient\bin\Release\net48\sqlcode.sqlclient.dll" target="lib\net48\sqlcode.sqlclient.dll" />
+    <file src="..\sqlcode.sqlclient\bin\Release\net5.0\sqlcode.sqlclient.dll" target="lib\net5.0\sqlcode.sqlclient.dll" />
+  </files>
+</package>
