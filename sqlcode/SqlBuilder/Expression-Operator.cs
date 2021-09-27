@@ -118,6 +118,11 @@ namespace Sys.Data.Text
             return new Expression(new SqlValue(Convert.ToInt32(value)));
         }
 
+        public static implicit operator Expression(TYPE type)
+        {
+            return new Expression().Add(type);
+        }
+
         #endregion
 
 

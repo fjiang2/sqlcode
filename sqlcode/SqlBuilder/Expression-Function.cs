@@ -24,14 +24,18 @@ namespace Sys.Data.Text
 		}
 
 
+		public static Expression CAST(Expression expr, TYPE type) => new Expression($"CAST({expr} AS {type})");
 		public static Expression CAST(Expression expr, Type type) => new Expression($"CAST({expr} AS {type.SqlType()})");
 		public static Expression CAST<T>(Expression expr) => CAST(expr, typeof(T));
+		public Expression CAST(TYPE type) => CAST(this, type);
 		public Expression CAST(Type type) => CAST(this, type);
 		public Expression CAST<T>() => CAST(typeof(T));
 
 
+		public static Expression CONVERT(TYPE type, Expression expr) => Function("CONVERT", type, expr);
 		public static Expression CONVERT(Type type, Expression expr) => Function("CONVERT", type.SqlType(), expr);
 		public static Expression CONVERT<T>(Expression expr) => CONVERT(typeof(T), expr);
+		public Expression CONVERT(TYPE type) => CONVERT(type, this);
 		public Expression CONVERT(Type type) => CONVERT(type, this);
 		public Expression CONVERT<T>() => CONVERT(typeof(T));
 

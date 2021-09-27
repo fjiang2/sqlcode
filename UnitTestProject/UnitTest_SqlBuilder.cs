@@ -710,6 +710,25 @@ GO";
 			Debug.Assert(sql == query);
 
 		}
+
+		[TestMethod]
+		public void Test_CAST()
+		{
+			var OrderID = "OrderID".AsColumn();
+			var OrderDate = "OrderDate".AsColumn();
+
+			string sql = "SELECT CAST([OrderID] AS VARCHAR(10)) AS [Id], DATEADD(second, 100, CAST([OrderDate] AS DATETIME)) AS [Time] FROM [Orders]";
+			string query = new SqlBuilder()
+				.SELECT().COLUMNS
+				(
+					OrderID.CAST(TYPE.VARCHAR(10)).AS("[Id]"),
+					OrderDate.CAST(TYPE.DATETIME).DATEADD(DateInterval.second, 100).AS("[Time]")
+				)
+				.FROM("Orders")
+				.ToString();
+
+			Debug.Assert(sql == query);
+		}
 	}
 }
 
