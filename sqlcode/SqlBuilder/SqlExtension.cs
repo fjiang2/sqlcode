@@ -17,7 +17,7 @@ namespace Sys.Data.Text
             return interval.ToString().AsVariable();
         }
 
-        public static string ToSqlType(this Type type)
+        private static string ToSqlType(this Type type)
         {
             if (type == typeof(bool))
                 return "BIT";
@@ -51,7 +51,7 @@ namespace Sys.Data.Text
                 return "DECIMAL";
 
             else if (type == typeof(string))
-                return "NVARCHAR";
+                return "NVARCHAR(MAX)";
 
             else if (type == typeof(DateTime))
                 return "DATETIME";
