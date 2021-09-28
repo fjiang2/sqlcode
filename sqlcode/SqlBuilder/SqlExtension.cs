@@ -6,7 +6,14 @@ namespace Sys.Data.Text
 {
     static class SqlExtension
     {
-     
+        public static string FormalName(this string name)
+        {
+            if (name.IndexOf(' ') > 0)
+                return $"[{name}]";
+            else
+                return name;
+        }
+
         public static Expression SqlType(this Type type)
         {
             return type.ToSqlType().AsVariable();

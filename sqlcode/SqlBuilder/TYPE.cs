@@ -22,6 +22,11 @@ namespace Sys.Data.Text
 			return ToScript(DbAgentOption.DefaultStyle);
 		}
 
+		public static explicit operator Expression(TYPE type)
+		{
+			return new Expression(type);
+		}
+
 		public static TYPE TINYINT => new TYPE("TINYINT");
 		public static TYPE SMALLINT => new TYPE("SMALLINT");
 		public static TYPE INT => new TYPE("INT");

@@ -118,20 +118,20 @@ namespace Sys.Data.Text
             return new Expression(new SqlValue(Convert.ToInt32(value)));
         }
 
-        public static implicit operator Expression(TYPE type)
-        {
-            return new Expression().Add(type);
-        }
+		public static implicit operator Expression(TYPE type)
+		{
+			return new Expression(type);
+		}
 
-        #endregion
+		#endregion
 
 
-        /// <summary>
-        /// string s = (string)expr;
-        /// </summary>
-        /// <param name="expr"></param>
-        /// <returns></returns>
-        public static explicit operator string(Expression expr)
+		/// <summary>
+		/// string s = (string)expr;
+		/// </summary>
+		/// <param name="expr"></param>
+		/// <returns></returns>
+		public static explicit operator string(Expression expr)
         {
             return expr.ToString();
         }

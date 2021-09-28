@@ -61,6 +61,11 @@ namespace Sys.Data.Text
 			script.Add(value);
 		}
 
+		internal Expression(TYPE type)
+		{
+			script.Add(type);
+		}
+
 		private Expression(Expression expr)
 		{
 			script.AddRange(expr.script);
@@ -202,7 +207,11 @@ namespace Sys.Data.Text
 			StringBuilder x = new StringBuilder();
 			foreach (object item in script)
 			{
-				if (item is SqlValue value)
+				if (item is ColumnName column)
+				{
+					x.Append(column.ToScript(style));
+				}
+				else if (item is SqlValue value)
 				{
 					x.Append(value.ToScript(style));
 				}
@@ -229,13 +238,16 @@ namespace Sys.Data.Text
 
 		private bool IsNULL()
 		{
-			var x = script.SingleOrDefault();
-			if (x == null)
-				return false;
-
-			if (x is SqlValue value)
+			if (script.Count() == 1)
 			{
-				return value.IsNull;
+				var x = script.SingleOrDefault();
+				if (x == null)
+					return false;
+
+				if (x is SqlValue value)
+				{
+					return value.IsNull;
+				}
 			}
 
 			return false;

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    class ColumnName
+    class ColumnName : IQueryScript
     {
         private readonly string tableName;
         private readonly string name;
@@ -26,7 +26,7 @@ namespace Sys.Data.Text
             this.name = columnName;
         }
 
-        public override string ToString()
+        public string ToScript(DbAgentStyle style)
         {
             StringBuilder text = new StringBuilder();
             if (tableName != null)
@@ -39,6 +39,11 @@ namespace Sys.Data.Text
 
             return text.ToString();
         }
+
+        public override string ToString()
+		{
+            return ToScript(DbAgentOption.DefaultStyle);
+		}
 
         public static explicit operator Expression(ColumnName columnName)
         {

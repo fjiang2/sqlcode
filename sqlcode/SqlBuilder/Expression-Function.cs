@@ -24,7 +24,7 @@ namespace Sys.Data.Text
 		}
 
 
-		public static Expression CAST(Expression expr, TYPE type) => Function("CAST", new BinaryExpression(expr, "AS", type));
+		public static Expression CAST(Expression expr, TYPE type) => Function("CAST", new BinaryExpression(expr, "AS", new Expression(type)));
 		public static Expression CAST(Expression expr, Type type) => Function("CAST", new BinaryExpression(expr, "AS", type.SqlType())); 
 		public static Expression CAST<T>(Expression expr) => CAST(expr, typeof(T));
 		public Expression CAST(TYPE type) => CAST(this, type);
@@ -32,7 +32,7 @@ namespace Sys.Data.Text
 		public Expression CAST<T>() => CAST(typeof(T));
 
 
-		public static Expression CONVERT(TYPE type, Expression expr) => Function("CONVERT", type, expr);
+		public static Expression CONVERT(TYPE type, Expression expr) => Function("CONVERT", new Expression(type), expr);
 		public static Expression CONVERT(Type type, Expression expr) => Function("CONVERT", type.SqlType(), expr);
 		public static Expression CONVERT<T>(Expression expr) => CONVERT(typeof(T), expr);
 		public Expression CONVERT(TYPE type) => CONVERT(type, this);
