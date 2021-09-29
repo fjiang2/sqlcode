@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;
 using Sys.Data.SqlClient;
+using UnitTestProject.Northwind.dc1;
 
 namespace UnitTestProject
 {
@@ -709,6 +710,37 @@ GO";
 
 			Debug.Assert(sql == query);
 
+		}
+
+		[TestMethod]
+		public void Test_CAST()
+		{
+			var OrderID =  nameof(Orders.OrderID).AsColumn();
+			var OrderDate = nameof(Orders.OrderDate).AsColumn();
+
+			string sql = "SELECT CAST([OrderID] AS VARCHAR(10)) AS [Id], DATEADD(second, 100, CAST([OrderDate] AS DATETIME)) AS [Time] FROM [Orders]";
+			string query = new SqlBuilder()
+				.SELECT().COLUMNS
+				(
+					OrderID.CAST(TYPE.VARCHAR(10)).AS("[Id]"),
+					OrderDate.CAST(TYPE.DATETIME).DATEADD(DateInterval.second, 100).AS("[Time]")
+				)
+				.FROM(nameof(Orders))
+				.ToString();
+
+			Debug.Assert(sql == query);
+
+			sql = "SELECT [Id] = CAST([OrderID] AS VARCHAR(10)), [Time] = DATEADD(second, 100, CAST([OrderDate] AS DATETIME)) FROM [Orders]";
+			query = new SqlBuilder()
+				.SELECT().COLUMNS
+				(
+					"Id".AsColumn() == OrderID.CAST(TYPE.VARCHAR(10)),
+					"Time".AsColumn() == OrderDate.CAST(TYPE.DATETIME).DATEADD(DateInterval.second, 100)
+				)
+				.FROM(nameof(Orders))
+				.ToString();
+
+			Debug.Assert(sql == query);
 		}
 	}
 }

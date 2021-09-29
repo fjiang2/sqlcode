@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-	public class TYPE
+	public class TYPE : IQueryScript
 	{
 		string type;
 		private TYPE(string type)
@@ -12,9 +12,19 @@ namespace Sys.Data.Text
 			this.type = type;
 		}
 
-		public override string ToString()
+		public string ToScript(DbAgentStyle style)
 		{
 			return type;
+		}
+
+		public override string ToString()
+		{
+			return ToScript(DbAgentOption.DefaultStyle);
+		}
+
+		public static explicit operator Expression(TYPE type)
+		{
+			return new Expression(type);
 		}
 
 		public static TYPE TINYINT => new TYPE("TINYINT");

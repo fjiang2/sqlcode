@@ -61,6 +61,11 @@ namespace Sys.Data.Text
 			script.Add(value);
 		}
 
+		internal Expression(TYPE type)
+		{
+			script.Add(type);
+		}
+
 		private Expression(Expression expr)
 		{
 			script.AddRange(expr.script);
@@ -77,6 +82,12 @@ namespace Sys.Data.Text
 			script.Add(text);
 		}
 
+		private Expression Add(object obj)
+		{
+			script.Add(obj);
+			return this;
+		}
+
 		public Expression this[Expression expr] => this.Append("[").Append(expr).Append("]");
 
 		private Expression Append(IEnumerable<Expression> list)
@@ -85,7 +96,7 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		private Expression Append(Expression expr)
+		protected Expression Append(Expression expr)
 		{
 			script.Add(expr);
 			return this;
@@ -97,15 +108,15 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		protected Expression Append(string text)
+		private Expression Append(SqlBuilder obj)
 		{
-			script.Add(text);
+			script.Add(obj);
 			return this;
 		}
 
-		protected Expression Append(object obj)
+		protected Expression Append(string text)
 		{
-			script.Add(obj);
+			script.Add(text);
 			return this;
 		}
 
@@ -182,21 +193,25 @@ namespace Sys.Data.Text
 		internal Expression TUPLE(IEnumerable<Expression> exprList) => Append("(").Append(new Expression(exprList)).Append(")");
 
 
-		public Expression DEFINE_NULL(TYPE type) => new Expression(this).AppendSpace().AppendSpace(type.ToString()).Append("NULL");
-		public Expression DEFINE_NOT_NULL(TYPE type) => new Expression(this).AppendSpace().AppendSpace(type.ToString()).Append("NOT NULL");
+		public Expression DEFINE_NULL(TYPE type) => new Expression(this).AppendSpace().Append(type).AffixSpace("NULL");
+		public Expression DEFINE_NOT_NULL(TYPE type) => new Expression(this).AppendSpace().Append(type).AffixSpace("NOT NULL");
 		public static Expression PRIMARY_KEY(params Expression[] columns) => new Expression().AppendSpace("PRIMARY KEY").TUPLE(columns);
 		public static Expression FOREIGN_KEY(Expression fkColumn, string pkTable, Expression pKColumn)
 			=> new Expression().AppendSpace("FOREIGN KEY").TUPLE(fkColumn).AppendSpace().AppendSpace("REFERENCES").Append(pkTable).TUPLE(pKColumn);
 		public Expression FOREIGN_KEY(string pkTable, Expression pKColumn) => FOREIGN_KEY(this, pkTable, pKColumn);
 
-		public Expression TYPE(TYPE type) => new Expression(this).AppendSpace().Append(type.ToString());
+		public Expression TYPE(TYPE type) => new Expression(this).AppendSpace().Append(type);
 
 		public string ToScript(DbAgentStyle style)
 		{
 			StringBuilder x = new StringBuilder();
 			foreach (object item in script)
 			{
-				if (item is SqlValue value)
+				if (item is ColumnName column)
+				{
+					x.Append(column.ToScript(style));
+				}
+				else if (item is SqlValue value)
 				{
 					x.Append(value.ToScript(style));
 				}
@@ -207,6 +222,10 @@ namespace Sys.Data.Text
 				else if (item is SqlBuilder sql)
 				{
 					x.Append(sql.ToScript(style));
+				}
+				else if (item is TYPE type)
+				{
+					x.Append(type.ToScript(style));
 				}
 				else
 				{
@@ -219,13 +238,16 @@ namespace Sys.Data.Text
 
 		private bool IsNULL()
 		{
-			var x = script.SingleOrDefault();
-			if (x == null)
-				return false;
-
-			if (x is SqlValue value)
+			if (script.Count() == 1)
 			{
-				return value.IsNull;
+				var x = script.SingleOrDefault();
+				if (x == null)
+					return false;
+
+				if (x is SqlValue value)
+				{
+					return value.IsNull;
+				}
 			}
 
 			return false;
