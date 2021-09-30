@@ -663,12 +663,10 @@ SET @CategoryId = @@IDENTITY");
 		[TestMethod]
 		public void Test_STORED_PROC()
 		{
-			string sql = @"CREATE PROCEDURE SelectAllCustomers @City NVARCHAR(30), @PostalCode NVARCHAR(10)
-AS
+			string sql = @"CREATE PROCEDURE SelectAllCustomers @City NVARCHAR(30), @PostalCode NVARCHAR(10) AS
 SELECT * FROM [Customers] WHERE ([City] = @City) AND ([PostalCode] = @PostalCode)
 GO";
 			string query = new Statement().CREATE().PROCEDURE("SelectAllCustomers" , "City".AsParameter(TYPE.NVARCHAR(30)), "PostalCode".AsParameter(TYPE.NVARCHAR(10))).AppendLine()
-				.AS().AppendLine()
 				.Append(new SqlBuilder()
 				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn() == "City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
 				.GO())
@@ -804,9 +802,7 @@ GO
 		[TestMethod]
 		public void Test_STORED_FUNCTION()
 		{
-			string sql = @"CREATE FUNCTION GetInventoryStock(@ProductID INT)
-RETURNS INT
-AS
+			string sql = @"CREATE FUNCTION GetInventoryStock(@ProductID INT) RETURNS INT AS
 -- Returns the stock level for the product.
 BEGIN
 	DECLARE @ret INT
@@ -817,9 +813,7 @@ END";
 
 			var ret = "ret".AsParameter();
 			var prototype = new Statement()
-				.CREATE().FUNCTION("GetInventoryStock" ,"ProductID".AsParameter(TYPE.INT)).AppendLine()
-				.RETURNS(TYPE.INT).AppendLine()
-				.AS().AppendLine()
+				.CREATE().FUNCTION(TYPE.INT, "GetInventoryStock" ,"ProductID".AsParameter(TYPE.INT)).AppendLine()
 				.COMMENTS(" Returns the stock level for the product.");
 			
 			var statement = new Statement()
@@ -828,8 +822,7 @@ END";
 				new SqlBuilder().SELECT().COLUMNS(ret== "UnitsInStock".AsColumn().SUM()).FROM("Products").WHERE("ProductID".AsColumn() == "ProductID".AsParameter() & "SupplierID".AsColumn() == 6),
 				new Statement().IF(ret.IS_NULL(), new Statement().LET(ret, 0)),
 				new Statement().RETURN(ret)
-				)
-				.ToString();
+				);
 
 			var query = new Statement()
 				.Append(prototype)

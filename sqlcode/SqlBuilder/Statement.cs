@@ -48,7 +48,7 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		public Statement Append(string statement)
+		private Statement Append(string statement)
 		{
 			block.Append(statement);
 			return this;
@@ -79,7 +79,7 @@ namespace Sys.Data.Text
 
 		public Statement COMMENTS(string text) => Append("--").Append(text).AppendLine();
 
-		public Statement AS() => Append("AS");
+		//public Statement AS() => Append("AS");
 		public Statement BREAK() => Append("BREAK");
 		public Statement CONTINUE() => Append("CONTINUE");
 		public Statement RETURN() => Append("RETURN");
@@ -92,6 +92,12 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public Statement LET(Expression vname, Expression value)
+		{
+			block.AppendSpace("SET").Append(vname.LET(value));
+			return this;
+		}
+
 		public Statement DECLARE(params Expression[] variables)
 		{
 			block.AppendSpace("DECLARE").Append(new Expression(variables));
@@ -100,15 +106,31 @@ namespace Sys.Data.Text
 
 		public Statement PROCEDURE(string name, params Expression[] args)
 		{
-			block.AppendSpace("PROCEDURE").AppendSpace(name).Append(new Expression(args));
+			block.AppendSpace("PROCEDURE")
+				.AppendSpace(name)
+				.Append(new Expression(args))
+				.AppendSpace()
+				.Append("AS");
 			return this;
 		}
 
-		public Statement FUNCTION(string name, params Expression[] args)
+		public Statement FUNCTION(TYPE result, string name, params Expression[] args)
 		{
-			block.AppendSpace("FUNCTION").Append(name).Append(new Expression().TUPLE(args));
+			block.AppendSpace("FUNCTION")
+				.Append(name)
+				.Append(new Expression().TUPLE(args))
+				.AppendSpace()
+				.AppendSpace("RETURNS")
+				.Append(new Expression(result)).AppendSpace().Append("AS");
+
 			return this;
 		}
+
+		//public Statement RETURNS(TYPE type)
+		//{
+		//	block.AppendSpace("RETURNS").Append(new Expression(type));
+		//	return this;
+		//}
 
 		public Statement EXECUTE(string name) => AppendSpace("EXECUTE").AppendSpace(name);
 		public Statement EXECUTE(Expression result, string name)
@@ -149,12 +171,6 @@ namespace Sys.Data.Text
 			return PARAMETERS(properties);
 		}
 
-
-		public Statement RETURNS(TYPE type)
-		{
-			block.AppendSpace("RETURNS").Append(new Expression(type));
-			return this;
-		}
 
 		public Statement IF(Expression condition)
 		{
@@ -200,12 +216,6 @@ namespace Sys.Data.Text
 		public Statement SET(string key, Expression value)
 		{
 			block.AppendSpace($"SET {key}").Append(value);
-			return this;
-		}
-
-		public Statement LET(Expression vname, Expression value)
-		{
-			block.AppendSpace("SET").Append(vname.LET(value));
 			return this;
 		}
 
