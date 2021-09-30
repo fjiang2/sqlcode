@@ -667,10 +667,11 @@ SET @CategoryId = @@IDENTITY");
 AS
 SELECT * FROM [Customers] WHERE ([City] = @City) AND ([PostalCode] = @PostalCode)
 GO";
-			string query = new SqlBuilder().CREATE().PROCEDURE("SelectAllCustomers").PARAMETERS("City".AsParameter(TYPE.NVARCHAR(30)), "PostalCode".AsParameter(TYPE.NVARCHAR(10))).AppendLine()
+			string query = new Statement().CREATE().PROCEDURE("SelectAllCustomers" , "City".AsParameter(TYPE.NVARCHAR(30)), "PostalCode".AsParameter(TYPE.NVARCHAR(10))).AppendLine()
 				.AS().AppendLine()
+				.Append(new SqlBuilder()
 				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn() == "City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
-				.GO()
+				.GO())
 				.ToString();
 
 			Debug.Assert(sql == query);
@@ -693,13 +694,13 @@ GO";
 		public void Test_DECLARE()
 		{
 			string sql = "DECLARE @Age INT = 12, @City VARCHAR(50) = N'London'";
-			string query = new SqlBuilder().DECLARE("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
+			string query = new Statement().DECLARE("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
 				.ToString();
 
 			Debug.Assert(sql == query);
 
 			sql = "DECLARE Age INT = 12, City VARCHAR(50)";
-			query = new SqlBuilder().DECLARE("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
+			query = new Statement().DECLARE("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
 				.ToString();
 
 			Debug.Assert(sql == query);
@@ -803,7 +804,7 @@ GO
 		[TestMethod]
 		public void Test_STORED_FUNCTION()
 		{
-			string sql = @"CREATE FUNCTION GetInventoryStock (@ProductID INT)
+			string sql = @"CREATE FUNCTION GetInventoryStock(@ProductID INT)
 RETURNS INT
 AS
 -- Returns the stock level for the product.
@@ -815,15 +816,15 @@ BEGIN
 END";
 
 			var ret = "@ret".AsVariable();
-			var prototype = new SqlBuilder()
-				.CREATE().FUNCTION("GetInventoryStock").TUPLE("ProductID".AsParameter(TYPE.INT)).AppendLine()
+			var prototype = new Statement()
+				.CREATE().FUNCTION("GetInventoryStock" ,"ProductID".AsParameter(TYPE.INT)).AppendLine()
 				.RETURNS(TYPE.INT).AppendLine()
 				.AS().AppendLine()
 				.COMMENTS(" Returns the stock level for the product.");
 			
 			var statement = new Statement()
 				.Compound(
-				new SqlBuilder().DECLARE("@ret".AsVariable(TYPE.INT)),
+				new Statement().DECLARE("@ret".AsVariable(TYPE.INT)),
 				new SqlBuilder().SELECT().COLUMNS(ret== "UnitsInStock".AsColumn().SUM()).FROM("Products").WHERE("ProductID".AsColumn() == "ProductID".AsParameter() & "SupplierID".AsColumn() == 6),
 				new Statement().IF(ret.IS_NULL(), new Statement().LET(ret, 0)),
 				new Statement().RETURN(ret)

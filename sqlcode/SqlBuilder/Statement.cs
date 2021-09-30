@@ -53,6 +53,12 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		private Statement AppendSpace(string text)
+		{
+			block.AppendSpace(text);
+			return this;
+		}
+
 		public Statement Compound(params Statement[] statements)
 		{
 			AppendLine("BEGIN");
@@ -69,9 +75,15 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+
+		public Statement COMMENTS(string text) => Append("--").Append(text).AppendLine();
+
+		public Statement AS() => Append("AS");
 		public Statement BREAK() => Append("BREAK");
 		public Statement CONTINUE() => Append("CONTINUE");
 		public Statement RETURN() => Append("RETURN");
+		
+		public Statement CREATE() => AppendSpace("CREATE");
 
 		public Statement RETURN(Expression result)
 		{
@@ -79,6 +91,29 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public Statement DECLARE(params Expression[] variables)
+		{
+			block.AppendSpace("DECLARE").Append(new Expression(variables));
+			return this;
+		}
+
+		public Statement PROCEDURE(string name, params Expression[] args)
+		{
+			block.AppendSpace("PROCEDURE").AppendSpace(name).Append(new Expression(args));
+			return this;
+		}
+
+		public Statement FUNCTION(string name, params Expression[] args)
+		{
+			block.AppendSpace("FUNCTION").Append(name).Append(new Expression().TUPLE(args));
+			return this;
+		}
+
+		public Statement RETURNS(TYPE type)
+		{
+			block.AppendSpace("RETURNS").Append(new Expression(type));
+			return this;
+		}
 
 		public Statement IF(Expression condition)
 		{
