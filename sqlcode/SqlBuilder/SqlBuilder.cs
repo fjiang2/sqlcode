@@ -382,38 +382,7 @@ namespace Sys.Data.Text
 		public SqlBuilder TABLE(ITableName table) => TABLE(table.FullName);
 		public SqlBuilder TABLE(string table) => WithTableName("TABLE", table, alias: null);
 
-		public SqlBuilder EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
-		public SqlBuilder PARAMETERS(params Expression[] parameters)
-		{
-			return PARAMETERS((IEnumerable<Expression>)parameters);
-		}
-
-		public SqlBuilder PARAMETERS(IEnumerable<Expression> parameters)
-		{
-			if (parameters == null || parameters.Count() == 0)
-				return this;
-			else
-				return Append(new Expression(parameters)).AppendSpace();
-		}
-
-		public SqlBuilder PARAMETERS(IDictionary<string, object> args)
-		{
-			List<Expression> list = new List<Expression>();
-			foreach (var kvp in args)
-			{
-				object value = kvp.Value;
-				list.Add(new Expression(new ParameterName(kvp.Key)).LET(value));
-			}
-
-			return PARAMETERS(list);
-		}
-
-		public SqlBuilder PARAMETERS(object args)
-		{
-			var properties = args.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(args));
-			return PARAMETERS(properties);
-		}
-
+	
 
 		private static string JoinColumns(IEnumerable<string> columns)
 		{

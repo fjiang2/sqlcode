@@ -677,16 +677,16 @@ GO";
 			Debug.Assert(sql == query);
 
 			sql = "EXEC SelectAllCustomers @City = N'London'";
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
+			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
+			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
+			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
+			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
 			Debug.Assert(sql == query);
 		}
 
@@ -815,7 +815,7 @@ BEGIN
 	RETURN @ret
 END";
 
-			var ret = "@ret".AsVariable();
+			var ret = "ret".AsParameter();
 			var prototype = new Statement()
 				.CREATE().FUNCTION("GetInventoryStock" ,"ProductID".AsParameter(TYPE.INT)).AppendLine()
 				.RETURNS(TYPE.INT).AppendLine()
@@ -824,7 +824,7 @@ END";
 			
 			var statement = new Statement()
 				.Compound(
-				new Statement().DECLARE("@ret".AsVariable(TYPE.INT)),
+				new Statement().DECLARE("ret".AsParameter(TYPE.INT)),
 				new SqlBuilder().SELECT().COLUMNS(ret== "UnitsInStock".AsColumn().SUM()).FROM("Products").WHERE("ProductID".AsColumn() == "ProductID".AsParameter() & "SupplierID".AsColumn() == 6),
 				new Statement().IF(ret.IS_NULL(), new Statement().LET(ret, 0)),
 				new Statement().RETURN(ret)

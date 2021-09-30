@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Sys.Data.Text
@@ -108,6 +109,41 @@ namespace Sys.Data.Text
 			block.AppendSpace("FUNCTION").Append(name).Append(new Expression().TUPLE(args));
 			return this;
 		}
+
+		public Statement EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
+
+		public Statement PARAMETERS(params Expression[] parameters)
+		{
+			return PARAMETERS((IEnumerable<Expression>)parameters);
+		}
+
+		public Statement PARAMETERS(IEnumerable<Expression> parameters)
+		{
+			if (parameters == null || parameters.Count() == 0)
+				return this;
+			
+			block.Append(new Expression(parameters)).AppendSpace();
+			return this;
+		}
+
+		public Statement PARAMETERS(IDictionary<string, object> args)
+		{
+			List<Expression> list = new List<Expression>();
+			foreach (var kvp in args)
+			{
+				object value = kvp.Value;
+				list.Add(new Expression(new ParameterName(kvp.Key)).LET(value));
+			}
+
+			return PARAMETERS(list);
+		}
+
+		public Statement PARAMETERS(object args)
+		{
+			var properties = args.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(args));
+			return PARAMETERS(properties);
+		}
+
 
 		public Statement RETURNS(TYPE type)
 		{
