@@ -193,7 +193,7 @@ namespace Sys.Data.Text
 		/// <returns></returns>
 		public static Expression AsColumn(this string columnName, ITableName tableName)
 		{
-			return new Expression(new ColumnName(tableName.FullName, columnName));
+			return new Expression(new ColumnName(tableName, columnName));
 		}
 
 		/// <summary>

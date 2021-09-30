@@ -6,7 +6,14 @@ namespace Sys.Data.Text
 {
     static class SqlExtension
     {
-     
+        public static string FormalName(this string name)
+        {
+            if (name.IndexOf(' ') > 0)
+                return $"[{name}]";
+            else
+                return name;
+        }
+
         public static Expression SqlType(this Type type)
         {
             return type.ToSqlType().AsVariable();
@@ -17,7 +24,7 @@ namespace Sys.Data.Text
             return interval.ToString().AsVariable();
         }
 
-        public static string ToSqlType(this Type type)
+        private static string ToSqlType(this Type type)
         {
             if (type == typeof(bool))
                 return "BIT";
@@ -51,7 +58,7 @@ namespace Sys.Data.Text
                 return "DECIMAL";
 
             else if (type == typeof(string))
-                return "NVARCHAR";
+                return "NVARCHAR(MAX)";
 
             else if (type == typeof(DateTime))
                 return "DATETIME";

@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;
 using Sys.Data.SqlClient;
+using UnitTestProject.Northwind.dc1;
 
 namespace UnitTestProject
 {
@@ -662,29 +663,28 @@ SET @CategoryId = @@IDENTITY");
 		[TestMethod]
 		public void Test_STORED_PROC()
 		{
-			string sql = @"CREATE PROCEDURE SelectAllCustomers @City NVARCHAR(30), @PostalCode NVARCHAR(10)
-AS
+			string sql = @"CREATE PROCEDURE SelectAllCustomers @City NVARCHAR(30), @PostalCode NVARCHAR(10) AS
 SELECT * FROM [Customers] WHERE ([City] = @City) AND ([PostalCode] = @PostalCode)
 GO";
-			string query = new SqlBuilder().CREATE().PROCEDURE("SelectAllCustomers").PARAMETERS("City".AsParameter(TYPE.NVARCHAR(30)), "PostalCode".AsParameter(TYPE.NVARCHAR(10))).AppendLine()
-				.AS().AppendLine()
+			string query = new Statement().CREATE().PROCEDURE("SelectAllCustomers" , "City".AsParameter(TYPE.NVARCHAR(30)), "PostalCode".AsParameter(TYPE.NVARCHAR(10))).AppendLine()
+				.Append(new SqlBuilder()
 				.SELECT().COLUMNS().FROM("Customers").WHERE("City".AsColumn() == "City".AsParameter() & "PostalCode".AsColumn() == "PostalCode".AsParameter()).AppendLine()
-				.GO()
+				.GO())
 				.ToString();
 
 			Debug.Assert(sql == query);
 
-			sql = "EXEC SelectAllCustomers @City = N'London'";
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
+			sql = "EXECUTE SelectAllCustomers @City = N'London'";
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
 			Debug.Assert(sql == query);
 
-			query = new SqlBuilder().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
 			Debug.Assert(sql == query);
 		}
 
@@ -692,13 +692,13 @@ GO";
 		public void Test_DECLARE()
 		{
 			string sql = "DECLARE @Age INT = 12, @City VARCHAR(50) = N'London'";
-			string query = new SqlBuilder().DECLARE("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
+			string query = new Statement().DECLARE("@Age".AsVariable(TYPE.INT, 12), "@City".AsVariable(TYPE.VARCHAR(50), "London"))
 				.ToString();
 
 			Debug.Assert(sql == query);
 
 			sql = "DECLARE Age INT = 12, City VARCHAR(50)";
-			query = new SqlBuilder().DECLARE("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
+			query = new Statement().DECLARE("Age".AsVariable(TYPE.INT, 12), "City".AsVariable(TYPE.VARCHAR(50), null))
 				.ToString();
 
 			Debug.Assert(sql == query);
@@ -709,6 +709,135 @@ GO";
 
 			Debug.Assert(sql == query);
 
+		}
+
+		[TestMethod]
+		public void Test_CAST()
+		{
+			var OrderID = nameof(Orders.OrderID).AsColumn();
+			var OrderDate = nameof(Orders.OrderDate).AsColumn();
+
+			string sql = "SELECT CAST([OrderID] AS VARCHAR(10)) AS [Id], DATEADD(second, 100, CAST([OrderDate] AS DATETIME)) AS [Time] FROM [Orders]";
+			string query = new SqlBuilder()
+				.SELECT().COLUMNS
+				(
+					OrderID.CAST(TYPE.VARCHAR(10)).AS("[Id]"),
+					OrderDate.CAST(TYPE.DATETIME).DATEADD(DateInterval.second, 100).AS("[Time]")
+				)
+				.FROM(nameof(Orders))
+				.ToString();
+
+			Debug.Assert(sql == query);
+
+			sql = "SELECT [Id] = CAST([OrderID] AS VARCHAR(10)), [Time] = DATEADD(second, 100, CAST([OrderDate] AS DATETIME)) FROM [Orders]";
+			query = new SqlBuilder()
+				.SELECT().COLUMNS
+				(
+					"Id".AsColumn() == OrderID.CAST(TYPE.VARCHAR(10)),
+					"Time".AsColumn() == OrderDate.CAST(TYPE.DATETIME).DATEADD(DateInterval.second, 100)
+				)
+				.FROM(nameof(Orders))
+				.ToString();
+
+			Debug.Assert(sql == query);
+		}
+
+		[TestMethod]
+		public void Test_TRANSACTION()
+		{
+			string sql = @"BEGIN TRANSACTION
+BEGIN TRY
+	DELETE FROM [Products] WHERE [ProductID] = 980
+END TRY
+BEGIN CATCH
+	SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage
+	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+END CATCH
+
+IF @@TRANCOUNT > 0 COMMIT TRANSACTION
+GO
+";
+
+			var TRANCOUNT = "@@TRANCOUNT".AsVariable();
+
+			var _try = new SqlBuilder().AppendTab().DELETE_FROM("Products").WHERE("ProductID".AsColumn() == 980);
+			var _catch = new Statement()
+				.AppendTab()
+				.Append(new SqlBuilder().SELECT().COLUMNS(
+						Expression.Function("ERROR_NUMBER").AS("ErrorNumber"),
+						Expression.Function("ERROR_SEVERITY").AS("ErrorSeverity"),
+						Expression.Function("ERROR_STATE").AS("ErrorState"),
+						Expression.Function("ERROR_PROCEDURE").AS("ErrorProcedure"),
+						Expression.Function("ERROR_LINE").AS("ErrorLine"),
+						Expression.Function("ERROR_MESSAGE").AS("ErrorMessage")
+					))
+				.AppendLine()
+				.AppendTab()
+				.IF(TRANCOUNT > 0, new Statement().ROLLBACK_TRANSACTION());
+
+			var statement = new Statement()
+				.BEGIN_TRANSACTION()
+				.TRY_CATCH(_try, _catch)
+				.AppendLine()
+				.IF(TRANCOUNT > 0, new Statement().COMMIT_TRANSACTION())
+				.AppendLine()
+				.GO()
+				.ToString();
+
+
+			Debug.Assert(sql == statement);
+
+			statement = new Statement()
+			.BEGIN_TRANSACTION()
+			.TRY_CATCH(_try, _catch)
+			.AppendLine()
+			.IF(TRANCOUNT > 0).COMMIT_TRANSACTION()
+			.GO()
+			.ToString();
+
+
+			Debug.Assert(sql == statement);
+		}
+
+		[TestMethod]
+		public void Test_STORED_FUNCTION()
+		{
+			string sql = @"CREATE FUNCTION GetInventoryStock(@ProductID INT) RETURNS INT AS
+-- Returns the stock level for the product.
+BEGIN
+	DECLARE @ret INT
+	SELECT @ret = SUM([UnitsInStock]) FROM [Products] WHERE ([ProductID] = @ProductID) AND ([SupplierID] = 6)
+	IF @ret IS NULL SET @ret = 0
+	RETURN @ret
+END";
+
+			var ret = "ret".AsParameter();
+			var prototype = new Statement()
+				.CREATE().FUNCTION(TYPE.INT, "GetInventoryStock" ,"ProductID".AsParameter(TYPE.INT)).AppendLine()
+				.COMMENTS(" Returns the stock level for the product.");
+			
+			var statement = new Statement()
+				.Compound(
+				new Statement().DECLARE("ret".AsParameter(TYPE.INT)),
+				new SqlBuilder().SELECT().COLUMNS(ret== "UnitsInStock".AsColumn().SUM()).FROM("Products").WHERE("ProductID".AsColumn() == "ProductID".AsParameter() & "SupplierID".AsColumn() == 6),
+				new Statement().IF(ret.IS_NULL(), new Statement().LET(ret, 0)),
+				new Statement().RETURN(ret)
+				);
+
+			var query = new Statement()
+				.Append(prototype)
+				.Append(statement)
+				.ToString();
+
+			Debug.Assert(sql == query);
+
+			sql = "EXECUTE @ret = GetInventoryStock @ProductID = 20";
+			query = new Statement()
+				.EXECUTE(ret, "GetInventoryStock")
+				.PARAMETERS("ProductID".AsParameter().LET(20))
+				.ToString();
+
+			Debug.Assert(sql == query);
 		}
 	}
 }
