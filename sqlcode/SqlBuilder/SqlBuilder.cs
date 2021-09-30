@@ -386,6 +386,8 @@ namespace Sys.Data.Text
 
 		public SqlBuilder EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
 		public SqlBuilder PROCEDURE(string name) => AppendSpace("PROCEDURE").AppendSpace(name);
+		public SqlBuilder FUNCTION(string name) => AppendSpace("FUNCTION").AppendSpace(name);
+		public SqlBuilder RETURNS(TYPE type) => AppendSpace("RETURNS").Append(new Expression(type));
 		public SqlBuilder AS() => AppendSpace("AS");
 		public SqlBuilder PARAMETERS(params Expression[] parameters)
 		{

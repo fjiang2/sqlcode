@@ -799,6 +799,44 @@ GO
 
 			Debug.Assert(sql == statement);
 		}
+
+		[TestMethod]
+		public void Test_STORED_FUNCTION()
+		{
+			string sql = @"CREATE FUNCTION GetInventoryStock (@ProductID INT)
+RETURNS INT
+AS
+-- Returns the stock level for the product.
+BEGIN
+	DECLARE @ret INT
+	SELECT @ret = SUM([UnitsInStock]) FROM [Products] WHERE ([ProductID] = @ProductID) AND ([SupplierID] = 6)
+	IF @ret IS NULL SET @ret = 0
+	RETURN @ret
+END";
+
+			var ret = "@ret".AsVariable();
+			var prototype = new SqlBuilder()
+				.CREATE().FUNCTION("GetInventoryStock").TUPLE("ProductID".AsParameter(TYPE.INT)).AppendLine()
+				.RETURNS(TYPE.INT).AppendLine()
+				.AS().AppendLine()
+				.COMMENTS(" Returns the stock level for the product.");
+			
+			var statement = new Statement()
+				.Compound(
+				new SqlBuilder().DECLARE("@ret".AsVariable(TYPE.INT)),
+				new SqlBuilder().SELECT().COLUMNS(ret== "UnitsInStock".AsColumn().SUM()).FROM("Products").WHERE("ProductID".AsColumn() == "ProductID".AsParameter() & "SupplierID".AsColumn() == 6),
+				new Statement().IF(ret.IS_NULL(), new Statement().LET(ret, 0)),
+				new Statement().RETURN(ret)
+				)
+				.ToString();
+
+			var query = new Statement()
+				.Append(prototype)
+				.Append(statement)
+				.ToString();
+
+			Debug.Assert(sql == query);
+		}
 	}
 }
 

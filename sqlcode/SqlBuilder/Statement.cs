@@ -73,6 +73,12 @@ namespace Sys.Data.Text
 		public Statement CONTINUE() => Append("CONTINUE");
 		public Statement RETURN() => Append("RETURN");
 
+		public Statement RETURN(Expression result)
+		{
+			block.AppendSpace("RETURN").Append(result);
+			return this;
+		}
+
 
 		public Statement IF(Expression condition)
 		{
@@ -108,7 +114,7 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		
+
 		/// <summary>
 		/// SET XXX ON / OFF
 		/// </summary>
@@ -118,6 +124,12 @@ namespace Sys.Data.Text
 		public Statement SET(string key, Expression value)
 		{
 			block.AppendSpace($"SET {key}").Append(value);
+			return this;
+		}
+
+		public Statement LET(Expression vname, Expression value)
+		{
+			block.AppendSpace("SET").Append(vname.LET(value));
 			return this;
 		}
 
@@ -141,13 +153,6 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		public Statement CREATE_PROCEDURE(string procedureName, params Parameter[] args)
-		{
-			string _args = string.Join<Parameter>(", ", args);
-			AppendLine($"CREATE PROCEDURE {procedureName}({_args})");
-			AppendLine("AS");
-			return this;
-		}
 
 		public Statement TRY_CATCH(Statement _try, Statement _catch)
 		{
