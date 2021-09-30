@@ -23,6 +23,21 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public Statement AppendLine()
+		{
+			block.AppendLine();
+			return this;
+		}
+
+		public Statement AppendTab(int tab = 1)
+		{
+			if (tab <= 0)
+				return this;
+
+			block.Append(new string('\t', tab));
+			return this;
+		}
+
 		public Statement Append(SqlBuilder builder)
 		{
 			block.Append(builder);
@@ -109,6 +124,31 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public Statement TRY_CATCH(Statement _try, Statement _catch)
+		{
+			block.AppendLine("BEGIN TRY")
+			.Append(_try)
+			.AppendLine()
+			.AppendLine("END TRY")
+			.AppendLine("BEGIN CATCH")
+			.Append(_catch)
+			.AppendLine()
+			.AppendLine("END CATCH");
+
+			return this;
+		}
+
+		public Statement BEGIN_TRY() => AppendLine("BEGIN TRY");
+		public Statement END_TRY() => AppendLine("END TRY");
+		public Statement BEGIN_CATCH() => AppendLine("BEGIN CATCH");
+		public Statement END_CATCH() => AppendLine("END CATCH");
+
+		public Statement BEGIN_TRANSACTION() => AppendLine("BEGIN TRANSACTION");
+		public Statement ROLLBACK_TRANSACTION() => AppendLine("ROLLBACK TRANSACTION");
+		public Statement COMMIT_TRANSACTION() => AppendLine("COMMIT TRANSACTION");
+		public Statement GO() => AppendLine("GO");
+
+
 		public string ToScript(DbAgentStyle style)
 		{
 			return block.ToScript(style);
@@ -125,3 +165,4 @@ namespace Sys.Data.Text
 		}
 	}
 }
+

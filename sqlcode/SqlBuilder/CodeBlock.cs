@@ -102,7 +102,7 @@ namespace Sys.Data.Text
 					if (str == Environment.NewLine)
 					{
 						//remove extra space letter on each line
-						lines.Add(builder.ToString().Trim());
+						lines.Add(builder.ToString().Trim(' ', '\r', '\n'));
 						builder.Clear();
 					}
 
@@ -113,7 +113,7 @@ namespace Sys.Data.Text
 			}
 
 			if (builder.Length > 0)
-				lines.Add(builder.ToString().Trim());
+				lines.Add(builder.ToString().Trim(' ', '\r', '\n'));
 
 			return string.Join(Environment.NewLine, lines);
 		}

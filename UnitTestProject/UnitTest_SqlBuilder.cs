@@ -715,7 +715,7 @@ GO";
 		[TestMethod]
 		public void Test_CAST()
 		{
-			var OrderID =  nameof(Orders.OrderID).AsColumn();
+			var OrderID = nameof(Orders.OrderID).AsColumn();
 			var OrderDate = nameof(Orders.OrderDate).AsColumn();
 
 			string sql = "SELECT CAST([OrderID] AS VARCHAR(10)) AS [Id], DATEADD(second, 100, CAST([OrderDate] AS DATETIME)) AS [Time] FROM [Orders]";
@@ -741,6 +741,50 @@ GO";
 				.ToString();
 
 			Debug.Assert(sql == query);
+		}
+
+		[TestMethod]
+		public void Test_TRANSACTION()
+		{
+			string sql = @"BEGIN TRANSACTION
+BEGIN TRY
+	DELETE FROM [Products] WHERE [ProductID] = 980
+END TRY
+BEGIN CATCH
+	SELECT ERROR_NUMBER() AS ErrorNumber, ERROR_SEVERITY() AS ErrorSeverity, ERROR_STATE() AS ErrorState, ERROR_PROCEDURE() AS ErrorProcedure, ERROR_LINE() AS ErrorLine, ERROR_MESSAGE() AS ErrorMessage
+	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+END CATCH
+
+IF @@TRANCOUNT > 0 COMMIT TRANSACTION
+GO
+";
+
+
+			var _try = new SqlBuilder().AppendTab().DELETE_FROM("Products").WHERE("ProductID".AsColumn() == 980);
+			var _catch = new Statement().Append(
+					new SqlBuilder().AppendTab().SELECT().COLUMNS(
+						Expression.Function("ERROR_NUMBER").AS("ErrorNumber"),
+						Expression.Function("ERROR_SEVERITY").AS("ErrorSeverity"),
+						Expression.Function("ERROR_STATE").AS("ErrorState"),
+						Expression.Function("ERROR_PROCEDURE").AS("ErrorProcedure"),
+						Expression.Function("ERROR_LINE").AS("ErrorLine"),
+						Expression.Function("ERROR_MESSAGE").AS("ErrorMessage")
+					))
+				.AppendLine()
+				.AppendTab()
+				.IF("@@TRANCOUNT".AsVariable() > 0, new Statement().ROLLBACK_TRANSACTION());
+
+			var statement = new Statement()
+				.BEGIN_TRANSACTION()
+				.TRY_CATCH(_try, _catch)
+				.AppendLine()
+				.IF("@@TRANCOUNT".AsVariable() > 0, new Statement().COMMIT_TRANSACTION())
+				.AppendLine()
+				.GO()
+				.ToString();
+
+			
+			Debug.Assert(sql == statement);
 		}
 	}
 }

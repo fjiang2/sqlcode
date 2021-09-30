@@ -14,6 +14,7 @@
 //                                                                                                  //
 //                                                                                                  //
 //--------------------------------------------------------------------------------------------------//
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
@@ -51,6 +52,27 @@ namespace Sys.Data.Text
 		public SqlBuilder AppendLine()
 		{
 			block.AppendLine();
+			return this;
+		}
+
+		public SqlBuilder AppendLine(string text)
+		{
+			block.AppendLine(text);
+			return this;
+		}
+
+		public SqlBuilder AppendSemicolon()
+		{
+			block.Append(";");
+			return this;
+		}
+
+		public SqlBuilder AppendTab(int tab = 1)
+		{
+			if (tab <= 0)
+				return this;
+
+			block.Append(new string('\t', tab));
 			return this;
 		}
 
@@ -398,6 +420,7 @@ namespace Sys.Data.Text
 
 
 		public SqlBuilder COMMENTS(string text) => Append("--").Append(text).AppendLine();
+
 
 		private static string JoinColumns(IEnumerable<string> columns)
 		{
