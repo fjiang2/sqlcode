@@ -110,7 +110,12 @@ namespace Sys.Data.Text
 			return this;
 		}
 
-		public Statement EXEC(string name) => AppendSpace("EXEC").AppendSpace(name);
+		public Statement EXECUTE(string name) => AppendSpace("EXECUTE").AppendSpace(name);
+		public Statement EXECUTE(Expression result, string name)
+		{
+			block.AppendSpace("EXECUTE").Append(result).Append(" = ").AppendSpace(name);
+			return this;
+		}
 
 		public Statement PARAMETERS(params Expression[] parameters)
 		{

@@ -676,17 +676,17 @@ GO";
 
 			Debug.Assert(sql == query);
 
-			sql = "EXEC SelectAllCustomers @City = N'London'";
-			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
+			sql = "EXECUTE SelectAllCustomers @City = N'London'";
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS("City".AsParameter().LET("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS("City".AsParameter("London")).ToString();
 			Debug.Assert(sql == query);
 
-			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS(new { City = "London" }).ToString();
 			Debug.Assert(sql == query);
 
-			query = new Statement().EXEC("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
+			query = new Statement().EXECUTE("SelectAllCustomers").PARAMETERS(new Dictionary<string, object> { ["City"] = "London" }).ToString();
 			Debug.Assert(sql == query);
 		}
 
@@ -834,6 +834,14 @@ END";
 			var query = new Statement()
 				.Append(prototype)
 				.Append(statement)
+				.ToString();
+
+			Debug.Assert(sql == query);
+
+			sql = "EXECUTE @ret = GetInventoryStock @ProductID = 20";
+			query = new Statement()
+				.EXECUTE(ret, "GetInventoryStock")
+				.PARAMETERS("ProductID".AsParameter().LET(20))
 				.ToString();
 
 			Debug.Assert(sql == query);
