@@ -759,10 +759,12 @@ IF @@TRANCOUNT > 0 COMMIT TRANSACTION
 GO
 ";
 
+			var TRANCOUNT = "@@TRANCOUNT".AsVariable();
 
 			var _try = new SqlBuilder().AppendTab().DELETE_FROM("Products").WHERE("ProductID".AsColumn() == 980);
-			var _catch = new Statement().Append(
-					new SqlBuilder().AppendTab().SELECT().COLUMNS(
+			var _catch = new Statement()
+				.AppendTab()
+				.Append(new SqlBuilder().SELECT().COLUMNS(
 						Expression.Function("ERROR_NUMBER").AS("ErrorNumber"),
 						Expression.Function("ERROR_SEVERITY").AS("ErrorSeverity"),
 						Expression.Function("ERROR_STATE").AS("ErrorState"),
@@ -772,18 +774,29 @@ GO
 					))
 				.AppendLine()
 				.AppendTab()
-				.IF("@@TRANCOUNT".AsVariable() > 0, new Statement().ROLLBACK_TRANSACTION());
+				.IF(TRANCOUNT > 0, new Statement().ROLLBACK_TRANSACTION());
 
 			var statement = new Statement()
 				.BEGIN_TRANSACTION()
 				.TRY_CATCH(_try, _catch)
 				.AppendLine()
-				.IF("@@TRANCOUNT".AsVariable() > 0, new Statement().COMMIT_TRANSACTION())
+				.IF(TRANCOUNT > 0, new Statement().COMMIT_TRANSACTION())
 				.AppendLine()
 				.GO()
 				.ToString();
 
-			
+
+			Debug.Assert(sql == statement);
+
+			statement = new Statement()
+			.BEGIN_TRANSACTION()
+			.TRY_CATCH(_try, _catch)
+			.AppendLine()
+			.IF(TRANCOUNT > 0).COMMIT_TRANSACTION()
+			.GO()
+			.ToString();
+
+
 			Debug.Assert(sql == statement);
 		}
 	}

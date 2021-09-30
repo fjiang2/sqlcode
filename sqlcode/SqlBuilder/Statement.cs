@@ -9,9 +9,6 @@ namespace Sys.Data.Text
 		private readonly CodeBlock block = new CodeBlock();
 		protected bool compound = false;
 
-		public static readonly Statement BREAK = new Statement().AppendLine("BREAK");
-		public static readonly Statement CONTINUE = new Statement().AppendLine("CONTINUE");
-		public static readonly Statement RETURN = new Statement().AppendLine("RETURN");
 
 		public Statement()
 		{
@@ -44,13 +41,25 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public Statement Append(Statement statement)
+		{
+			block.Append(statement);
+			return this;
+		}
+
+		public Statement Append(string statement)
+		{
+			block.Append(statement);
+			return this;
+		}
+
 		public Statement Compound(params Statement[] statements)
 		{
 			AppendLine("BEGIN");
 
 			foreach (var statement in statements)
 			{
-				AppendLine(new string(' ', 2) + statement.ToString());
+				AppendTab().Append(statement).AppendLine();
 			}
 
 			AppendLine("END");
@@ -60,30 +69,46 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public Statement BREAK() => Append("BREAK");
+		public Statement CONTINUE() => Append("CONTINUE");
+		public Statement RETURN() => Append("RETURN");
+
+
+		public Statement IF(Expression condition)
+		{
+			block.AppendSpace("IF").Append(condition).AppendSpace();
+			return this;
+		}
+
 		public Statement IF(Expression condition, Statement then)
 		{
-			block.AppendSpace("IF").Append(condition).AppendSpace().Append(then);
+			block.AppendSpace("IF")
+				.Append(condition)
+				.AppendSpace()
+				.Append(then);
 			return this;
 		}
 
 		public Statement IF(Expression condition, Statement then, Statement _else)
 		{
-			block.AppendSpace("IF").Append(condition).AppendSpace().Append(then).AppendSpace().AppendSpace("ELSE").Append(_else);
+			block.AppendSpace("IF")
+				.Append(condition).AppendSpace()
+				.Append(then).AppendSpace()
+				.AppendSpace("ELSE")
+				.Append(_else);
 			return this;
 		}
 
 		public Statement WHILE(Expression condition, Statement loop)
 		{
-			block.AppendSpace("WHILE").Append(condition).AppendSpace().Append(loop);
+			block.AppendSpace("WHILE")
+				.Append(condition)
+				.AppendSpace()
+				.Append(loop);
 			return this;
 		}
 
-		public Statement DECLARE(VariableName name, Type type)
-		{
-			AppendLine($"DECLARE @{name} AS {type.SqlType()}");
-			return this;
-		}
-
+		
 		/// <summary>
 		/// SET XXX ON / OFF
 		/// </summary>
@@ -127,21 +152,16 @@ namespace Sys.Data.Text
 		public Statement TRY_CATCH(Statement _try, Statement _catch)
 		{
 			block.AppendLine("BEGIN TRY")
-			.Append(_try)
-			.AppendLine()
-			.AppendLine("END TRY")
-			.AppendLine("BEGIN CATCH")
-			.Append(_catch)
-			.AppendLine()
-			.AppendLine("END CATCH");
+				.Append(_try)
+				.AppendLine()
+				.AppendLine("END TRY")
+				.AppendLine("BEGIN CATCH")
+				.Append(_catch)
+				.AppendLine()
+				.AppendLine("END CATCH");
 
 			return this;
 		}
-
-		public Statement BEGIN_TRY() => AppendLine("BEGIN TRY");
-		public Statement END_TRY() => AppendLine("END TRY");
-		public Statement BEGIN_CATCH() => AppendLine("BEGIN CATCH");
-		public Statement END_CATCH() => AppendLine("END CATCH");
 
 		public Statement BEGIN_TRANSACTION() => AppendLine("BEGIN TRANSACTION");
 		public Statement ROLLBACK_TRANSACTION() => AppendLine("ROLLBACK TRANSACTION");
