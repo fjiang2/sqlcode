@@ -18,6 +18,7 @@ namespace Sys.Data
 
 		public abstract int FillDataSet(DataSet dataSet);
 		public abstract int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
+		public abstract int ReadDataTable(DataTable dataTable, int startRecord, int maxRecords);
 		public abstract int ExecuteNonQuery();
 		public abstract object ExecuteScalar();
 		public abstract void ExecuteTransaction();

@@ -111,6 +111,20 @@ namespace Sys.Data.SqlClient
 			}
 		}
 
+		public override int ReadDataTable(DataTable dataTable, int startRecord, int maxRecords)
+		{
+			try
+			{
+				connection.Open();
+				var reader = command.ExecuteReader();
+				return new DbReader(reader).ReadTable(dataTable, startRecord, maxRecords);
+			}
+			finally
+			{
+				connection.Close();
+			}
+		}
+
 
 		public override int ExecuteNonQuery()
 		{
