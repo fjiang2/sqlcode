@@ -77,9 +77,9 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where: string.Empty));
 		}
 
-		public IEnumerable<TEntity> Select<TEntity>(int startRecord, int maxRecords, string where) where TEntity : class
+		public IEnumerable<TEntity> Select<TEntity>(string where, DbLoadOption option) where TEntity : class
 		{
-			return Invoke(db => db.GetTable<TEntity>().Select(startRecord, maxRecords, where));
+			return Invoke(db => db.GetTable<TEntity>().Select(where, option));
 		}
 
 		/// <summary>
@@ -124,6 +124,10 @@ namespace Sys.Data.Entity
 			return Invoke(db => db.GetTable<TEntity>().Select(where));
 		}
 
+		public IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where, DbLoadOption option) where TEntity : class
+		{
+			return Invoke(db => db.GetTable<TEntity>().Select(where, option));
+		}
 
 		/// <summary>
 		/// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)

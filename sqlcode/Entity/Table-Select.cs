@@ -17,6 +17,13 @@ namespace Sys.Data.Entity
 			return Select(_where);
 		}
 
+		public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where, DbLoadOption option)
+		{
+			var translator = new QueryTranslator(Context.Style);
+			string _where = translator.Translate(where);
+			return Select(_where, option);
+		}
+
 		public IEnumerable<TEntity> Select(string where)
 		{
 			string SQL = SelectFromWhere(where);
@@ -25,10 +32,10 @@ namespace Sys.Data.Entity
 			return ToList(dt);
 		}
 
-		public IEnumerable<TEntity> Select(int startRecord, int maxRecords, string where)
-		{
+		public IEnumerable<TEntity> Select(string where, DbLoadOption option)
+        {
 			string SQL = SelectFromWhere(where);
-			var dt = Context.FillDataTable(SQL, startRecord, maxRecords);
+			var dt = Context.LoadDataTable(SQL, option);
 			return ToList(dt);
 		}
 

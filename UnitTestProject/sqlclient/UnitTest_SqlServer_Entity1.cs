@@ -90,7 +90,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethod_Select_MaxRecords()
 		{
-			var rows = Query.Select<Products>(3, 4, null);
+			var rows = Query.Select<Products>(string.Empty, new DbLoadOption { StartRecord = 3, MaxRecords = 4, Mode = DbLoadMode.DbFill });
 			Debug.Assert(rows.First(row => row.ProductID == 4).ProductName == "Chef Anton's Cajun Seasoning");
 			Debug.Assert(rows.Count() == 4);
 		}
