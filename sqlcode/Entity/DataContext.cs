@@ -139,9 +139,9 @@ namespace Sys.Data.Entity
             return dt;
         }
 
-        internal DataTable FillDataTable(string query)
+        internal DataTable LoadDataTable(string query, DbLoadMode mode)
         {
-            DataSet ds = FillDataSet(new string[] { query });
+            DataSet ds = LoadDataSet(new string[] { query }, mode);
             if (ds == null)
                 return null;
 
@@ -151,12 +151,15 @@ namespace Sys.Data.Entity
             return null;
         }
 
-        private DataSet FillDataSet(string[] query)
+        private DataSet LoadDataSet(string[] query, DbLoadMode mode)
         {
             var unit = new SqlUnit(query);
             var cmd = agent.Proxy(unit);
             var ds = new DataSet();
-            cmd.FillDataSet(ds);
+            if (mode == DbLoadMode.DbFill)
+                cmd.FillDataSet(ds);
+            else
+                cmd.ReadDataSet(ds);
             return ds;
         }
 
@@ -173,7 +176,7 @@ namespace Sys.Data.Entity
             {
                 string[] query = CodeBlock.GetQuery();
                 Type[] types = CodeBlock.GetQueryTypes();
-                var ds = FillDataSet(query);
+                var ds = LoadDataSet(query, DbLoadMode.DbFill);
                 return new QueryResultReader(this, types, ds);
             }
             finally
