@@ -30,9 +30,10 @@ namespace Sys.Data
 
         public int ReadTable(DataTable table, int startRecord, int maxRecords)
         {
-            CreateTable(table, reader);
+            CreateBlankTable(table, reader);
 
             int index = -1;
+            int count = 0;
             while (reader.Read())
             {
                 index++;
@@ -42,17 +43,16 @@ namespace Sys.Data
                 var row = ReadRow(table);
                 table.Rows.Add(row);
 
-                if (index - startRecord >= maxRecords)
+                if (maxRecords > 0 && ++count >= maxRecords)
                     break;
             }
 
             table.AcceptChanges();
-            return index - startRecord;
+            return count;
         }
 
-        public DataSet ReadDataSet(int startRecord, int maxRecords)
+        public void ReadDataSet(DataSet ds, int startRecord, int maxRecords)
         {
-            DataSet ds = new DataSet();
             while (reader.HasRows)
             {
                 var dt = new DataTable();
@@ -60,16 +60,21 @@ namespace Sys.Data
                 ds.Tables.Add(dt);
                 reader.NextResult();
             }
-
-            return ds;
         }
 
-        private static void CreateTable(DataTable table, DbDataReader reader)
+        private static void CreateBlankTable(DataTable table, DbDataReader reader)
         {
             if (table != null)
+            {
+                table.CaseSensitive = true;
                 table.Columns.Clear();
+                table.Clear();
+                table.AcceptChanges();
+            }
             else
+            {
                 table = new DataTable { CaseSensitive = true };
+            }
 
             for (int i = 0; i < reader.FieldCount; i++)
             {

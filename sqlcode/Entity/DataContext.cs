@@ -127,6 +127,15 @@ namespace Sys.Data.Entity
 		/// <returns>key is table-name, value is an array of INSERT statements</returns>
 		public IDictionary<Type, string[]> GetBulkInsert() => CodeBlock.GetBulkInsert();
 
+		internal DataTable ReadDataTable(string query, int startRecord, int maxRecords)
+		{
+			var unit = new SqlUnit(query);
+			var cmd = agent.Proxy(unit);
+			var dt = new DataTable();
+			cmd.ReadDataTable(dt, startRecord, maxRecords);
+			return dt;
+		}
+
 		internal DataTable FillDataTable(string query, int startRecord, int maxRecords)
 		{
 			var unit = new SqlUnit(query);
