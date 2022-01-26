@@ -11,6 +11,9 @@ namespace Sys.Data
     {
         private readonly DbDataReader reader;
 
+        public int StartRecord { get; set; } = 0;
+        public int MaxRecords { get; set; } = 0;
+
         public DbReader(DbDataReader reader)
         {
             this.reader = reader;
@@ -28,22 +31,27 @@ namespace Sys.Data
             return row;
         }
 
-        public int ReadTable(DataTable table, int startRecord, int maxRecords)
+        public int ReadTable(DataTable table)
         {
             CreateBlankTable(table, reader);
+            return ReadRows(table);
+        }
 
+        private int ReadRows(DataTable table)
+        {
             int index = -1;
             int count = 0;
             while (reader.Read())
             {
                 index++;
-                if (index < startRecord)
+                if (index < StartRecord)
                     continue;
 
                 var row = ReadRow(table);
                 table.Rows.Add(row);
+                count++;
 
-                if (maxRecords > 0 && ++count >= maxRecords)
+                if (MaxRecords > 0 && count >= MaxRecords)
                     break;
             }
 
@@ -51,15 +59,28 @@ namespace Sys.Data
             return count;
         }
 
-        public void ReadDataSet(DataSet ds, int startRecord, int maxRecords)
+        public int ReadDataSet(DataSet ds)
         {
+            int count = 0;
+
+            //read empty table
+            var dt = new DataTable();
+            CreateBlankTable(dt, reader);
+            ds.Tables.Add(dt);
+
             while (reader.HasRows)
             {
-                var dt = new DataTable();
-                ReadTable(dt, startRecord, maxRecords);
-                ds.Tables.Add(dt);
-                reader.NextResult();
+                count += ReadRows(dt);
+                if(reader.NextResult())
+                {
+                    //read next empty table
+                    dt = new DataTable();
+                    CreateBlankTable(dt, reader);
+                    ds.Tables.Add(dt);
+                }
             }
+
+            return count;
         }
 
         private static void CreateBlankTable(DataTable table, DbDataReader reader)

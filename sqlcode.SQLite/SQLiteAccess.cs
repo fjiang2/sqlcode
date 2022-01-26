@@ -120,13 +120,31 @@ namespace Sys.Data.SQLite
             }
         }
 
+        public override int ReadDataSet(DataSet dataSet)
+        {
+            try
+            {
+                connection.Open();
+                var reader = command.ExecuteReader();
+                return new DbReader(reader).ReadDataSet(dataSet);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
         public override int ReadDataTable(DataTable dataTable, int startRecord, int maxRecords)
         {
             try
             {
                 connection.Open();
                 var reader = command.ExecuteReader();
-                return new DbReader(reader).ReadTable(dataTable, startRecord, maxRecords);
+                return new DbReader(reader)
+                {
+                    StartRecord = startRecord,
+                    MaxRecords = maxRecords,
+                }.ReadTable(dataTable);
             }
             finally
             {

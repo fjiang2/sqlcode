@@ -54,7 +54,14 @@ namespace Sys.Data
 		int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
 
 		/// <summary>
-		/// Read a large size of data table 
+		/// Read bulk data set
+		/// </summary>
+		/// <param name="dataSet"></param>
+		/// <returns></returns>
+		int ReadDataSet(DataSet dataSet);
+
+		/// <summary>
+		/// Read bulk data table 
 		/// </summary>
 		/// <param name="dataTable"></param>
 		/// <param name="startRecord"></param>
