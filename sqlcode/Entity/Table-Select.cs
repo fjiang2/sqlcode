@@ -10,11 +10,11 @@ namespace Sys.Data.Entity
     public sealed partial class Table<TEntity>
     {
 
-        public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where, DbLoadMode mode = DbLoadMode.DbFill)
+        public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where)
         {
             var translator = new QueryTranslator(Context.Style);
             string _where = translator.Translate(where);
-            return Select(_where, mode);
+            return Select(_where);
         }
 
         public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where, DbLoadOption option)
@@ -24,11 +24,11 @@ namespace Sys.Data.Entity
             return Select(_where, option);
         }
 
-        public IEnumerable<TEntity> Select(string where, DbLoadMode mode = DbLoadMode.DbFill)
+        public IEnumerable<TEntity> Select(string where)
         {
             string SQL = SelectFromWhere(where);
 
-            var dt = Context.LoadDataTable(SQL, mode);
+            var dt = Context.LoadDataTable(SQL, DbLoadMode.DbFill);
             return ToList(dt);
         }
 

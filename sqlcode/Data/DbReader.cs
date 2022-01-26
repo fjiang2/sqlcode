@@ -12,7 +12,7 @@ namespace Sys.Data
         private readonly DbDataReader reader;
 
         public int StartRecord { get; set; } = 0;
-        public int MaxRecords { get; set; } = 0;
+        public int MaxRecords { get; set; } = -1;
 
         public DbReader(DbDataReader reader)
         {
@@ -39,6 +39,9 @@ namespace Sys.Data
 
         private int ReadRows(DataTable table)
         {
+            if (MaxRecords == 0)
+                return 0;
+
             int index = -1;
             int count = 0;
             while (reader.Read())
@@ -71,7 +74,7 @@ namespace Sys.Data
             while (reader.HasRows)
             {
                 count += ReadRows(dt);
-                if(reader.NextResult())
+                if (reader.NextResult())
                 {
                     //read next empty table
                     dt = new DataTable();
