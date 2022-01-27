@@ -7,83 +7,90 @@ using System.Linq.Expressions;
 
 namespace Sys.Data.Entity
 {
-	public sealed partial class Table<TEntity>
-	{
+    public sealed partial class Table<TEntity>
+    {
 
-		public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where)
-		{
-			var translator = new QueryTranslator(Context.Style);
-			string _where = translator.Translate(where);
-			return Select(_where);
-		}
+        public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where)
+        {
+            var translator = new QueryTranslator(Context.Style);
+            string _where = translator.Translate(where);
+            return Select(_where);
+        }
 
-		public IEnumerable<TEntity> Select(string where)
-		{
-			string SQL = SelectFromWhere(where);
+        public IEnumerable<TEntity> Select(Expression<Func<TEntity, bool>> where, DbLoadOption option)
+        {
+            var translator = new QueryTranslator(Context.Style);
+            string _where = translator.Translate(where);
+            return Select(_where, option);
+        }
 
-			var dt = Context.FillDataTable(SQL);
-			return ToList(dt);
-		}
+        public IEnumerable<TEntity> Select(string where)
+        {
+            string SQL = SelectFromWhere(where);
 
-		public IEnumerable<TEntity> Select(int startRecord, int maxRecords, string where)
-		{
-			string SQL = SelectFromWhere(where);
-			var dt = Context.FillDataTable(SQL, startRecord, maxRecords);
-			return ToList(dt);
-		}
+            var dt = Context.LoadDataTable(SQL, DbLoadMode.DbFill);
+            return ToList(dt);
+        }
 
-
-		/// <summary>
-		/// Read single entity by primary key
-		/// </summary>
-		/// <param name="where"></param>
-		/// <returns></returns>
-		public TEntity Select(TEntity where)
-		{
-			SqlGenerator gen = this.Generator;
-			Type type = typeof(TEntity);
-
-			foreach (string key in schema.PrimaryKeys)
-			{
-				object obj = type.GetProperty(key)?.GetValue(where);
-				gen.Add(key, obj);
-			}
-
-			string SQL = gen.SelectRows();
-			gen.Clear();
-
-			var dt = Context.FillDataTable(SQL);
-			return ToList(dt).FirstOrDefault();
-		}
-
-		public void SelectOnSubmit(Expression<Func<TEntity, bool>> where)
-		{
-			var translator = new QueryTranslator(Context.Style);
-			string _where = translator.Translate(where);
-			SelectOnSubmit(_where);
-		}
-
-		public void SelectOnSubmit(string where)
-		{
-			string SQL = SelectFromWhere(where);
-			Context.CodeBlock.AppendQuery<TEntity>(SQL);
-		}
+        public IEnumerable<TEntity> Select(string where, DbLoadOption option)
+        {
+            string SQL = SelectFromWhere(where);
+            var dt = Context.LoadDataTable(SQL, option);
+            return ToList(dt);
+        }
 
 
-		public List<TEntity> ToList(DataTable dt)
-		{
-			return broker.ToList(dt);
-		}
+        /// <summary>
+        /// Read single entity by primary key
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        public TEntity Select(TEntity where)
+        {
+            SqlGenerator gen = this.Generator;
+            Type type = typeof(TEntity);
 
-		private string SelectFromWhere(string where)
-		{
-			return SelectFromWhere(where, null);
-		}
+            foreach (string key in schema.PrimaryKeys)
+            {
+                object obj = type.GetProperty(key)?.GetValue(where);
+                gen.Add(key, obj);
+            }
 
-		internal string SelectFromWhere(string where, IEnumerable<string> columns)
-		{
-			return new Text.SqlBuilder().SELECT().COLUMNS(columns).FROM(formalName).WHERE(where).ToScript(Context.Style);
-		}
+            string SQL = gen.SelectRows();
+            gen.Clear();
 
-	}
+            var dt = Context.LoadDataTable(SQL, DbLoadMode.DbFill);
+            return ToList(dt).FirstOrDefault();
+        }
+
+        public void SelectOnSubmit(Expression<Func<TEntity, bool>> where)
+        {
+            var translator = new QueryTranslator(Context.Style);
+            string _where = translator.Translate(where);
+            SelectOnSubmit(_where);
+        }
+
+        public void SelectOnSubmit(string where)
+        {
+            string SQL = SelectFromWhere(where);
+            Context.CodeBlock.AppendQuery<TEntity>(SQL);
+        }
+
+
+        public List<TEntity> ToList(DataTable dt)
+        {
+            return broker.ToList(dt);
+        }
+
+        private string SelectFromWhere(string where)
+        {
+            return SelectFromWhere(where, null);
+        }
+
+        internal string SelectFromWhere(string where, IEnumerable<string> columns)
+        {
+            return new Text.SqlBuilder().SELECT().COLUMNS(columns).FROM(formalName).WHERE(where).ToScript(Context.Style);
+        }
+
+    }
 }

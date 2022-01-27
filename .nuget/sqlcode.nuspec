@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode</id>
-    <version>1.0.9.0</version>
+    <version>1.0.10</version>
     <title>SQL code generator</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,7 +13,11 @@
 	</description>
     <summary>SQL code generator</summary>
     <releaseNotes>
-        9/24/2021 v1.0.9
+		1/26/2022 v1.0.10
+		Improvements/Enhancements:
+		1.Support ReadDataTable/ReadDataSet to read bulk records
+		
+		9/24/2021 v1.0.9
         Improvements:
         1. Support CREATE FUNCTION statement on Statement
         2. Support TRY-CATCH statement on Statement
@@ -53,7 +57,7 @@
         Features:
         1. Create SQL by SqlBuilder
         2. Create SQL by SqlGenerator
-    </releaseNotes>
+</releaseNotes>
     <dependencies>
       <group targetFramework=".NETStandard2.0"></group>
     </dependencies>
