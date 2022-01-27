@@ -52,5 +52,21 @@ namespace Sys.Data
 		/// <param name="maxRecords">The maximum number of records to retrieve.</param>
 		/// <returns></returns>
 		int FillDataTable(DataTable dataTable, int startRecord, int maxRecords);
+
+		/// <summary>
+		/// Read bulk data set
+		/// </summary>
+		/// <param name="dataSet"></param>
+		/// <returns></returns>
+		int ReadDataSet(DataSet dataSet);
+
+		/// <summary>
+		/// Read bulk data table 
+		/// </summary>
+		/// <param name="dataTable"></param>
+		/// <param name="startRecord"></param>
+		/// <param name="maxRecords"></param>
+		/// <returns></returns>
+		int ReadDataTable(DataTable dataTable, int startRecord, int maxRecords);
 	}
 }
