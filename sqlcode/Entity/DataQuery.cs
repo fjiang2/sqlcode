@@ -350,7 +350,7 @@ namespace Sys.Data.Entity
 			});
 		}
 
-		public IEnumerable<TEntity> ToList<TEntity>(DataTable dataTable) where TEntity : class
+		public List<TEntity> ToList<TEntity>(DataTable dataTable) where TEntity : class
 		{
 			return Invoke(db =>
 			{

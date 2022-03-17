@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Sys.Data.Entity
 {
@@ -15,7 +12,7 @@ namespace Sys.Data.Entity
         {
         }
 
-        public List<string> Translate(System.Linq.Expressions.Expression expression)
+        public List<string> Translate(Expression expression)
         {
             if (expression == null)
                 return null;
@@ -24,7 +21,7 @@ namespace Sys.Data.Entity
             return this.properties;
         }
 
-        protected override System.Linq.Expressions.Expression VisitMember(MemberExpression expr)
+        protected override Expression VisitMember(MemberExpression expr)
         {
             if (expr.Expression != null)
             {
@@ -38,8 +35,6 @@ namespace Sys.Data.Entity
 
             throw new NotSupportedException(string.Format("The member '{0}' is not supported", expr.Member.Name));
         }
-
-
 
     }
 }

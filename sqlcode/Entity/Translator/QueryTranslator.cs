@@ -252,7 +252,7 @@ namespace Sys.Data.Entity
                     return GetMemberValue(memberExpression.Member, GetValue(memberExpression.Expression));
 
                 case MethodCallExpression methodCallExpression:
-                    return System.Linq.Expressions.Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
+                    return Expression.Lambda(methodCallExpression).Compile().DynamicInvoke();
 
                 case null:
                     return null;
