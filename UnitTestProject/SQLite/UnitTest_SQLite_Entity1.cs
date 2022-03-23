@@ -30,7 +30,7 @@ namespace UnitTestProject
 			this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
-			Query = new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)).Query();
+			Query = new DataQuery(new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)));
 		}
 
 		//[TestMethod]
@@ -42,7 +42,7 @@ namespace UnitTestProject
 				if (line == "GO")
 					continue;
 
-				Query.DbAccess(new SqlUnit(line)).ExecuteNonQuery();
+				Query.Access(new SqlUnit(line)).ExecuteNonQuery();
 			}
 		}
 

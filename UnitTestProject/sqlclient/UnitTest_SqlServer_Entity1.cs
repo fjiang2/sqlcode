@@ -483,7 +483,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestAssoicationClass()
 		{
-			var query = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)).Query();
+			var query = new DataQuery(new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)));
 			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
 			var A = product.GetAssociation(query);
 			var D = A.Order_Details;

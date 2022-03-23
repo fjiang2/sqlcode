@@ -22,7 +22,7 @@ namespace Sys.Data.Entity
         /// </summary>
         /// <param name="unit"></param>
         /// <returns></returns>
-        public static DbAccess DbAccess(SqlUnit unit)
+        public static DbAccess Access(SqlUnit unit)
             => new DbAccessDelegate(DefaultAgent, unit);
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Sys.Data.Entity
         /// <param name="args"></param>
         /// <returns></returns>
         public static DataTable FillDataTable(string sql, object args = null)
-            => DbAccess(new SqlUnit(sql, args)).FillDataTable();
+            => Access(new SqlUnit(sql, args)).FillDataTable();
 
         /// <summary>
         /// 
@@ -41,7 +41,7 @@ namespace Sys.Data.Entity
         /// <param name="args"></param>
         /// <returns></returns>
         public static int ExecuteNonQuery(string sql, object args = null)
-            => DbAccess(new SqlUnit(sql, args)).ExecuteNonQuery();
+            => Access(new SqlUnit(sql, args)).ExecuteNonQuery();
 
         /// <summary>
         /// 

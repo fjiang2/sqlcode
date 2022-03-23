@@ -40,16 +40,6 @@ namespace Sys.Data
 
 		public abstract DbAccess Access(SqlUnit unit);
 
-
-		public DbAccess Access(SqlBuilder sql, object args) => Access(new SqlUnit(sql.ToScript(Option.Style), args));
-		public DbAccess Access(string query) => Access(new SqlUnit(query));
-		public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
-
-		public DataContext Context() => new DataContext(this);
-
-		public DataQuery Query() => new DataQuery(this);
-
-
 		public override string ToString()
 		{
 			return ConnectionString.ToString();

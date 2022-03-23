@@ -23,10 +23,16 @@ namespace Sys.Data.Entity
 		/// </summary>
 		/// <param name="unit"></param>
 		/// <returns></returns>
-		public DbAccess DbAccess(SqlUnit unit)
+		public DbAccess Access(SqlUnit unit)
 		{
 			return new DbAccessDelegate(agent, unit);
 		}
+
+		public DbAccess Access(SqlBuilder sql, object args) => Access(new SqlUnit(sql.ToScript(agent.Option.Style), args));
+		
+		public DbAccess Access(string query) => Access(new SqlUnit(query));
+
+		public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
 
 		private T Invoke<T>(Func<DataContext, T> func)
 		{

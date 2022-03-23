@@ -13,7 +13,7 @@ namespace Sys.Data.Entity
     public partial class DataContext : IDisposable
     {
         private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
-        private readonly IDbAgent agent;
+        protected readonly IDbAgent agent;
 
         internal SqlCodeBlock CodeBlock { get; } = new SqlCodeBlock();
         internal List<RowEvent> RowEvents { get; } = new List<RowEvent>();
