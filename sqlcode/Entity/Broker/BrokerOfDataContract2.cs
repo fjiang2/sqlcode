@@ -27,15 +27,21 @@ namespace Sys.Data.Entity
 
         public IDictionary<string, object> ToDictionary(TEntity entity)
         {
-            return (entity as IEntityRow).ToDictionary();
+            if (entity is IEntityRow entityRow)
+                return entityRow.ToDictionary();
+            else
+                throw new Exception($"Invalid IEntityRow: {entity}");
         }
 
 
         public List<TEntity> ToList(DataTable dt)
         {
+            //typeof(IEntityRow).IsAssignableFrom(typeof(TEntity))
+
             List<TEntity> list = new List<TEntity>();
             foreach (DataRow row in dt.Rows)
             {
+                //dc2 requires constructor public EntityClass(DataRow row) {...}
                 TEntity obj = (TEntity)Activator.CreateInstance(type, new object[] { row });
                 list.Add(obj);
             }

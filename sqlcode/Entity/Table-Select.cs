@@ -56,7 +56,7 @@ namespace Sys.Data.Entity
                 gen.Add(key, obj);
             }
 
-            string SQL = gen.SelectRows();
+            string SQL = gen.Select();
             gen.Clear();
 
             var dt = Context.LoadDataTable(SQL, DbLoadMode.DbFill);

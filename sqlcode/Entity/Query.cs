@@ -323,6 +323,29 @@ namespace Sys.Data.Entity
         /// <param name="batchSize"></param>
         public static void BulkInsert<TEntity>(this IEnumerable<TEntity> entities, int batchSize) where TEntity : class
             => query.BulkInsert(entities, batchSize);
+
+     
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <param name="entities"></param>
+        /// <param name="work"></param>
+        /// <param name="batchSize"></param>
+        public static void Batch<TEntity>(this IEnumerable<TEntity> entities, Action<IEnumerable<TEntity>> work, int batchSize) where TEntity : class
+        {
+            if (batchSize <= 0)
+            {
+                work(entities);
+            }
+            else
+            {
+                foreach (var list in entities.Split(batchSize))
+                {
+                    work(list);
+                }
+            }
+        }
     }
 
 }

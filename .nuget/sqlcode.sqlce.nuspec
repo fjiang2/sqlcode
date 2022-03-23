@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode.sqlce</id>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <title>SqlCe Agent</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,6 +13,10 @@
 		</description>
     <summary>SQL server compact interface</summary>
     <releaseNotes>
+		3/22/2022 v1.0.11
+		Improvements/Enhancements:
+		1. Updated by sqlcode
+		
 		1/26/2022 v1.0.10
 		Improvements/Enhancements:
 		1. Updated by sqlcode
@@ -27,7 +31,7 @@
 	</releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="sqlcode" version="1.0.10" />
+        <dependency id="sqlcode" version="1.0.11" />
         <dependency id="Microsoft.SqlServer.Compact" version="4.0.8876.1" />
       </group>
     </dependencies>
