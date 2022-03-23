@@ -387,7 +387,7 @@ namespace Sys.Data.Entity
 					foreach (var list in kvp.Value.Split(batchSize))
 					{
 						var unit = new SqlUnit(list.ToArray());
-						var cmd = agent.Proxy(unit);
+						var cmd = agent.Access(unit);
 						cmd.ExecuteTransaction();
 					}
 				}

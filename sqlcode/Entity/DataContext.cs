@@ -36,7 +36,7 @@ namespace Sys.Data.Entity
         /// <summary>
         /// DataContext using extension class (dc1) or single class (dc2)
         /// </summary>
-        public static EntityClassType EntityClassType { get; set; } = EntityClassType.ExtensionClass;
+        public static EntityClassType EntityClassType { get; set; } = EntityClassType.SingleClass;
 
         /// <summary>
         /// 
@@ -130,7 +130,7 @@ namespace Sys.Data.Entity
         internal DataTable LoadDataTable(string query, DbLoadOption option)
         {
             var unit = new SqlUnit(query);
-            var cmd = agent.Proxy(unit);
+            var cmd = agent.Access(unit);
             var dt = new DataTable();
             if (option.Mode == DbLoadMode.DbFill)
                 cmd.FillDataTable(dt, option.StartRecord, option.MaxRecords);
@@ -154,7 +154,7 @@ namespace Sys.Data.Entity
         private DataSet LoadDataSet(string[] query, DbLoadMode mode)
         {
             var unit = new SqlUnit(query);
-            var cmd = agent.Proxy(unit);
+            var cmd = agent.Access(unit);
             var ds = new DataSet();
             if (mode == DbLoadMode.DbFill)
                 cmd.FillDataSet(ds);
@@ -200,7 +200,7 @@ namespace Sys.Data.Entity
                 OnRowChanging(RowEvents);
 
                 var unit = new SqlUnit(CodeBlock.GetNonQuery());
-                var cmd = agent.Proxy(unit);
+                var cmd = agent.Access(unit);
                 int count = cmd.ExecuteNonQuery();
 
                 OnRowChanged(RowEvents);

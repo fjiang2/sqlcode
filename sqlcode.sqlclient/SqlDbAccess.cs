@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 namespace Sys.Data.SqlClient
 {
 
-	class SqlDbAccess : DbAccess, IDbAccess
+	public class SqlDbAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;

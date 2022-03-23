@@ -7,7 +7,13 @@ namespace Sys.Data.SqlCe
 	public class DbQuery : DataQuery
 	{
 		public DbQuery(string connectionString)
-			: base(new SqlCeAgent(new SqlCeConnectionStringBuilder(connectionString)))
+			: this(new SqlCeConnectionStringBuilder(connectionString))
+		{
+		}
+
+
+		public DbQuery(SqlCeConnectionStringBuilder connectionString)
+			: base(new SqlCeAgent(connectionString))
 		{
 		}
 	}

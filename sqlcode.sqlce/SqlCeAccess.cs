@@ -6,7 +6,7 @@ using System.Data.SqlServerCe;
 
 namespace Sys.Data.SqlCe
 {
-    class SqlCeAccess : DbAccess, IDbAccess
+    public class SqlCeAccess : DbAccess, IDbAccess
     {
         private readonly SqlCeCommand command;
         private readonly SqlCeConnection connection;

@@ -7,7 +7,7 @@ using System.Data.SQLite;
 
 namespace Sys.Data.SQLite
 {
-    class SQLiteAccess : DbAccess, IDbAccess
+    public class SQLiteAccess : DbAccess, IDbAccess
     {
         private readonly SQLiteCommand command;
         private readonly SQLiteConnection connection;

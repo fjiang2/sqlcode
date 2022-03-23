@@ -36,9 +36,7 @@ namespace Sys.Data
 
 		public abstract DbAgentOption Option { get; }
 
-		public IDbAccess Proxy(SqlUnit unit) => Access(unit);
-
-		public abstract DbAccess Access(SqlUnit unit);
+		public abstract IDbAccess Access(SqlUnit unit);
 
 		public override string ToString()
 		{

@@ -14,7 +14,7 @@ namespace Sys.Data
 		{
 			this.Description = nameof(DbAccessDelegate);
 			this.agent = agent;
-			this.command = agent.Proxy(unit);
+			this.command = agent.Access(unit);
 		}
 
 		public IDbAgent Provider => agent;
