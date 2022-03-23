@@ -13,7 +13,24 @@ namespace Sys.Data.Entity
         /// <summary>
         /// It must be assigned before using class Query. The agent could be SQL Server, SQLite, SQLCe agents.
         /// </summary>
-        public static IDbAgent DefaultAgent { get; set; }
+        private static IDbAgent defaultAgent;
+
+        public static void SetDefaultAgent(IDbAgent agent)
+        {
+            defaultAgent = agent;
+        }
+
+        private static IDbAgent DefaultAgent
+        {
+            get
+            {
+                if (defaultAgent == null)
+                    throw new InvalidOperationException("Undefined default agent");
+
+                return defaultAgent;
+            }
+        }
+
 
         private static DataQuery query => new DataQuery(DefaultAgent);
 
@@ -23,7 +40,14 @@ namespace Sys.Data.Entity
         /// <param name="unit"></param>
         /// <returns></returns>
         public static DbAccess Access(SqlUnit unit)
-            => new DbAccessDelegate(DefaultAgent, unit);
+        {
+            var access = DefaultAgent.Access(unit);
+
+            if (access is DbAccess)
+                return (DbAccess)access;
+            else
+                return new DbAccessDelegate(access);
+        }
 
         /// <summary>
         /// Fill data table

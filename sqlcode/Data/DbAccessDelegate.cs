@@ -7,17 +7,14 @@ namespace Sys.Data
 {
 	class DbAccessDelegate : DbAccess, IDbAccess
 	{
-		private readonly IDbAgent agent;
 		private readonly IDbAccess command;
 
-		public DbAccessDelegate(IDbAgent agent, SqlUnit unit)
+		public DbAccessDelegate(IDbAccess access)
 		{
 			this.Description = nameof(DbAccessDelegate);
-			this.agent = agent;
-			this.command = agent.Access(unit);
+			this.command = access;
 		}
 
-		public IDbAgent Provider => agent;
 		public override int ExecuteNonQuery() => command.ExecuteNonQuery();
 		public override object ExecuteScalar() => command.ExecuteScalar();
 		public override int FillDataSet(DataSet dataSet) => command.FillDataSet(dataSet);
