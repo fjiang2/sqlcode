@@ -7,7 +7,12 @@ namespace Sys.Data.SQLite
 	public class DbQuery : DataQuery
 	{
 		public DbQuery(string connectionString)
-			: base(new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)))
+			: this(new SQLiteConnectionStringBuilder(connectionString))
+		{
+		}
+
+		public DbQuery(SQLiteConnectionStringBuilder connectionString)
+			: base(new SQLiteAgent(connectionString))
 		{
 		}
 	}

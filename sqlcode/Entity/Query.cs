@@ -13,17 +13,41 @@ namespace Sys.Data.Entity
         /// <summary>
         /// It must be assigned before using class Query. The agent could be SQL Server, SQLite, SQLCe agents.
         /// </summary>
-        public static IDbAgent DefaultAgent { get; set; }
+        private static IDbAgent defaultAgent;
 
-        private static DataQuery query => new DataQuery(DefaultAgent);
+        public static void SetDefaultAgent(IDbAgent agent)
+        {
+            defaultAgent = agent;
+        }
+
+        private static IDbAgent DefaultAgent
+        {
+            get
+            {
+                if (defaultAgent == null)
+                    throw new InvalidOperationException("Undefined default agent");
+
+                return defaultAgent;
+            }
+        }
+
+
+        private static DataQuery DbQuery => new DataQuery(DefaultAgent);
 
         /// <summary>
         /// Create DbCommand
         /// </summary>
         /// <param name="unit"></param>
         /// <returns></returns>
-        public static DbAccess DbAccess(SqlUnit unit)
-            => new DbAccessDelegate(DefaultAgent, unit);
+        public static DbAccess Access(SqlUnit unit)
+        {
+            var access = DefaultAgent.Access(unit);
+
+            if (access is DbAccess dbAccess)
+                return dbAccess;
+            else
+                return new DbAccessDelegate(access);
+        }
 
         /// <summary>
         /// Fill data table
@@ -32,7 +56,7 @@ namespace Sys.Data.Entity
         /// <param name="args"></param>
         /// <returns></returns>
         public static DataTable FillDataTable(string sql, object args = null)
-            => DbAccess(new SqlUnit(sql, args)).FillDataTable();
+            => Access(new SqlUnit(sql, args)).FillDataTable();
 
         /// <summary>
         /// 
@@ -41,7 +65,7 @@ namespace Sys.Data.Entity
         /// <param name="args"></param>
         /// <returns></returns>
         public static int ExecuteNonQuery(string sql, object args = null)
-            => DbAccess(new SqlUnit(sql, args)).ExecuteNonQuery();
+            => Access(new SqlUnit(sql, args)).ExecuteNonQuery();
 
         /// <summary>
         /// 
@@ -79,7 +103,7 @@ namespace Sys.Data.Entity
         /// <param name="action"></param>
         /// <returns></returns>
         public static IQueryResultReader Select(Action<DataContext> action)
-            => query.Select(action);
+            => DbQuery.Select(action);
 
         /// <summary>
         /// SELECT * FROM entity-table
@@ -87,7 +111,7 @@ namespace Sys.Data.Entity
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
         public static IEnumerable<TEntity> Select<TEntity>() where TEntity : class
-            => query.Select<TEntity>();
+            => DbQuery.Select<TEntity>();
 
         /// <summary>
         /// Retrieve maxRecord starting on startRecord: SELECT * FROM entity-table WHERE ...
@@ -98,7 +122,7 @@ namespace Sys.Data.Entity
         /// <param name="where"></param>
         /// <returns></returns>
         public static IEnumerable<TEntity> Select<TEntity>(string where, DbLoadOption option) where TEntity : class
-            => query.Select<TEntity>(where, option);
+            => DbQuery.Select<TEntity>(where, option);
 
         /// <summary>
         /// SELECT * FROM entity-table WHERE ...
@@ -107,11 +131,11 @@ namespace Sys.Data.Entity
         /// <param name="where"></param>
         /// <returns></returns>
         public static IEnumerable<TEntity> Select<TEntity>(string where) where TEntity : class
-            => query.Select<TEntity>(where);
+            => DbQuery.Select<TEntity>(where);
 
 
         public static IEnumerable<TEntity> Select<TEntity>(Text.Expression where) where TEntity : class
-            => query.Select<TEntity>(where);
+            => DbQuery.Select<TEntity>(where);
 
         /// <summary>
         /// Select single entity by primary key. Properties of primary key must have values
@@ -120,7 +144,7 @@ namespace Sys.Data.Entity
         /// <param name="entity"></param>
         /// <returns></returns>
         public static TEntity SelectRow<TEntity>(TEntity entity) where TEntity : class
-            => query.SelectRow(entity);
+            => DbQuery.SelectRow(entity);
 
         /// <summary>
         /// SELECT * FROM entity-table WHERE ...
@@ -129,10 +153,10 @@ namespace Sys.Data.Entity
         /// <param name="where"></param>
         /// <returns></returns>
         public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
-            => query.Select(where);
+            => DbQuery.Select(where);
 
         public static IEnumerable<TEntity> Select<TEntity>(Expression<Func<TEntity, bool>> where, DbLoadOption option) where TEntity : class
-            => query.Select(where, option);
+            => DbQuery.Select(where, option);
 
         /// <summary>
         /// SELECT * FROM entity-table WHERE key-selector IN (SELECT result-selector FROM result-table WHERE ...)
@@ -150,7 +174,7 @@ namespace Sys.Data.Entity
         public static IEnumerable<TResult> Select<TEntity, TResult>(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, object>> keySelector, Expression<Func<TResult, object>> resultSelector)
             where TEntity : class
             where TResult : class
-            => query.Select(where, keySelector, resultSelector);
+            => DbQuery.Select(where, keySelector, resultSelector);
 
 
         /// <summary>
@@ -257,7 +281,7 @@ namespace Sys.Data.Entity
         /// <param name="entity"></param>
         /// <returns></returns>
         public static int DeleteRow<TEntity>(TEntity entity) where TEntity : class
-            => query.DeleteRow(entity);
+            => DbQuery.DeleteRow(entity);
 
         /// <summary>
         /// DELETE FROM entity-table WHERE ...
@@ -266,7 +290,7 @@ namespace Sys.Data.Entity
         /// <param name="where"></param>
         /// <returns></returns>
         public static int Delete<TEntity>(string where) where TEntity : class
-            => query.Delete<TEntity>(where);
+            => DbQuery.Delete<TEntity>(where);
 
         /// <summary>
         /// DELETE FROM entity-table WHERE ...
@@ -275,7 +299,7 @@ namespace Sys.Data.Entity
         /// <param name="where"></param>
         /// <returns></returns>
         public static int Delete<TEntity>(Expression<Func<TEntity, bool>> where) where TEntity : class
-            => query.Delete<TEntity>(where);
+            => DbQuery.Delete<TEntity>(where);
 
         /// <summary>
         /// Expand detail table from master table
@@ -285,7 +309,7 @@ namespace Sys.Data.Entity
         /// <param name="entities"></param>
         /// <returns></returns>
         public static IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(this IEnumerable<TEntity> entities) where TEntity : class where TSubEntity : class
-            => query.Expand<TEntity, TSubEntity>(entities);
+            => DbQuery.Expand<TEntity, TSubEntity>(entities);
 
         /// <summary>
         /// Expand assocation tables with foreign keys
@@ -294,7 +318,7 @@ namespace Sys.Data.Entity
         /// <param name="entities"></param>
         /// <returns></returns>
         public static IQueryResultReader Expand<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
-            => query.Expand(entities);
+            => DbQuery.Expand(entities);
 
 
         /// <summary>
@@ -304,7 +328,7 @@ namespace Sys.Data.Entity
         /// <param name="entity"></param>
         /// <returns></returns>
         public static int UpsertRow<TEntity>(TEntity entity) where TEntity : class
-            => query.UpsertRow(entity);
+            => DbQuery.UpsertRow(entity);
 
         /// <summary>
         /// Support SqlCe and SQL server
@@ -313,7 +337,7 @@ namespace Sys.Data.Entity
         /// <param name="entities"></param>
         /// <returns></returns>
         public static int Upsert<TEntity>(this IEnumerable<TEntity> entities) where TEntity : class
-            => query.Upsert(entities);
+            => DbQuery.Upsert(entities);
 
         /// <summary>
         /// Bulk insert entities
@@ -322,7 +346,7 @@ namespace Sys.Data.Entity
         /// <param name="entities"></param>
         /// <param name="batchSize"></param>
         public static void BulkInsert<TEntity>(this IEnumerable<TEntity> entities, int batchSize) where TEntity : class
-            => query.BulkInsert(entities, batchSize);
+            => DbQuery.BulkInsert(entities, batchSize);
 
      
         /// <summary>

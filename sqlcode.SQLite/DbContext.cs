@@ -12,7 +12,12 @@ namespace Sys.Data.SQLite
 	public class DbContext : DataContext
 	{
 		public DbContext(string connectionString)
-			: base(new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString)))
+			: this(new SQLiteConnectionStringBuilder(connectionString))
+		{
+		}
+
+		public DbContext(SQLiteConnectionStringBuilder connectionString)
+			: base(new SQLiteAgent(connectionString))
 		{
 		}
 	}

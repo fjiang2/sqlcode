@@ -11,7 +11,7 @@ namespace Sys.Data.SqlClient
 		}
 
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
-		public override DbAccess Access(SqlUnit unit) => new SqlDbAccess(ConnectionString.ConnectionString, unit);
+		public override IDbAccess Access(SqlUnit unit) => new SqlDbAccess(ConnectionString.ConnectionString, unit);
 
 	}
 }

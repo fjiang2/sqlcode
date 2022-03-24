@@ -6,7 +6,12 @@ namespace Sys.Data.SqlClient
 	public class DbQuery : DataQuery
 	{
 		public DbQuery(string connectionString)
-			: base(new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)))
+			: this(new SqlConnectionStringBuilder(connectionString))
+		{
+		}
+
+		public DbQuery(SqlConnectionStringBuilder connectionString)
+			: base(new SqlDbAgent(connectionString))
 		{
 		}
 	}
