@@ -36,19 +36,7 @@ namespace Sys.Data
 
 		public abstract DbAgentOption Option { get; }
 
-		public IDbAccess Proxy(SqlUnit unit) => Access(unit);
-
-		public abstract DbAccess Access(SqlUnit unit);
-
-
-		public DbAccess Access(SqlBuilder sql, object args) => Access(new SqlUnit(sql.ToScript(Option.Style), args));
-		public DbAccess Access(string query) => Access(new SqlUnit(query));
-		public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
-
-		public DataContext Context() => new DataContext(this);
-
-		public DataQuery Query() => new DataQuery(this);
-
+		public abstract IDbAccess Access(SqlUnit unit);
 
 		public override string ToString()
 		{

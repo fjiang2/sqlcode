@@ -16,7 +16,7 @@ namespace Sys.Data.SQLite
 		}
 
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SQLite };
-		public override DbAccess Access(SqlUnit unit) => new SQLiteAccess(ConnectionString.ConnectionString, unit);
+		public override IDbAccess Access(SqlUnit unit) => new SQLiteAccess(ConnectionString.ConnectionString, unit);
 
 	}
 }

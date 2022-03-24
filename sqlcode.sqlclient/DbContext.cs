@@ -7,11 +7,16 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlClient
 {
-	public class DbContext : DataContext
-	{
-		public DbContext(string connectionString)
-			: base(new SqlDbAgent(new SqlConnectionStringBuilder(connectionString)))
-		{
-		}
-	}
+    public class DbContext : DataContext
+    {
+        public DbContext(string connectionString)
+            : this(new SqlConnectionStringBuilder(connectionString))
+        {
+        }
+
+        public DbContext(SqlConnectionStringBuilder connectionString)
+            : base(new SqlDbAgent(connectionString))
+        {
+        }
+    }
 }

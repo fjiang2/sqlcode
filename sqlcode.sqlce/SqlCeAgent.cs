@@ -16,7 +16,7 @@ namespace Sys.Data.SqlCe
 		}
 
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlCe };
-		public override DbAccess Access(SqlUnit unit) => new SqlCeAccess(ConnectionString.ConnectionString, unit);
+		public override IDbAccess Access(SqlUnit unit) => new SqlCeAccess(ConnectionString.ConnectionString, unit);
 
 	}
 }
