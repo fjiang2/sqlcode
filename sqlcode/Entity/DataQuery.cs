@@ -9,13 +9,17 @@ using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
-    public class DataQuery : IQuery
+    public class DataQuery : IQuery, IDisposable
     {
         private readonly IDbAgent agent;
 
         public DataQuery(IDbAgent agent)
         {
             this.agent = agent ?? throw new ArgumentNullException("undefined agent");
+        }
+
+        public void Dispose()
+        {
         }
 
         /// <summary>
@@ -27,8 +31,8 @@ namespace Sys.Data.Entity
         {
             var access = agent.Access(unit);
 
-            if (access is DbAccess)
-                return (DbAccess)access;
+            if (access is DbAccess dbAccess)
+                return dbAccess;
             else
                 return new DbAccessDelegate(access);
         }
