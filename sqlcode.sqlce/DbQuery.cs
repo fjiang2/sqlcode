@@ -4,17 +4,24 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlCe
 {
-	public class DbQuery : DataQuery
-	{
-		public DbQuery(string connectionString)
-			: this(new SqlCeConnectionStringBuilder(connectionString))
-		{
-		}
+    public class DbQuery : DataQuery
+    {
+        public DbQuery(string connectionString)
+            : this(new SqlCeConnectionStringBuilder(connectionString))
+        {
+        }
 
 
-		public DbQuery(SqlCeConnectionStringBuilder connectionString)
-			: base(new SqlCeAgent(connectionString))
-		{
-		}
-	}
+        public DbQuery(SqlCeConnectionStringBuilder connectionString)
+            : this(new SqlCeAgent(connectionString))
+        {
+        }
+
+        public DbQuery(SqlCeAgent agent)
+           : base(agent)
+        {
+        }
+
+
+    }
 }

@@ -17,7 +17,12 @@ namespace Sys.Data.SqlCe
 		}
 
 		public DbContext(SqlCeConnectionStringBuilder connectionString)
-			: base(new SqlCeAgent(connectionString))
+			: this(new SqlCeAgent(connectionString))
+		{
+		}
+
+		public DbContext(SqlCeAgent agent)
+			: base(agent)
 		{
 		}
 

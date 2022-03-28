@@ -17,7 +17,12 @@ namespace Sys.Data.SQLite
 		}
 
 		public DbContext(SQLiteConnectionStringBuilder connectionString)
-			: base(new SQLiteAgent(connectionString))
+			: this(new SQLiteAgent(connectionString))
+		{
+		}
+
+		public DbContext(SQLiteAgent agent)
+			: base(agent)
 		{
 		}
 	}
