@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode", "sqlcode\sqlcode.csproj", "{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlite", "sqlcode.sqlite\sqlcode.sqlite.csproj", "{DF089145-9106-4610-A4EB-5E235C9E6EB8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlce", "sqlcode.sqlce\sqlcode.sqlce.csproj", "{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlcode.sqlremote", "sqlcode.sqlremote\sqlcode.sqlremote.csproj", "{4F75B9A8-D1E9-47F6-A19A-B865F3460E21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F75B9A8-D1E9-47F6-A19A-B865F3460E21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F75B9A8-D1E9-47F6-A19A-B865F3460E21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F75B9A8-D1E9-47F6-A19A-B865F3460E21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F75B9A8-D1E9-47F6-A19A-B865F3460E21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
