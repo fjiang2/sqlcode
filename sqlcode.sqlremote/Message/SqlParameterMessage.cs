@@ -1,10 +1,11 @@
 ﻿using System.Data;
 using System.Runtime.Serialization;
+using System.Data;
 
 namespace Sys.Data.SqlRemote
 {
     [DataContract]
-    public class SqlParameterMessage
+    public class SqlParameterMessage : IDataParameter
     {
         [DataMember(Name = "name", EmitDefaultValue = false)]
         public string ParameterName { get; set; }
@@ -14,6 +15,12 @@ namespace Sys.Data.SqlRemote
 
         [DataMember(Name = "direction", EmitDefaultValue = false)]
         public ParameterDirection Direction { get; set; }
+
+
+        public DbType DbType { get; set;}
+        public bool IsNullable { get; set; }
+        public string SourceColumn { get; set; }
+        public DataRowVersion SourceVersion { get; set; }
 
         public override string ToString()
         {

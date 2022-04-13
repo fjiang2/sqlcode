@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Sys.Data.SqlRemote
 {
@@ -36,14 +37,30 @@ namespace Sys.Data.SqlRemote
         public int LoadDataSet(DataSet dataSet)
         {
             SqlResultMessage result = Request();
-            result.FillDataSet(dataSet);
+
+            if (string.IsNullOrEmpty(result.Xml))
+                return -1;
+
+            using (var stream = new StringReader(result.Xml))
+            {
+                dataSet.ReadXml(stream, XmlReadMode.ReadSchema);
+            }
+
             return result.Count;
         }
 
         public int LoadDataTable(DataTable dataTable)
         {
             SqlResultMessage result = Request();
-            result.FillDataTable(dataTable);
+
+            if (string.IsNullOrEmpty(result.Xml))
+                return -1;
+
+            using (var stream = new StringReader(result.Xml))
+            {
+                dataTable.ReadXml(stream);
+            }
+
             return result.Count;
         }
 

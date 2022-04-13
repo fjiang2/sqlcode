@@ -10,18 +10,25 @@ namespace Sys.Data.SqlRemote
 {
     public class SqlMessageProcessor
     {
-        private readonly SqlRequestMessage request;
-        private readonly DbAccess access;
+        private readonly DbAgent agent;
 
-        public SqlMessageProcessor(DbAccess access, SqlRequestMessage request)
+        public SqlMessageProcessor(DbAgent agent)
         {
-            this.request = request;
-            this.access = access;
+            this.agent = agent;
         }
 
-        public SqlResultMessage Process()
+        public SqlResultMessage Process(SqlRequestMessage request)
         {
+            SqlUnit unit = new SqlUnit(request.CommandText)
+            {
+                CommandType = request.CommandType,
+                Arguments = request.Parameters,
+            };
+
+            var access = agent.Access(unit);
+
             SqlResultMessage result = new SqlResultMessage();
+
             string func = request.Function;
 
             try

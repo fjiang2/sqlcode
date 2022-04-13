@@ -28,30 +28,6 @@ namespace Sys.Data.SqlRemote
         {
         }
 
-        public int FillDataSet(DataSet ds)
-        {
-            if (string.IsNullOrEmpty(Xml))
-                return -1;
-
-            using (var stream = new StringReader(Xml))
-            {
-                ds.ReadXml(stream, XmlReadMode.ReadSchema);
-                return Count;
-            }
-        }
-
-        public int FillDataTable(DataTable dt)
-        {
-            if (string.IsNullOrEmpty(Xml))
-                return -1;
-
-            using (var stream = new StringReader(Xml))
-            {
-                dt.ReadXml(stream);
-                return 0;
-            }
-        }
-
         public override string ToString()
         {
             return $"Count={Count}, Error={Error}";
