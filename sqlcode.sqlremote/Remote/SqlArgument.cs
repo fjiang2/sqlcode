@@ -1,11 +1,18 @@
 ﻿using System.Data;
+using System.Runtime.Serialization;
 
 namespace Sys.Data.SqlRemote
 {
-    public class SqlRemoteParameter
+    [DataContract]
+    public class SqlArgument
     {
+        [DataMember(Name = "name", EmitDefaultValue = false)]
         public string ParameterName { get; set; }
+
+        [DataMember(Name = "value", EmitDefaultValue = false)]
         public object Value { get; set; }
+
+        [DataMember(Name = "direction", EmitDefaultValue = false)]
         public ParameterDirection Direction { get; set; }
 
         public override string ToString()

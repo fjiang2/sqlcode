@@ -9,11 +9,12 @@ namespace Sys.Data.SqlRemote
 
     public class SqlRemoteAccess : DbAccess, IDbAccess
     {
-        private readonly SqlRemoteCommand command;
-        private readonly SqlRemoteConnection connection;
+        private readonly SqlRequest request;
 
         private readonly string[] statements;
         private readonly IParameterFacet facet;
+
+        private readonly SqlRemoteClient client;
 
         public SqlRemoteAccess(string connectionString, SqlUnit unit)
         {
@@ -21,12 +22,12 @@ namespace Sys.Data.SqlRemote
             object args = unit.Arguments;
             string sql = unit.Statement;
 
-            this.connection = new SqlRemoteConnection(connectionString);
-            this.command = new SqlRemoteCommand(sql)
+            this.request = new SqlRequest(sql)
             {
                 CommandType = unit.CommandType,
-                Connection = connection,
             };
+
+            this.client = new SqlRemoteClient(connectionString, request);
 
             if (args == null)
                 return;
@@ -34,144 +35,75 @@ namespace Sys.Data.SqlRemote
             this.facet = ParameterFacet.Create(args);
 
             List<IDataParameter> parameters = this.facet.CreateParameters();
+
             foreach (IDataParameter parameter in parameters)
             {
                 object value = parameter.Value ?? DBNull.Value;
-                SqlRemoteParameter _parameter = new SqlRemoteParameter
+                SqlArgument _parameter = new SqlArgument
                 {
                     ParameterName = parameter.ParameterName,
                     Value = value,
                     Direction = parameter.Direction
                 };
-                command.Parameters.Add(_parameter);
+                request.Parameters.Add(_parameter);
             }
         }
 
-     
+
         public override int FillDataSet(DataSet dataSet)
         {
-            try
-            {
-                connection.Open();
-                SqlRemoteDataAdapter adapter = new SqlRemoteDataAdapter(command);
-                return adapter.Fill(dataSet);
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
+            request.Function = nameof(FillDataSet);
 
-        public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
-        {
-            try
-            {
-                connection.Open();
-                SqlRemoteDataAdapter adapter = new SqlRemoteDataAdapter(command);
-                return adapter.Fill(startRecord, maxRecords, dataTable);
-            }
-            finally
-            {
-                connection.Close();
-            }
+            return client.LoadDataSet(dataSet);
         }
 
         public override int ReadDataSet(DataSet dataSet)
         {
-            try
-            {
-                connection.Open();
-                var reader = command.ExecuteReader();
-                return new DbReader(reader).ReadDataSet(dataSet);
-            }
-            finally
-            {
-                connection.Close();
-            }
+            request.Function = nameof(ReadDataSet);
+
+            return client.LoadDataSet(dataSet);
+        }
+
+        public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
+        {
+            request.Function = nameof(FillDataTable);
+            request.StartRecord = startRecord;
+            request.MaxRecords = maxRecords;
+
+            return client.LoadDataTable(dataTable);
         }
 
         public override int ReadDataTable(DataTable dataTable, int startRecord, int maxRecords)
         {
-            try
-            {
-                connection.Open();
-                var reader = command.ExecuteReader();
-                return new DbReader(reader)
-                {
-                    StartRecord = startRecord,
-                    MaxRecords = maxRecords,
-                }.ReadTable(dataTable);
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
+            request.Function = nameof(ReadDataTable);
+            request.StartRecord = startRecord;
+            request.MaxRecords = maxRecords;
 
+            return client.LoadDataTable(dataTable);
+        }
 
         public override int ExecuteNonQuery()
         {
-            try
-            {
-                connection.Open();
-                int count = command.ExecuteNonQuery();
-                facet?.UpdateResult(command.Parameters.Cast<IDataParameter>());
-                return count;
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
+            request.Function = nameof(ExecuteNonQuery);
 
+            return client.ExecuteNonQuery();
+        }
 
         public override object ExecuteScalar()
         {
-            try
-            {
-                connection.Open();
-                return command.ExecuteScalar();
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
+            request.Function = nameof(ExecuteScalar);
 
+            return client.LoadScalar();
+        }
 
         public override void ExecuteTransaction()
         {
             if (statements.Length == 0)
                 return;
+            
+            request.Function = nameof(ExecuteTransaction);
 
-            try
-            {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    try
-                    {
-                        foreach (string line in statements)
-                        {
-                            command.Transaction = transaction;
-                            command.CommandText = line;
-                            command.ExecuteNonQuery();
-                        }
-
-                        transaction.Commit();
-                    }
-                    catch (Exception)
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
-            finally
-            {
-                connection.Close();
-            }
-
+            client.ExecuteTransaction();
         }
     }
 }
