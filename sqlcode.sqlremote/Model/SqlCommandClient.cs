@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Sys.Data.SqlRemote
 {
-    class SqlRemoteClient
+    class SqlCommandClient
     {
-        private SqlRequest request;
+        private readonly SqlRequest request;
         public string ConnectionString { get; }
 
 
-        public SqlRemoteClient(string connectionString, SqlRequest request)
+        public SqlCommandClient(string connectionString, SqlRequest request)
         {
             this.ConnectionString = connectionString;
             this.request = request;

@@ -14,7 +14,7 @@ namespace Sys.Data.SqlRemote
         private readonly string[] statements;
         private readonly IParameterFacet facet;
 
-        private readonly SqlRemoteClient client;
+        private readonly SqlCommandClient client;
 
         public SqlRemoteAccess(string connectionString, SqlUnit unit)
         {
@@ -27,7 +27,7 @@ namespace Sys.Data.SqlRemote
                 CommandType = unit.CommandType,
             };
 
-            this.client = new SqlRemoteClient(connectionString, request);
+            this.client = new SqlCommandClient(connectionString, request);
 
             if (args == null)
                 return;
