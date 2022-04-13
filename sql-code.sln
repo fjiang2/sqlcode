@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlce", "sqlcode.sq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlredis", "sqlcode.sqlredis\sqlcode.sqlredis.csproj", "{439138DA-639F-4E73-B035-16244C12A131}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlcode.sqlremote", "sqlcode.sqlremote\sqlcode.sqlremote.csproj", "{7AD413DB-D5BB-4FE5-9991-B8906FF7ED4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlremote", "sqlcode.sqlremote\sqlcode.sqlremote.csproj", "{7AD413DB-D5BB-4FE5-9991-B8906FF7ED4B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sqlcode.agents", "sqlcode.agents", "{6B07B9B1-7B2F-4FCC-9DEB-8C9AEE08DB0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -62,6 +64,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A47A2228-AB09-4E9A-B403-E027F9F42487} = {6B07B9B1-7B2F-4FCC-9DEB-8C9AEE08DB0D}
+		{DF089145-9106-4610-A4EB-5E235C9E6EB8} = {6B07B9B1-7B2F-4FCC-9DEB-8C9AEE08DB0D}
+		{9BEDD8EA-89F5-481B-AEF0-C8ABAB192E74} = {6B07B9B1-7B2F-4FCC-9DEB-8C9AEE08DB0D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {41CE5E9C-67D4-46CD-8B7C-9460E6F4C501}

@@ -4,63 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-#if NET48
-using System.IO;
-using System.Runtime.Serialization.Json;
-
-namespace Sys.Data.SqlRedis
-{
-    public static class Json
-    {
-        public static T Deserialize<T>(this string json)
-        {
-            return (T)Deserialize(typeof(T), json);
-        }
-
-        public static string Serialize<T>(this T graph)
-        {
-            return Serialize(typeof(T), graph);
-        }
-
-        public static object Deserialize(Type type, string json)
-        {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(type);
-            using (MemoryStream stream = new MemoryStream())
-            using (StreamWriter writer = new StreamWriter(stream))
-            {
-                writer.Write(json);
-                writer.Flush();
-                stream.Position = 0;
-                return serializer.ReadObject(stream);
-            }
-        }
-
-        public static string Serialize(Type type, object graph)
-        {
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(type);
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                serializer.WriteObject(stream, graph);
-                stream.Position = 0;
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-        }
-
-    }
-}
-
-
-#else
 using System.Text.Json;
 
 
-namespace Sys.Data.SqlRedis
+namespace Sys.Data.SqlRemote
 {
-    internal static class Json
+    public static class Json
     {
         public static T Deserialize<T>(string json)
         {
@@ -112,4 +61,4 @@ namespace Sys.Data.SqlRedis
 
     }
 }
-#endif
+

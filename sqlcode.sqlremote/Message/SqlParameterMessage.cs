@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Runtime.Serialization;
-using System.Data;
 
 namespace Sys.Data.SqlRemote
 {
