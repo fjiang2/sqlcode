@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Sys.Data.SqlRemote
 {
     [DataContract]
-    public class SqlRequest
+    public class SqlRequestMessage
     {
         [DataMember(Name = "sql", EmitDefaultValue = false)]
         public string CommandText { get; set; }
@@ -14,7 +14,7 @@ namespace Sys.Data.SqlRemote
         public CommandType CommandType { get; set; }
 
         [DataMember(Name = "args", EmitDefaultValue = false)]
-        public List<SqlArgument> Parameters { get; } 
+        public List<SqlParameterMessage> Parameters { get; } 
         
         [DataMember(Name = "func", EmitDefaultValue = false)]
         public string Function { get; set; }
@@ -25,11 +25,11 @@ namespace Sys.Data.SqlRemote
         [DataMember(Name = "maxrow", EmitDefaultValue = false)]
         public int MaxRecords { get; set; }
 
-        public SqlRequest(string sql)
+        public SqlRequestMessage(string sql)
         {
             this.CommandText = sql;
             this.CommandType = CommandType.Text;
-            this.Parameters = new List<SqlArgument>();
+            this.Parameters = new List<SqlParameterMessage>();
         }
     }
 }

@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace Sys.Data.SqlRemote
 {
-    internal class SqlProcessor
+    public class SqlMessageProcessor
     {
-        private readonly SqlRequest request;
+        private readonly SqlRequestMessage request;
         private readonly DbAccess access;
 
-        public SqlProcessor(DbAccess access, SqlRequest request)
+        public SqlMessageProcessor(DbAccess access, SqlRequestMessage request)
         {
             this.request = request;
             this.access = access;
         }
 
-        public SqlResult Process()
+        public SqlResultMessage Process()
         {
-            SqlResult result = new SqlResult();
+            SqlResultMessage result = new SqlResultMessage();
             string func = request.Function;
 
             try

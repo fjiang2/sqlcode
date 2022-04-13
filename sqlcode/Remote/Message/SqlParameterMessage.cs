@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Sys.Data.SqlRemote
 {
     [DataContract]
-    public class SqlArgument
+    public class SqlParameterMessage
     {
         [DataMember(Name = "name", EmitDefaultValue = false)]
         public string ParameterName { get; set; }

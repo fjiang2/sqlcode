@@ -1,11 +1,11 @@
 ﻿using System.Data.Common;
 
-namespace Sys.Data.SqlRemote
+namespace Sys.Data.SqlRedis
 {
-    public class SqlRemoteConnectionStringBuilder : DbConnectionStringBuilder
+    public class SqlRedisConnectionStringBuilder : DbConnectionStringBuilder
     {
 
-        public SqlRemoteConnectionStringBuilder(string connectionString)
+        public SqlRedisConnectionStringBuilder(string connectionString)
         {
             base.ConnectionString = connectionString;
         }

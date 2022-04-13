@@ -2,9 +2,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net5.0;net48</TargetFrameworks>
-		<RootNamespace>Sys.Data.SqlRemote</RootNamespace>
+		<RootNamespace>Sys.Data.SqlRedis</RootNamespace>
 		<Version>1.0.12</Version>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Remote\**" />
+	  <EmbeddedResource Remove="Remote\**" />
+	  <None Remove="Remote\**" />
+	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\sqlcode\sqlcode.csproj" />
 	</ItemGroup>

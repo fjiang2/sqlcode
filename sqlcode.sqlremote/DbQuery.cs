@@ -1,21 +1,21 @@
 ﻿using System.Data;
 using Sys.Data.Entity;
 
-namespace Sys.Data.SqlRemote
+namespace Sys.Data.SqlRedis
 {
 	public class DbQuery : DataQuery
 	{
 		public DbQuery(string connectionString)
-			: this(new SqlRemoteConnectionStringBuilder(connectionString))
+			: this(new SqlRedisConnectionStringBuilder(connectionString))
 		{
 		}
 
-		public DbQuery(SqlRemoteConnectionStringBuilder connectionString)
-			: base(new SqlRemoteAgent(connectionString))
+		public DbQuery(SqlRedisConnectionStringBuilder connectionString)
+			: base(new SqlRedisAgent(connectionString))
 		{
 		}
 
-		public DbQuery(SqlRemoteAgent agent)
+		public DbQuery(SqlRedisAgent agent)
 			: base(agent)
 		{
 		}
