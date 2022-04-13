@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Runtime.Serialization;
 
@@ -7,6 +8,9 @@ namespace Sys.Data.SqlRemote
     [DataContract]
     public class SqlRequestMessage
     {
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public Guid RequestId { get; set; }
+
         [DataMember(Name = "sql", EmitDefaultValue = false)]
         public string CommandText { get; set; }
 
@@ -27,6 +31,7 @@ namespace Sys.Data.SqlRemote
 
         public SqlRequestMessage(string sql)
         {
+            this.RequestId = Guid.NewGuid();
             this.CommandText = sql;
             this.CommandType = CommandType.Text;
             this.Parameters = new List<SqlParameterMessage>();
