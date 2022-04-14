@@ -6,7 +6,7 @@ using StackExchange.Redis;
 namespace Sys.Data.SqlRedis
 {
 
-    public class SqlRedisClient : RedisClient, ISqlMessageClient
+    public class SqlRedisClient : RedisClient, ISqlRemoteClient
     {
         public SqlRedisClient(string connectionString)
             :base(connectionString)
@@ -14,15 +14,15 @@ namespace Sys.Data.SqlRedis
         }
 
 
-        public Task<SqlResultMessage> RequesteAsync(SqlRequestMessage request)
+        public Task<SqlRemoteResult> RequesteAsync(SqlRemoteRequest request)
         {
             string json = Json.Serialize(request);
             ISubscriber sub = Manager.GetSubscriber();
             var x = sub.Publish(Channel, json);
 
-            SqlResultMessage result = new SqlResultMessage();
+            SqlRemoteResult result = new SqlRemoteResult();
 
-            return new Task<SqlResultMessage>(() => result);
+            return new Task<SqlRemoteResult>(() => result);
         }
 
     }

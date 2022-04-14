@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace Sys.Data.SqlRemote
 {
-    public class SqlMessageProcessor
+    public class SqlRemoteHandler
     {
         private readonly DbAgent agent;
 
-        public SqlMessageProcessor(DbAgent agent)
+        public SqlRemoteHandler(DbAgent agent)
         {
             this.agent = agent;
         }
 
-        public SqlResultMessage Process(SqlRequestMessage request)
+        public SqlRemoteResult Process(SqlRemoteRequest request)
         {
             SqlUnit unit = new SqlUnit(request.CommandText)
             {
@@ -27,7 +27,7 @@ namespace Sys.Data.SqlRemote
 
             var access = agent.Access(unit);
 
-            SqlResultMessage result = new SqlResultMessage();
+            SqlRemoteResult result = new SqlRemoteResult();
 
             string func = request.Function;
 
@@ -84,31 +84,11 @@ namespace Sys.Data.SqlRemote
             }
             catch (Exception ex)
             {
-                result.Error = GetAllMessages(ex);
+                result.Error = ex.GetAllMessages();
             }
 
             return result;
         }
 
-        private static string GetAllMessages(Exception exception)
-        {
-            const string ERROR_ONE_AND_MORE = "One or more errors occurred.";
-
-            StringBuilder builder = new StringBuilder();
-
-            if (exception.Message != ERROR_ONE_AND_MORE)
-                builder.AppendLine(exception.Message);
-
-            Exception innerException = exception.InnerException;
-            while (innerException != null)
-            {
-                if (innerException.Message != ERROR_ONE_AND_MORE)
-                    builder.AppendLine(innerException.Message);
-
-                innerException = innerException.InnerException;
-            }
-
-            return builder.ToString();
-        }
     }
 }

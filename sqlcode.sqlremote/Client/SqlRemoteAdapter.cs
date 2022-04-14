@@ -6,12 +6,12 @@ using System.IO;
 
 namespace Sys.Data.SqlRemote
 {
-    class SqlMessageClient
+    class SqlRemoteAdapter
     {
-        private readonly SqlRequestMessage request;
-        public readonly ISqlMessageClient client;
+        private readonly SqlRemoteRequest request;
+        public readonly ISqlRemoteClient client;
 
-        public SqlMessageClient(ISqlMessageClient client, SqlRequestMessage request)
+        public SqlRemoteAdapter(ISqlRemoteClient client, SqlRemoteRequest request)
         {
             this.client = client;
             this.request = request;
@@ -19,7 +19,7 @@ namespace Sys.Data.SqlRemote
 
         public int ExecuteNonQuery()
         {
-            SqlResultMessage result = Request();
+            SqlRemoteResult result = Request();
             return result.Count;
         }
 
@@ -30,13 +30,13 @@ namespace Sys.Data.SqlRemote
 
         public object LoadScalar()
         {
-            SqlResultMessage result = Request();
+            SqlRemoteResult result = Request();
             return result.Scalar;
         }
 
         public int LoadDataSet(DataSet dataSet)
         {
-            SqlResultMessage result = Request();
+            SqlRemoteResult result = Request();
 
             if (string.IsNullOrEmpty(result.Xml))
                 return -1;
@@ -51,7 +51,7 @@ namespace Sys.Data.SqlRemote
 
         public int LoadDataTable(DataTable dataTable)
         {
-            SqlResultMessage result = Request();
+            SqlRemoteResult result = Request();
 
             if (string.IsNullOrEmpty(result.Xml))
                 return -1;
@@ -64,9 +64,9 @@ namespace Sys.Data.SqlRemote
             return result.Count;
         }
 
-        private SqlResultMessage Request()
+        private SqlRemoteResult Request()
         {
-            SqlResultMessage result = client.RequesteAsync(request).Result;
+            SqlRemoteResult result = client.RequesteAsync(request).Result;
             if (result.Error != null)
                 throw new Exception(result.Error);
 

@@ -6,8 +6,8 @@ namespace Sys.Data.SqlRemote
 {
     public class SqlRemoteAgent : DbAgent
     {
-        private readonly ISqlMessageClient client;
-        public SqlRemoteAgent(ISqlMessageClient client)
+        private readonly ISqlRemoteClient client;
+        public SqlRemoteAgent(ISqlRemoteClient client)
             : base(new DbConnectionStringBuilder())
         {
             this.client = client;

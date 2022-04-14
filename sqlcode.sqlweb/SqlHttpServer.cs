@@ -10,7 +10,7 @@ using Sys.Data.SqlClient;
 
 namespace sqlcode.sqlweb
 {
-    public class SqlHttpServer : ISqlMessageServer
+    public class SqlHttpServer : ISqlRemoteServer
     {
         private readonly HttpListener listener = new HttpListener();
         internal CancellationTokenSource cts { get; }
@@ -94,9 +94,9 @@ namespace sqlcode.sqlweb
         public string Request(string json)
         {
             Console.WriteLine($"request:{json}");
-            var request = Json.Deserialize<SqlRequestMessage>(json);
+            var request = Json.Deserialize<SqlRemoteRequest>(json);
 
-            SqlResultMessage result = Execute(request);
+            SqlRemoteResult result = Execute(request);
 
             json = Json.Serialize(result);
             Console.WriteLine($"response:{json}");
@@ -105,12 +105,13 @@ namespace sqlcode.sqlweb
         }
 
 
-        public SqlResultMessage Execute(SqlRequestMessage request)
+        public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
             const string connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
             var agent = new SqlDbAgent(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString));
-            SqlMessageProcessor processor = new SqlMessageProcessor(agent);
-            return processor.Process(request);
+
+            SqlRemoteHandler handler = new SqlRemoteHandler(agent);
+            return handler.Process(request);
         }
     }
 }

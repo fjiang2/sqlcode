@@ -9,7 +9,7 @@ namespace Sys.Data.SqlRemote
 {
     public class DbContext : DataContext
     {
-        public DbContext(ISqlMessageClient client)
+        public DbContext(ISqlRemoteClient client)
             : base(new SqlRemoteAgent(client))
         {
         }

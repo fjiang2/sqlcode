@@ -10,7 +10,7 @@ using System.Runtime.Serialization;
 namespace Sys.Data.SqlRemote
 {
     [DataContract]
-    public class SqlResultMessage
+    public class SqlRemoteResult
     {
         [DataMember(Name = "xml", EmitDefaultValue = false)]
         public string Xml { get; set; }
@@ -24,7 +24,7 @@ namespace Sys.Data.SqlRemote
         [DataMember(Name = "error", EmitDefaultValue = false)]
         public string Error { get; set; }
 
-        public SqlResultMessage()
+        public SqlRemoteResult()
         {
         }
 

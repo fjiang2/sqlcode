@@ -7,19 +7,19 @@ using StackExchange.Redis;
 
 namespace Sys.Data.SqlRedis
 {
-    public class SqlRedisServer : RedisClient, ISqlMessageServer
+    public class SqlRedisServer : RedisClient, ISqlRemoteServer
     {
-        private SqlMessageProcessor processor;
+        private SqlRemoteHandler handler;
 
         public SqlRedisServer(string connectionString, SqlConnectionStringBuilder connection)
             :base(connectionString)
         {
-            processor = new SqlMessageProcessor(new SqlDbAgent(connection));
+            handler = new SqlRemoteHandler(new SqlDbAgent(connection));
         }
 
-        public SqlResultMessage Execute(SqlRequestMessage request)
+        public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            SqlResultMessage result = processor.Process(request);
+            SqlRemoteResult result = handler.Process(request);
             string json = Json.Serialize(result);
 
             ISubscriber sub = Manager.GetSubscriber();

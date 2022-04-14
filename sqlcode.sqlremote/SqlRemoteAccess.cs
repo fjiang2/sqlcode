@@ -9,25 +9,25 @@ namespace Sys.Data.SqlRemote
 
     public class SqlRemoteAccess : DbAccess, IDbAccess
     {
-        private readonly SqlRequestMessage request;
+        private readonly SqlRemoteRequest request;
 
         private readonly string[] statements;
         private readonly IParameterFacet facet;
 
-        private readonly SqlMessageClient client;
+        private readonly SqlRemoteAdapter adapter;
 
-        public SqlRemoteAccess(ISqlMessageClient client, SqlUnit unit)
+        public SqlRemoteAccess(ISqlRemoteClient client, SqlUnit unit)
         {
             this.statements = unit.Statements;
             object args = unit.Arguments;
             string sql = unit.Statement;
 
-            this.request = new SqlRequestMessage(sql)
+            this.request = new SqlRemoteRequest(sql)
             {
                 CommandType = unit.CommandType,
             };
 
-            this.client = new SqlMessageClient(client, request);
+            this.adapter = new SqlRemoteAdapter(client, request);
 
             if (args == null)
                 return;
@@ -39,7 +39,7 @@ namespace Sys.Data.SqlRemote
             foreach (IDataParameter parameter in parameters)
             {
                 object value = parameter.Value ?? DBNull.Value;
-                SqlParameterMessage _parameter = new SqlParameterMessage
+                SqlRemoteParameter _parameter = new SqlRemoteParameter
                 {
                     ParameterName = parameter.ParameterName,
                     Value = value,
@@ -54,14 +54,14 @@ namespace Sys.Data.SqlRemote
         {
             request.Function = nameof(FillDataSet);
 
-            return client.LoadDataSet(dataSet);
+            return adapter.LoadDataSet(dataSet);
         }
 
         public override int ReadDataSet(DataSet dataSet)
         {
             request.Function = nameof(ReadDataSet);
 
-            return client.LoadDataSet(dataSet);
+            return adapter.LoadDataSet(dataSet);
         }
 
         public override int FillDataTable(DataTable dataTable, int startRecord, int maxRecords)
@@ -70,7 +70,7 @@ namespace Sys.Data.SqlRemote
             request.StartRecord = startRecord;
             request.MaxRecords = maxRecords;
 
-            return client.LoadDataTable(dataTable);
+            return adapter.LoadDataTable(dataTable);
         }
 
         public override int ReadDataTable(DataTable dataTable, int startRecord, int maxRecords)
@@ -79,19 +79,19 @@ namespace Sys.Data.SqlRemote
             request.StartRecord = startRecord;
             request.MaxRecords = maxRecords;
 
-            return client.LoadDataTable(dataTable);
+            return adapter.LoadDataTable(dataTable);
         }
 
         public override int ExecuteNonQuery()
         {
             request.Function = nameof(ExecuteNonQuery);
-            return client.ExecuteNonQuery();
+            return adapter.ExecuteNonQuery();
         }
 
         public override object ExecuteScalar()
         {
             request.Function = nameof(ExecuteScalar);
-            return client.LoadScalar();
+            return adapter.LoadScalar();
         }
 
         public override void ExecuteTransaction()
@@ -101,7 +101,7 @@ namespace Sys.Data.SqlRemote
             
             request.Function = nameof(ExecuteTransaction);
 
-            client.ExecuteTransaction();
+            adapter.ExecuteTransaction();
         }
     }
 }

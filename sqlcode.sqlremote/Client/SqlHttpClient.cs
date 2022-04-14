@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 
 namespace Sys.Data.SqlRemote
 {
-    public class SqlHttpClient : ISqlMessageClient
+    public class SqlHttpClient : ISqlRemoteClient
     {
         private const string mediaType = "application/json";
         private readonly HttpClient httpClient;
@@ -24,7 +24,7 @@ namespace Sys.Data.SqlRemote
             this.requestUri = requestUri;
         }
 
-        public async Task<SqlResultMessage> RequesteAsync(SqlRequestMessage request)
+        public async Task<SqlRemoteResult> RequesteAsync(SqlRemoteRequest request)
         {
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
@@ -39,13 +39,13 @@ namespace Sys.Data.SqlRemote
                     if (string.IsNullOrEmpty(body))
                         return null;
 
-                    var result = Json.Deserialize<SqlResultMessage>(body);
+                    var result = Json.Deserialize<SqlRemoteResult>(body);
                     return result;
                 }
                 else
                 {
                     string exception = await response.Content.ReadAsStringAsync();
-                    return new SqlResultMessage
+                    return new SqlRemoteResult
                     {
                         Error = $"status={response.StatusCode}, reason={response.ReasonPhrase}, {exception}"
                     };
