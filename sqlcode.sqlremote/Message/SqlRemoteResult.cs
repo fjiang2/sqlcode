@@ -30,7 +30,7 @@ namespace Sys.Data.SqlRemote
 
         public override string ToString()
         {
-            return $"Count={Count}, Error={Error}";
+            return $"Count={Count}, Scalar={Scalar}, Error={Error}, Xml={Xml?.Length ?? 0}";
         }
     }
 }
