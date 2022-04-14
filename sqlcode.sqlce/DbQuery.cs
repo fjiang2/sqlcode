@@ -13,7 +13,7 @@ namespace Sys.Data.SqlCe
 
 
         public DbQuery(SqlCeConnectionStringBuilder connectionString)
-            : this(new SqlCeAgent(connectionString))
+            : base(new SqlCeAgent(connectionString))
         {
         }
 

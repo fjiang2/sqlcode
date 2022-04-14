@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.SqlClient;
 using Sys.Data.Entity;
 
-namespace Sys.Data.SqlClient
+namespace Sys.Data.SqlRedis
 {
     public class DbContext : DataContext
     {
         public DbContext(string connectionString)
-            : this(new SqlConnectionStringBuilder(connectionString))
+            : this(new SqlRedisConnectionStringBuilder(connectionString))
         {
         }
 
-        public DbContext(SqlConnectionStringBuilder connectionString)
-            : base(new SqlDbAgent(connectionString))
+        public DbContext(SqlRedisConnectionStringBuilder connectionString)
+            : base(new SqlRedisAgent(connectionString))
         {
         }
 
-        public DbContext(SqlDbAgent agent)
+        public DbContext(SqlRedisAgent agent)
             : base(agent)
         {
         }

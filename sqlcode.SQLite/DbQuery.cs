@@ -12,7 +12,7 @@ namespace Sys.Data.SQLite
         }
 
         public DbQuery(SQLiteConnectionStringBuilder connectionString)
-            : this(new SQLiteAgent(connectionString))
+            : base(new SQLiteAgent(connectionString))
         {
         }
 

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>sqlcode.sqlweb</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\sqlcode.sqlclient\sqlcode.sqlclient.csproj" />
+    <ProjectReference Include="..\sqlcode.sqlremote\sqlcode.sqlremote.csproj" />
+  </ItemGroup>
+
+</Project>

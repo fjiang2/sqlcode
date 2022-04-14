@@ -11,7 +11,7 @@ namespace Sys.Data.SqlClient
 		}
 
 		public DbQuery(SqlConnectionStringBuilder connectionString)
-			: this(new SqlDbAgent(connectionString))
+			: base(new SqlDbAgent(connectionString))
 		{
 		}
 
