@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
+using Sys.Data.SqlRemote;
 using Sys.Data.SqlRedis;
 
 namespace UnitTestProject
@@ -23,10 +24,14 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void Test_Redis_SELECT()
+        public void Test_Http_SELECT()
         {
-            DbQuery query = new DbQuery(redis);
-            var dt = query.Access("SELECT * FROM [Categories] WHERE [CategoryID] = 1").FillDataTable();
+            string url = "http://localhost/sqlhandler/";
+            SqlHttpClient client = new SqlHttpClient(new System.Net.Http.HttpClient(), url);
+
+            string SQL = "SELECT * FROM Products";
+            SqlRemoteAccess access = new SqlRemoteAccess(client, new SqlUnit(SQL));
+            var dt = access.FillDataTable();
             Debug.Assert(dt.Rows.Count == 30);
         }
     }

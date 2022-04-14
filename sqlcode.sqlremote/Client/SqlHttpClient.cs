@@ -31,6 +31,9 @@ namespace Sys.Data.SqlRemote
                 if (response.IsSuccessStatusCode)
                 {
                     body = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrEmpty(body))
+                        return null;
+
                     var result = Json.Deserialize<SqlResultMessage>(body);
                     return result;
                 }

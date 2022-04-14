@@ -2,6 +2,6 @@
 {
     public interface ISqlMessageServer
     {
-        void OnRequest(SqlRequestMessage request);
+        SqlResultMessage Execute(SqlRequestMessage request);
     }
 }
