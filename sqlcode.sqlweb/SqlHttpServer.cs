@@ -10,7 +10,7 @@ using Sys.Data.SqlClient;
 
 namespace sqlcode.sqlweb
 {
-    public class SqlHttpServer : ISqlRemoteServer
+    public class SqlHttpServer
     {
         private readonly HttpListener listener = new HttpListener();
         internal CancellationTokenSource cts { get; }
@@ -105,13 +105,13 @@ namespace sqlcode.sqlweb
         }
 
 
-        public SqlRemoteResult Execute(SqlRemoteRequest request)
+        private SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            const string connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
+            string connectionString = Program.connectionString;
             var agent = new SqlDbAgent(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString));
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
-            return handler.Process(request);
+            return handler.Execute(request);
         }
     }
 }

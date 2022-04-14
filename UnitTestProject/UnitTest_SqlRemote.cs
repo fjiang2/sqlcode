@@ -10,7 +10,6 @@ using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.SqlRemote;
-using Sys.Data.SqlRedis;
 
 namespace UnitTestProject
 {
@@ -28,7 +27,10 @@ namespace UnitTestProject
         public void Test_Http_SELECT()
         {
             string url = "http://localhost/sqlhandler/";
-            SqlHttpClient client = new SqlHttpClient(url);
+            SqlHttpClient client = new SqlHttpClient(url)
+            { 
+                Style = DbAgentStyle.SqlServer,
+            };
 
             string SQL = "SELECT * FROM Products";
             SqlRemoteAccess access = new SqlRemoteAccess(client, new SqlUnit(SQL));

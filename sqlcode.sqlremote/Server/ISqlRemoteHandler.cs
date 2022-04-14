@@ -1,6 +1,6 @@
 ﻿namespace Sys.Data.SqlRemote
 {
-    public interface ISqlRemoteServer
+    public interface ISqlRemoteHandler
     {
         SqlRemoteResult Execute(SqlRemoteRequest request);
     }

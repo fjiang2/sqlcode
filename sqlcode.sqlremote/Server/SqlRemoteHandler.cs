@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Sys.Data.SqlRemote
 {
-    public class SqlRemoteHandler
+    public class SqlRemoteHandler : ISqlRemoteHandler
     {
         private readonly DbAgent agent;
 
@@ -17,7 +17,7 @@ namespace Sys.Data.SqlRemote
             this.agent = agent;
         }
 
-        public SqlRemoteResult Process(SqlRemoteRequest request)
+        public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
             SqlUnit unit = new SqlUnit(request.CommandText)
             {
@@ -79,7 +79,8 @@ namespace Sys.Data.SqlRemote
                         break;
 
                     default:
-                        throw new Exception($"invalid SQL request function:{func}");
+                        result.Error = $"invalid SQL request function:{func}";
+                        break;
                 }
             }
             catch (Exception ex)

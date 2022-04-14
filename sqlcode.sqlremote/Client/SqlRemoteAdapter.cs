@@ -6,7 +6,7 @@ using System.IO;
 
 namespace Sys.Data.SqlRemote
 {
-    class SqlRemoteAdapter
+    internal class SqlRemoteAdapter
     {
         private readonly SqlRemoteRequest request;
         public readonly ISqlRemoteClient client;

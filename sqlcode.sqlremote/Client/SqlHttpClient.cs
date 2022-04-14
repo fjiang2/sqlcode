@@ -24,6 +24,8 @@ namespace Sys.Data.SqlRemote
             this.requestUri = requestUri;
         }
 
+        public DbAgentStyle Style { get; set; } = DbAgentStyle.SqlServer;
+
         public async Task<SqlRemoteResult> RequesteAsync(SqlRemoteRequest request)
         {
             httpClient.DefaultRequestHeaders.Accept.Clear();
