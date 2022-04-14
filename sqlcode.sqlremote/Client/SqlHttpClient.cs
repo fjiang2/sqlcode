@@ -13,6 +13,11 @@ namespace Sys.Data.SqlRemote
         private readonly HttpClient httpClient;
         private readonly string requestUri;
 
+        public SqlHttpClient(string requestUri)
+            : this(new HttpClient(), requestUri)
+        {
+        }
+
         public SqlHttpClient(HttpClient client, string requestUri)
         {
             this.httpClient = client;

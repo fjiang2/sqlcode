@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Data.SqlClient;
+using System.Net.Http;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
@@ -27,12 +28,12 @@ namespace UnitTestProject
         public void Test_Http_SELECT()
         {
             string url = "http://localhost/sqlhandler/";
-            SqlHttpClient client = new SqlHttpClient(new System.Net.Http.HttpClient(), url);
+            SqlHttpClient client = new SqlHttpClient(url);
 
             string SQL = "SELECT * FROM Products";
             SqlRemoteAccess access = new SqlRemoteAccess(client, new SqlUnit(SQL));
             var dt = access.FillDataTable();
-            Debug.Assert(dt.Rows.Count == 30);
+            Debug.Assert(dt.Rows.Count == 77);
         }
     }
 }

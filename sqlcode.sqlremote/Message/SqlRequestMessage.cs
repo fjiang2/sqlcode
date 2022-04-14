@@ -25,6 +25,10 @@ namespace Sys.Data.SqlRemote
 
         [DataMember(Name = "maxrow", EmitDefaultValue = false)]
         public int MaxRecords { get; set; }
+        public SqlRequestMessage()
+        {
+
+        }
 
         public SqlRequestMessage(string sql)
         {

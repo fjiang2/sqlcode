@@ -1,0 +1,20 @@
+﻿using System;
+using System.Data.Common;
+using Sys.Data.Entity;
+
+namespace Sys.Data.SqlRemote
+{
+    public class SqlRemoteAgent : DbAgent
+    {
+        private readonly ISqlMessageClient client;
+        public SqlRemoteAgent(ISqlMessageClient client)
+            : base(new DbConnectionStringBuilder())
+        {
+            this.client = client;
+        }
+
+        public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SqlServer };
+        public override IDbAccess Access(SqlUnit unit) => new SqlRemoteAccess(client, unit);
+
+    }
+}
