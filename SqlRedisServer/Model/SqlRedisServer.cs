@@ -7,24 +7,39 @@ using StackExchange.Redis;
 
 namespace Sys.Data.SqlRedis
 {
-    public class SqlRedisServer : Redis, ISqlRemoteHandler
+    public class SqlRedisServer   
     {
+        public string SqlCommandChannel { get; set; } = "sqlremote-sql-command";
+        public string SqlResultChannel { get; set; } = "sqlremote-sql-result";
+
+
+        public ConnectionMultiplexer Redis { get; }
+
         private SqlRemoteHandler handler;
 
-        public SqlRedisServer(string connectionString, SqlConnectionStringBuilder connection)
-            :base(connectionString)
+        public SqlRedisServer(ConfigurationOptions options, SqlConnectionStringBuilder connection)
         {
             handler = new SqlRemoteHandler(new SqlDbAgent(connection));
+
+            this.Redis = ConnectionMultiplexer.Connect(options);
+            ISubscriber sub = Redis.GetSubscriber();
+            sub.Subscribe(SqlCommandChannel, (channel, value) =>
+            {
+                var result = Execute(value);
+                sub.Publish(SqlResultChannel, result);
+            });
         }
 
-        public SqlRemoteResult Execute(SqlRemoteRequest request)
+        public string Execute(string json)
         {
+            Console.WriteLine($"{DateTime.Now} [Req] {json}");
+            
+            SqlRemoteRequest request = Json.Deserialize<SqlRemoteRequest>(json);
             SqlRemoteResult result = handler.Execute(request);
-            string json = Json.Serialize(result);
-
-            ISubscriber sub = Manager.GetSubscriber();
-            var x = sub.Publish(Channel, json);
-            return null;
+            
+            Console.WriteLine($"{DateTime.Now} [Ret] {result}");
+            json = Json.Serialize(result);
+            return json;
         }
     }
 }

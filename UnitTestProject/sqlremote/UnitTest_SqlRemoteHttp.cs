@@ -15,13 +15,14 @@ using Sys.Data.SqlRemote;
 namespace UnitTestProject
 {
     [TestClass]
-    public class UnitTest_SqlRemote
+    public class UnitTest_SqlRemoteHttp
+
     {
         string url = "http://localhost/sqlhandler/";
         SqlRemoteAgent agent;
         DbQuery query;
 
-        public UnitTest_SqlRemote()
+        public UnitTest_SqlRemoteHttp()
         {
             SqlHttpBroker broker = new SqlHttpBroker(url)
             {

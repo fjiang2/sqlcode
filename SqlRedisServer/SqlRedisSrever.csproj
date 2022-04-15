@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;net48</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net5.0</TargetFrameworks>
 		<RootNamespace>Sys.Data.SqlRedis</RootNamespace>
 		<Version>1.0.12</Version>
 	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Remove="Remote\**" />
-	  <EmbeddedResource Remove="Remote\**" />
-	  <None Remove="Remote\**" />
-	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
 	</ItemGroup>
