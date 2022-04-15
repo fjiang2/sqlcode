@@ -15,9 +15,12 @@ namespace Sys.Data.SqlRemote
         [DataMember(Name = "direction", EmitDefaultValue = false)]
         public ParameterDirection Direction { get; set; }
 
-
+        [DataMember(Name = "type", EmitDefaultValue = false)]
         public DbType DbType { get; set;}
+
+        [DataMember(Name = "nullable", EmitDefaultValue = false)]
         public bool IsNullable { get; set; }
+        
         public string SourceColumn { get; set; }
         public DataRowVersion SourceVersion { get; set; }
 

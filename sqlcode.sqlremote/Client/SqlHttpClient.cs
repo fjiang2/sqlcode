@@ -31,7 +31,7 @@ namespace Sys.Data.SqlRemote
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
 
-            string body = Json.Serialize(request);
+            string body = Json.SerializeAndFormat(request);
             var content = new StringContent(body, Encoding.UTF8, mediaType);
             using (HttpResponseMessage response = await httpClient.PostAsync(requestUri, content))
             {

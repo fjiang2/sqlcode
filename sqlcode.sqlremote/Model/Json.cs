@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Text.Json;
-
+using Newtonsoft.Json;
 
 namespace Sys.Data.SqlRemote
 {
@@ -13,14 +12,14 @@ namespace Sys.Data.SqlRemote
     {
         public static T Deserialize<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json);
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         public static bool TryDeserialize<T>(string json, out T result)
         {
             try
             {
-                result = JsonSerializer.Deserialize<T>(json);
+                result = JsonConvert.DeserializeObject<T>(json);
                 return true;
             }
             catch (Exception)
@@ -30,35 +29,37 @@ namespace Sys.Data.SqlRemote
             }
         }
 
-        public static T Deserialize<T>(string json, JsonSerializerOptions converter)
+        public static T Deserialize<T>(string json, JsonConverter converter)
         {
-            return JsonSerializer.Deserialize<T>(json, converter);
+            return JsonConvert.DeserializeObject<T>(json, converter);
         }
+
+        public static T Deserialize<T>(string json, T definition)
+        {
+            return JsonConvert.DeserializeAnonymousType(json, definition);
+        }
+
 
         public static string Serialize(object obj)
         {
-            return JsonSerializer.Serialize(obj);
+            return JsonConvert.SerializeObject(obj);
+        }
+        public static string Serialize(object obj, JsonConverter converter)
+        {
+            return JsonConvert.SerializeObject(obj, converter);
         }
 
-        public static string Serialize(object obj, bool indented)
+        public static void MergeTo(string json, object target)
         {
-            return JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
-        }
-
-        public static string Serialize(object obj, JsonSerializerOptions options)
-        {
-            return JsonSerializer.Serialize(obj, options);
+            JsonConvert.PopulateObject(json, target);
         }
 
         public static string SerializeAndFormat(object obj)
         {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-            return JsonSerializer.Serialize(obj, options);
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
 
+       
     }
 }
 

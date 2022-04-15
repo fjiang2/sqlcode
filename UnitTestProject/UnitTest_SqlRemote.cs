@@ -42,6 +42,14 @@ namespace UnitTestProject
             Debug.Assert(dt.Rows.Count == 77);
         }
 
+        [TestMethod]
+        public void Test_SELECT_Parameters()
+        {
+            string SQL = "SELECT * FROM Products WHERE UnitsInStock > @Number";
+            var dt = query.Access(SQL, new { Number = 20 }).FillDataTable();
+
+            Debug.Assert(dt.Rows.Count == 48);
+        }
 
         [TestMethod]
         public void Test_Query_SELECT()
