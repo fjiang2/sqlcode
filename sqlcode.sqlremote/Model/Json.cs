@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Sys.Data.SqlRemote
 {
@@ -12,26 +13,10 @@ namespace Sys.Data.SqlRemote
     {
         public static T Deserialize<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json);
-        }
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new StringEnumConverter());
 
-        public static bool TryDeserialize<T>(string json, out T result)
-        {
-            try
-            {
-                result = JsonConvert.DeserializeObject<T>(json);
-                return true;
-            }
-            catch (Exception)
-            {
-                result = default(T);
-                return false;
-            }
-        }
-
-        public static T Deserialize<T>(string json, JsonConverter converter)
-        {
-            return JsonConvert.DeserializeObject<T>(json, converter);
+            return JsonConvert.DeserializeObject<T>(json, settings);
         }
 
         public static T Deserialize<T>(string json, T definition)
@@ -40,26 +25,17 @@ namespace Sys.Data.SqlRemote
         }
 
 
-        public static string Serialize(object obj)
+        public static string Serialize(object obj, bool indented = false)
         {
-            return JsonConvert.SerializeObject(obj);
-        }
-        public static string Serialize(object obj, JsonConverter converter)
-        {
-            return JsonConvert.SerializeObject(obj, converter);
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new StringEnumConverter());
+
+            if (indented)
+                return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
+            else
+                return JsonConvert.SerializeObject(obj, settings);
         }
 
-        public static void MergeTo(string json, object target)
-        {
-            JsonConvert.PopulateObject(json, target);
-        }
-
-        public static string SerializeAndFormat(object obj)
-        {
-            return JsonConvert.SerializeObject(obj, Formatting.Indented);
-        }
-
-       
     }
 }
 

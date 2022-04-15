@@ -20,7 +20,7 @@ namespace Sys.Data.SqlRemote
         [DataMember(Name = "func", EmitDefaultValue = false)]
         public string Function { get; set; }
 
-        [DataMember(Name = "from", EmitDefaultValue = false)]
+        [DataMember(Name = "start", EmitDefaultValue = false)]
         public int StartRecord { get; set; }
 
         [DataMember(Name = "maxrows", EmitDefaultValue = false)]
