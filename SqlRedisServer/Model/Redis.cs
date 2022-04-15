@@ -2,13 +2,14 @@
 
 namespace Sys.Data.SqlRedis
 {
-    public class RedisClient
+    public class Redis
+
 
     {
         public static ConnectionMultiplexer Manager;
 
         protected const string Channel = "sql/command";
-        public RedisClient(string connectionString)
+        public Redis(string connectionString)
         {
             Manager = GetManager(connectionString);
         }

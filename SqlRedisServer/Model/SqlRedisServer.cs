@@ -7,7 +7,7 @@ using StackExchange.Redis;
 
 namespace Sys.Data.SqlRedis
 {
-    public class SqlRedisServer : RedisClient, ISqlRemoteServer
+    public class SqlRedisServer : Redis, ISqlRemoteHandler
     {
         private SqlRemoteHandler handler;
 
@@ -19,7 +19,7 @@ namespace Sys.Data.SqlRedis
 
         public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            SqlRemoteResult result = handler.Process(request);
+            SqlRemoteResult result = handler.Execute(request);
             string json = Json.Serialize(result);
 
             ISubscriber sub = Manager.GetSubscriber();

@@ -6,13 +6,14 @@ using StackExchange.Redis;
 namespace Sys.Data.SqlRedis
 {
 
-    public class SqlRedisClient : RedisClient, ISqlRemoteClient
+    public class SqlRedisBroker : Redis, ISqlRemoteBroker
     {
-        public SqlRedisClient(string connectionString)
+        public SqlRedisBroker(string connectionString)
             :base(connectionString)
         {
         }
 
+        public DbAgentStyle Style { get; set; }
 
         public Task<SqlRemoteResult> RequesteAsync(SqlRemoteRequest request)
         {
