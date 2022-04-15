@@ -12,15 +12,29 @@ namespace Sys.Data.SqlRemote
     [DataContract]
     public class SqlRemoteResult
     {
-        [DataMember(Name = "xml", EmitDefaultValue = false)]
-        public string Xml { get; set; }
-
+        /// <summary>
+        /// Result of ExecuteNonQuery()
+        /// </summary>
         [DataMember(Name = "count", EmitDefaultValue = false)]
         public int Count { get; set; }
 
+
+        /// <summary>
+        /// Result of ExecuteScalar()
+        /// </summary>
         [DataMember(Name = "scalar", EmitDefaultValue = false)]
         public object Scalar { get; set; }
 
+        /// <summary>
+        /// Serialized text from DataTable or DataSet
+        /// </summary>
+        [DataMember(Name = "data", EmitDefaultValue = false)]
+        public string Xml { get; set; }
+
+
+        /// <summary>
+        /// Exception
+        /// </summary>
         [DataMember(Name = "error", EmitDefaultValue = false)]
         public string Error { get; set; }
 
@@ -30,7 +44,7 @@ namespace Sys.Data.SqlRemote
 
         public override string ToString()
         {
-            return $"Count={Count}, Scalar={Scalar}, Xml={Xml?.Length}, Error={Error}";
+            return $"Count={Count}, Scalar={Scalar}, Data-Length={Xml?.Length}, Error={Error}";
         }
     }
 }

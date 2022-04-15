@@ -93,13 +93,13 @@ namespace sqlcode.sqlweb
 
         public string Request(string json)
         {
-            Console.WriteLine($"{DateTime.Now} [Rx] {json}");
+            Console.WriteLine($"{DateTime.Now} [Req] {json}");
             var request = Json.Deserialize<SqlRemoteRequest>(json);
 
             SqlRemoteResult result = Execute(request);
 
             json = Json.Serialize(result);
-            Console.WriteLine($"{DateTime.Now} [Tx] {result}");
+            Console.WriteLine($"{DateTime.Now} [Ret] {result}");
 
             return json;
         }

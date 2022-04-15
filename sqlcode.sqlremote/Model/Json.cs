@@ -27,13 +27,13 @@ namespace Sys.Data.SqlRemote
 
         public static string Serialize(object obj, bool indented = false)
         {
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new StringEnumConverter());
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = indented ? Formatting.Indented : Formatting.None,
+            };
 
-            if (indented)
-                return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
-            else
-                return JsonConvert.SerializeObject(obj, settings);
+            settings.Converters.Add(new StringEnumConverter());
+            return JsonConvert.SerializeObject(obj, settings);
         }
 
     }

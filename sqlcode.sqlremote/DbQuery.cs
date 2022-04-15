@@ -7,8 +7,8 @@ namespace Sys.Data.SqlRemote
 	public class DbQuery : DataQuery
 	{
 	
-		public DbQuery(ISqlRemoteClient client)
-			: base(new SqlRemoteAgent(client))
+		public DbQuery(ISqlRemoteBroker broker)
+			: base(new SqlRemoteAgent(broker))
 		{
 		}
 

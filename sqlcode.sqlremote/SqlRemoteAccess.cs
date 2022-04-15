@@ -16,7 +16,7 @@ namespace Sys.Data.SqlRemote
 
         private readonly SqlRemoteAdapter adapter;
 
-        public SqlRemoteAccess(ISqlRemoteClient client, SqlUnit unit)
+        public SqlRemoteAccess(ISqlRemoteBroker broker, SqlUnit unit)
         {
             this.statements = unit.Statements;
             object args = unit.Arguments;
@@ -27,7 +27,7 @@ namespace Sys.Data.SqlRemote
                 CommandType = unit.CommandType,
             };
 
-            this.adapter = new SqlRemoteAdapter(client, request);
+            this.adapter = new SqlRemoteAdapter(broker, request);
 
             if (args == null)
                 return;

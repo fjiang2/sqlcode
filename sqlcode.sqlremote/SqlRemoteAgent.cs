@@ -6,16 +6,16 @@ namespace Sys.Data.SqlRemote
 {
     public class SqlRemoteAgent : DbAgent
     {
-        private readonly ISqlRemoteClient client;
+        private readonly ISqlRemoteBroker broker;
         
-        public SqlRemoteAgent(ISqlRemoteClient client)
+        public SqlRemoteAgent(ISqlRemoteBroker broker)
             : base(new DbConnectionStringBuilder())
         {
-            this.client = client;
+            this.broker = broker;
         }
 
-        public override DbAgentOption Option => new DbAgentOption { Style = client.Style };
-        public override IDbAccess Access(SqlUnit unit) => new SqlRemoteAccess(client, unit);
+        public override DbAgentOption Option => new DbAgentOption { Style = broker.Style };
+        public override IDbAccess Access(SqlUnit unit) => new SqlRemoteAccess(broker, unit);
 
     }
 }

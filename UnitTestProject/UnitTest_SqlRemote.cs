@@ -23,12 +23,12 @@ namespace UnitTestProject
 
         public UnitTest_SqlRemote()
         {
-            SqlHttpClient client = new SqlHttpClient(url)
+            SqlHttpBroker broker = new SqlHttpBroker(url)
             {
                 Style = DbAgentStyle.SqlServer,
             };
 
-            agent = new SqlRemoteAgent(client);
+            agent = new SqlRemoteAgent(broker);
             query = new DbQuery(agent);
 
         }
