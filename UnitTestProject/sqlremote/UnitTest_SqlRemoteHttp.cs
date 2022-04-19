@@ -15,20 +15,21 @@ using Sys.Data.SqlRemote;
 namespace UnitTestProject
 {
     [TestClass]
-    public class UnitTest_SqlRemote
+    public class UnitTest_SqlRemoteHttp
+
     {
         string url = "http://localhost/sqlhandler/";
         SqlRemoteAgent agent;
         DbQuery query;
 
-        public UnitTest_SqlRemote()
+        public UnitTest_SqlRemoteHttp()
         {
-            SqlHttpClient client = new SqlHttpClient(url)
+            SqlHttpBroker broker = new SqlHttpBroker(url)
             {
                 Style = DbAgentStyle.SqlServer,
             };
 
-            agent = new SqlRemoteAgent(client);
+            agent = new SqlRemoteAgent(broker);
             query = new DbQuery(agent);
 
         }
@@ -42,6 +43,14 @@ namespace UnitTestProject
             Debug.Assert(dt.Rows.Count == 77);
         }
 
+        [TestMethod]
+        public void Test_SELECT_Parameters()
+        {
+            string SQL = "SELECT * FROM Products WHERE UnitsInStock > @Number";
+            var dt = query.Access(SQL, new { Number = 20 }).FillDataTable();
+
+            Debug.Assert(dt.Rows.Count == 48);
+        }
 
         [TestMethod]
         public void Test_Query_SELECT()

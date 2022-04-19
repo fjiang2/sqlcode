@@ -9,8 +9,8 @@ namespace Sys.Data.SqlRemote
 {
     public class DbContext : DataContext
     {
-        public DbContext(ISqlRemoteClient client)
-            : base(new SqlRemoteAgent(client))
+        public DbContext(ISqlRemoteBroker broker)
+            : base(new SqlRemoteAgent(broker))
         {
         }
 

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Text.Json;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Sys.Data.SqlRemote
 {
@@ -13,50 +13,27 @@ namespace Sys.Data.SqlRemote
     {
         public static T Deserialize<T>(string json)
         {
-            return JsonSerializer.Deserialize<T>(json);
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new StringEnumConverter());
+
+            return JsonConvert.DeserializeObject<T>(json, settings);
         }
 
-        public static bool TryDeserialize<T>(string json, out T result)
+        public static T Deserialize<T>(string json, T definition)
         {
-            try
+            return JsonConvert.DeserializeAnonymousType(json, definition);
+        }
+
+
+        public static string Serialize(object obj, bool indented = false)
+        {
+            var settings = new JsonSerializerSettings
             {
-                result = JsonSerializer.Deserialize<T>(json);
-                return true;
-            }
-            catch (Exception)
-            {
-                result = default(T);
-                return false;
-            }
-        }
-
-        public static T Deserialize<T>(string json, JsonSerializerOptions converter)
-        {
-            return JsonSerializer.Deserialize<T>(json, converter);
-        }
-
-        public static string Serialize(object obj)
-        {
-            return JsonSerializer.Serialize(obj);
-        }
-
-        public static string Serialize(object obj, bool indented)
-        {
-            return JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
-        }
-
-        public static string Serialize(object obj, JsonSerializerOptions options)
-        {
-            return JsonSerializer.Serialize(obj, options);
-        }
-
-        public static string SerializeAndFormat(object obj)
-        {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
+                Formatting = indented ? Formatting.Indented : Formatting.None,
             };
-            return JsonSerializer.Serialize(obj, options);
+
+            settings.Converters.Add(new StringEnumConverter());
+            return JsonConvert.SerializeObject(obj, settings);
         }
 
     }

@@ -2,7 +2,7 @@
 
 namespace Sys.Data.SqlRemote
 {
-    public interface ISqlRemoteClient
+    public interface ISqlRemoteBroker
     {
         DbAgentStyle Style { get; }
         Task<SqlRemoteResult> RequesteAsync(SqlRemoteRequest request);

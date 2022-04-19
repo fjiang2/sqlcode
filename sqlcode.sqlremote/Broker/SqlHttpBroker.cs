@@ -7,18 +7,18 @@ using System.Net.Http.Headers;
 
 namespace Sys.Data.SqlRemote
 {
-    public class SqlHttpClient : ISqlRemoteClient
+    public class SqlHttpBroker : ISqlRemoteBroker
     {
         private const string mediaType = "application/json";
         private readonly HttpClient httpClient;
         private readonly string requestUri;
 
-        public SqlHttpClient(string requestUri)
+        public SqlHttpBroker(string requestUri)
             : this(new HttpClient(), requestUri)
         {
         }
 
-        public SqlHttpClient(HttpClient client, string requestUri)
+        public SqlHttpBroker(HttpClient client, string requestUri)
         {
             this.httpClient = client;
             this.requestUri = requestUri;
@@ -31,7 +31,7 @@ namespace Sys.Data.SqlRemote
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType));
 
-            string body = Json.Serialize(request);
+            string body = Json.Serialize(request, indented: true);
             var content = new StringContent(body, Encoding.UTF8, mediaType);
             using (HttpResponseMessage response = await httpClient.PostAsync(requestUri, content))
             {

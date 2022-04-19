@@ -15,16 +15,17 @@ namespace Sys.Data.SqlRemote
         public CommandType CommandType { get; set; }
 
         [DataMember(Name = "args", EmitDefaultValue = false)]
-        public List<SqlRemoteParameter> Parameters { get; } 
+        public IList<SqlRemoteParameter> Parameters { get; set; } 
         
         [DataMember(Name = "func", EmitDefaultValue = false)]
         public string Function { get; set; }
 
-        [DataMember(Name = "startrow", EmitDefaultValue = false)]
+        [DataMember(Name = "start", EmitDefaultValue = false)]
         public int StartRecord { get; set; }
 
-        [DataMember(Name = "maxrow", EmitDefaultValue = false)]
+        [DataMember(Name = "maxrows", EmitDefaultValue = false)]
         public int MaxRecords { get; set; }
+
         public SqlRemoteRequest()
         {
 

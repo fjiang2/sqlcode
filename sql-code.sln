@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode.sqlremote", "sqlcod
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agents", "agents", "{6B07B9B1-7B2F-4FCC-9DEB-8C9AEE08DB0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlwebServer", "sqlcode.sqlweb\SqlwebServer.csproj", "{FC465A35-09F2-497B-8A3F-E4EED8B1580D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlwebServer", "SqlwebServer\SqlwebServer.csproj", "{FC465A35-09F2-497B-8A3F-E4EED8B1580D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3C5187F6-FEBA-40C0-AA5A-D64CA87F008D}"
 EndProject
