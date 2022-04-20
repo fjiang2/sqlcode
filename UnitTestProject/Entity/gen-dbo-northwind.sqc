@@ -7,7 +7,7 @@ let ns = "UnitTestProject.Northwind";
 
 cd ..\Northwind
 
-
+rem export * /ns:{ns}.dpo /dpo /out:{output}\dpo /method:GetField /using:Sys.Data;Sys.Data.Entity
 export * /ns:{ns}.dc1 /dc1 /out:{output}\dc1 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc /data-column-property
 export * /ns:{ns}.dc2 /dc2 /out:{output}\dc2 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc /data-column-property
 

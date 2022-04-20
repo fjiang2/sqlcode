@@ -106,13 +106,13 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this CustomerCustomerDemo a, CustomerCustomerDemo b)
+		public static bool Compare(this CustomerCustomerDemo a, CustomerCustomerDemo b)
 		{
 			return a.CustomerID == b.CustomerID
 			&& a.CustomerTypeID == b.CustomerTypeID;
 		}
 		
-		public static void CopyTo(this CustomerCustomerDemo from, CustomerCustomerDemo to)
+		public static void Copy(this CustomerCustomerDemo from, CustomerCustomerDemo to)
 		{
 			to.CustomerID = from.CustomerID;
 			to.CustomerTypeID = from.CustomerTypeID;

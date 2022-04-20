@@ -110,7 +110,7 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this Categories a, Categories b)
+		public static bool Compare(this Categories a, Categories b)
 		{
 			return a.CategoryID == b.CategoryID
 			&& a.CategoryName == b.CategoryName
@@ -118,7 +118,7 @@ namespace UnitTestProject.Northwind.dc1
 			&& a.Picture == b.Picture;
 		}
 		
-		public static void CopyTo(this Categories from, Categories to)
+		public static void Copy(this Categories from, Categories to)
 		{
 			to.CategoryID = from.CategoryID;
 			to.CategoryName = from.CategoryName;

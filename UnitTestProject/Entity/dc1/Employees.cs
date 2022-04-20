@@ -209,7 +209,7 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this Employees a, Employees b)
+		public static bool Compare(this Employees a, Employees b)
 		{
 			return a.EmployeeID == b.EmployeeID
 			&& a.LastName == b.LastName
@@ -231,7 +231,7 @@ namespace UnitTestProject.Northwind.dc1
 			&& a.PhotoPath == b.PhotoPath;
 		}
 		
-		public static void CopyTo(this Employees from, Employees to)
+		public static void Copy(this Employees from, Employees to)
 		{
 			to.EmployeeID = from.EmployeeID;
 			to.LastName = from.LastName;

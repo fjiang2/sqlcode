@@ -158,7 +158,7 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this Suppliers a, Suppliers b)
+		public static bool Compare(this Suppliers a, Suppliers b)
 		{
 			return a.SupplierID == b.SupplierID
 			&& a.CompanyName == b.CompanyName
@@ -174,7 +174,7 @@ namespace UnitTestProject.Northwind.dc1
 			&& a.HomePage == b.HomePage;
 		}
 		
-		public static void CopyTo(this Suppliers from, Suppliers to)
+		public static void Copy(this Suppliers from, Suppliers to)
 		{
 			to.SupplierID = from.SupplierID;
 			to.CompanyName = from.CompanyName;

@@ -194,7 +194,7 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this Orders a, Orders b)
+		public static bool Compare(this Orders a, Orders b)
 		{
 			return a.OrderID == b.OrderID
 			&& a.CustomerID == b.CustomerID
@@ -212,7 +212,7 @@ namespace UnitTestProject.Northwind.dc1
 			&& a.ShipCountry == b.ShipCountry;
 		}
 		
-		public static void CopyTo(this Orders from, Orders to)
+		public static void Copy(this Orders from, Orders to)
 		{
 			to.OrderID = from.OrderID;
 			to.CustomerID = from.CustomerID;

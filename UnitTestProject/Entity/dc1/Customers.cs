@@ -158,7 +158,7 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this Customers a, Customers b)
+		public static bool Compare(this Customers a, Customers b)
 		{
 			return a.CustomerID == b.CustomerID
 			&& a.CompanyName == b.CompanyName
@@ -173,7 +173,7 @@ namespace UnitTestProject.Northwind.dc1
 			&& a.Fax == b.Fax;
 		}
 		
-		public static void CopyTo(this Customers from, Customers to)
+		public static void Copy(this Customers from, Customers to)
 		{
 			to.CustomerID = from.CustomerID;
 			to.CompanyName = from.CompanyName;

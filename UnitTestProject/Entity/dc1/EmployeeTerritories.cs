@@ -106,13 +106,13 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this EmployeeTerritories a, EmployeeTerritories b)
+		public static bool Compare(this EmployeeTerritories a, EmployeeTerritories b)
 		{
 			return a.EmployeeID == b.EmployeeID
 			&& a.TerritoryID == b.TerritoryID;
 		}
 		
-		public static void CopyTo(this EmployeeTerritories from, EmployeeTerritories to)
+		public static void Copy(this EmployeeTerritories from, EmployeeTerritories to)
 		{
 			to.EmployeeID = from.EmployeeID;
 			to.TerritoryID = from.TerritoryID;

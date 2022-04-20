@@ -97,13 +97,13 @@ namespace UnitTestProject.Northwind.dc1
 			};
 		}
 		
-		public static bool CompareTo(this Region a, Region b)
+		public static bool Compare(this Region a, Region b)
 		{
 			return a.RegionID == b.RegionID
 			&& a.RegionDescription == b.RegionDescription;
 		}
 		
-		public static void CopyTo(this Region from, Region to)
+		public static void Copy(this Region from, Region to)
 		{
 			to.RegionID = from.RegionID;
 			to.RegionDescription = from.RegionDescription;
