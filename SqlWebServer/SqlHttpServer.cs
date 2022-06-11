@@ -52,15 +52,20 @@ namespace sqlcode.sqlweb
                         Stream input = request.InputStream;
                         string requestString = StreamToString(request.InputStream);
 
+                        context.Response.SendChunked = true;
+
                         HttpListenerResponse response = context.Response;
                         string responseString = Request(requestString);
                         byte[] buffer = Encoding.UTF8.GetBytes(responseString);
                         response.ContentLength64 = buffer.Length;
                         response.OutputStream.Write(buffer, 0, buffer.Length);
+
+                        context.Response.StatusCode = (int)HttpStatusCode.OK;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Console.Error.WriteLine(ex.Message);
+                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                     }
                     finally
                     {

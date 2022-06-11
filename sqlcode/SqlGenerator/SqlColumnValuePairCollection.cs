@@ -11,13 +11,24 @@ namespace Sys.Data
     /// </summary>
     public class SqlColumnValuePairCollection : IEnumerable<SqlColumnValuePair>
     {
-        protected List<SqlColumnValuePair> columns = new List<SqlColumnValuePair>();
+        protected readonly List<SqlColumnValuePair> columns = new List<SqlColumnValuePair>();
+        private readonly SqlColumnJourney journey;
 
         public SqlColumnValuePairCollection()
         {
+            this.journey = new SqlColumnJourney();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<SqlColumnValuePair> GetEnumerator() => columns.GetEnumerator();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()=> ((IEnumerable)columns).GetEnumerator();
 
         /// <summary>
@@ -26,6 +37,24 @@ namespace Sys.Data
         public void Clear()
         {
             columns.Clear();
+            journey.Clear();
+        }
+
+        public List<SqlValueChange> Journey => journey.Changes;
+
+        /// <summary>
+        /// Add/modify/delete columns/values from another SqlGenerator
+        /// </summary>
+        /// <param name="pairs"></param>
+        /// <returns></returns>
+        public SqlColumnValuePairCollection AddRange(IEnumerable<SqlColumnValuePair> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                Add(pair.ColumnName, pair.Value.Value);
+            }
+
+            return this;
         }
 
         /// <summary>
@@ -140,13 +169,25 @@ namespace Sys.Data
             SqlColumnValuePair found = columns.Find(c => c.ColumnName == name);
             if (found != null)
             {
-                found.Value = new SqlValue(value);
+                var oldValue = found.Value;
+                var newValue = new SqlValue(value);
+                if (oldValue.Equals(newValue))
+                {
+                    journey.Retain(found.Column, oldValue, newValue);
+                }
+                else
+                {
+                    journey.Modify(found.Column, oldValue, newValue);
+                    found.Value = newValue;
+                }
+
                 return found;
             }
             else
             {
                 var pair = new SqlColumnValuePair(name, value);
                 columns.Add(pair);
+                journey.Add(pair.Column, pair.Value);
                 return pair;
             }
         }
@@ -167,7 +208,10 @@ namespace Sys.Data
         {
             SqlColumnValuePair found = columns.Find(c => c.ColumnName == column);
             if (found != null)
+            {
+                journey.Delete(found.Column, found.Value);
                 return columns.Remove(found);
+            }
 
             return false;
         }

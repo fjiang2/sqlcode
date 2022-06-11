@@ -38,7 +38,25 @@ namespace Sys.Data
 
 		public bool IsNull => value == null || value == DBNull.Value;
 
-		public string ToScript(DbAgentStyle style)
+        public override bool Equals(object obj)
+        {
+			SqlValue sqlValue = obj as SqlValue;
+			
+			if (sqlValue == null) 
+				return false;
+
+			if (this.IsNull && sqlValue.IsNull)
+				return true;
+
+			return this.value.Equals(sqlValue.value);
+        }
+
+        public override int GetHashCode()
+        {
+            return value.GetHashCode();
+        }
+
+        public string ToScript(DbAgentStyle style)
 		{
 			return Facade.ToScript(this, style);
 		}
