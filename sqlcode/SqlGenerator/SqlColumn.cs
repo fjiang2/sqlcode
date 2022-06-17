@@ -58,6 +58,11 @@ namespace Sys.Data
             }
         }
 
+        public string ToScript(DbAgentStyle style)
+        {
+            return Facade.ToScript(this, style);
+        }
+
         public override string ToString()
         {
             return fieldName;

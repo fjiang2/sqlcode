@@ -24,5 +24,20 @@ namespace Sys.Data
 
 			throw new NotImplementedException($"cannot find agent {style}");
 		}
+
+		public static string ToScript(this SqlColumn column, DbAgentStyle style)
+        {
+			string name = column.Name;
+			switch (style)
+			{
+				case DbAgentStyle.SqlServer:
+				case DbAgentStyle.SQLite:
+				case DbAgentStyle.SqlCe:
+					return new NameOfScript(name).FormalName();
+
+			}
+
+			throw new NotImplementedException($"cannot find agent {style}");
+		}
 	}
 }
