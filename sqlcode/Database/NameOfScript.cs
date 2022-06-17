@@ -13,12 +13,31 @@ namespace Sys.Data
             this.name = name;
         }
 
-        public virtual string FormalName()
+        public virtual string LeftBracket => "[";
+        public virtual string RightBracket => "]";
+
+        public virtual string DefaultSchemaName => "dbo";
+
+        public string ColumnName()
         {
-            if (name.StartsWith("[") && name.EndsWith("]"))
+            if (name.StartsWith(LeftBracket) && name.EndsWith(RightBracket))
                 return name;
 
-            return $"[{name}]";
+            return $"{LeftBracket}{name}{RightBracket}";
         }
+
+        public virtual string TableName()
+        {
+            if (name.StartsWith(LeftBracket) && name.EndsWith(RightBracket))
+                return name;
+
+            return $"{LeftBracket}{name}{RightBracket}";
+        }
+
+        public virtual string ParameterName()
+        {
+            return "@" + name;
+        }
+
     }
 }

@@ -89,7 +89,7 @@ namespace Sys.Data
 		public string SelectRows(IEnumerable<string> columns)
 		{
 			//typeof(string) is ignored here
-			var L1 = string.Join(",", columns.Select(c => new SqlColumn(c, typeof(string)).ToScript(Option.Style)));
+			var L1 = string.Join(",", columns.Select(column => column.ToColumnName(Option.Style)));
 			if (L1 == string.Empty)
 				L1 = "*";
 
@@ -177,7 +177,7 @@ namespace Sys.Data
 			if (pair != null)
 			{
 				var parameterName = new Text.ParameterName(pair.Column.Name);
-				string clause = SqlTemplate.SetIdentityOutParameter(parameterName.ToString());
+				string clause = SqlTemplate.SetIdentityOutParameter(parameterName.ToScript(Option.Style));
 				return $"{insert}; {clause}";
 			}
 

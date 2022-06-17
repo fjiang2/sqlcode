@@ -187,17 +187,6 @@ namespace Sys.Data
             return pairs;
         }
 
-        public string Join(Func<SqlColumnValuePair, string> expr, string separator)
-        {
-            var L = pairs.Select(pair => expr(pair));
-            return string.Join(separator, L);
-        }
-
-        public string Join(string separator)
-        {
-            return Join(pair => pair.ToScript(DbAgentOption.DefaultStyle), separator);
-        }
-
         internal IEnumerable<Text.BinaryExpression> Reduce(string method)
 		{
             return ToList().Select(pair => pair.Reduce(method));

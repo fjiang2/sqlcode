@@ -60,7 +60,7 @@ namespace Sys.Data
 
         public string ToScript(DbAgentStyle style)
         {
-            return Facade.ToScript(this, style);
+            return fieldName.ToColumnName(style);
         }
 
         public override string ToString()

@@ -11,7 +11,7 @@ namespace Sys.Data
 		private readonly string formalName;
 		private SqlTemplateFormat format = SqlTemplateFormat.SingleLine;
 		private string NewLine = string.Empty;
-		public DbAgentStyle Style { get; set; } = DbAgentStyle.SqlServer;
+		public DbAgentStyle Style { get; set; } = DbAgentOption.DefaultStyle;
 
 		public SqlTemplate(string formalName)
 		{

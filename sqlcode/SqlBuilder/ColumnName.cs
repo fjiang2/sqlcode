@@ -35,7 +35,7 @@ namespace Sys.Data.Text
             if (name == "*" || string.IsNullOrEmpty(name))
                 text.Append("*");
             else
-                text.Append($"[{name}]");
+                text.Append(name.ToColumnName(style));
 
             return text.ToString();
         }
