@@ -6,6 +6,7 @@ namespace Sys.Data
 {
     public class NameOfScript
     {
+        public const string empty = "";
         private readonly string name;
 
         public NameOfScript(string name)
@@ -13,30 +14,81 @@ namespace Sys.Data
             this.name = name;
         }
 
-        public virtual string LeftBracket => "[";
-        public virtual string RightBracket => "]";
+        protected virtual string LeftBracket => "[";
+        protected virtual string RightBracket => "]";
 
         public virtual string DefaultSchemaName => "dbo";
 
-        public string ColumnName()
+        public bool IsWrapped => name.StartsWith(LeftBracket) && name.EndsWith(RightBracket);
+
+
+        private static bool Validate(string name)
         {
-            if (name.StartsWith(LeftBracket) && name.EndsWith(RightBracket))
+
+            int i = 0;
+            char ch = name[i++];
+
+            if (!char.IsLetter(ch) && ch != '_')
+                return false;
+
+            while (i < name.Length)
+            {
+                ch = name[i++];
+
+                if (ch != '_' && !char.IsLetterOrDigit(ch))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private string PeelName(string name)
+        {
+            int a = LeftBracket.Length;
+            int b = RightBracket.Length;
+
+            if (IsWrapped)
+                return name.Substring(a, name.Length - a - b);
+            else
+                return name;
+        }
+
+        public string ShortName()
+        {
+            string _name = PeelName(this.name);
+            if (Validate(_name))
+                return _name;
+            else
+                return FormalName();
+        }
+
+        public string FormalName()
+        {
+            if (IsWrapped)
                 return name;
 
             return $"{LeftBracket}{name}{RightBracket}";
         }
 
-        public virtual string TableName()
+        public string SchemaName()
         {
-            if (name.StartsWith(LeftBracket) && name.EndsWith(RightBracket))
-                return name;
+            if (name == DefaultSchemaName)
+                return empty;
 
-            return $"{LeftBracket}{name}{RightBracket}";
+            if (name != empty)
+                return ShortName();
+
+            return empty;
         }
 
         public virtual string ParameterName()
         {
             return "@" + name;
+        }
+
+        public override string ToString()
+        {
+            return name;
         }
 
     }

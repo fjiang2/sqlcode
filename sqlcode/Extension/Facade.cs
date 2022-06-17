@@ -45,13 +45,29 @@ namespace Sys.Data
         public static string ToColumnName(this string name, DbAgentStyle style)
         {
             var naming = style.CreateNameOfScript(name);
-            return naming.ColumnName();
+            return naming.FormalName();
         }
 
         public static string ToTableName(this string name, DbAgentStyle style)
         {
+            //If it is a single letter
+            if (name.Length == 1 && char.IsLetter(name[0]))
+                return name;
+
             var naming = style.CreateNameOfScript(name);
-            return naming.TableName();
+            return naming.FormalName();
+        }
+
+        public static string ToSchemaName(this string name, DbAgentStyle style)
+        {
+            var naming = style.CreateNameOfScript(name);
+            return naming.SchemaName();
+        }
+
+        public static string ToDatabaseName(this string name, DbAgentStyle style)
+        {
+            var naming = style.CreateNameOfScript(name);
+            return naming.FormalName();
         }
 
         public static string ToParameterName(this string name, DbAgentStyle style)

@@ -24,6 +24,6 @@ namespace Sys.Data
         ///     dbo.[Categories], 
         ///     [Northwind].[dbo].[Categories]
         /// </summary>
-        string FullName { get; }
+        string ToScript(DbAgentStyle style);
     }
 }

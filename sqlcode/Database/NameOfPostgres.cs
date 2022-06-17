@@ -11,8 +11,9 @@ namespace Sys.Data
         {
         }
 
-        public override string LeftBracket => "\"";
-        public override string RightBracket => "\"";
+        protected override string LeftBracket => "\"";
+        protected override string RightBracket => "\"";
+
         public override string DefaultSchemaName => "public";
     }
 }
