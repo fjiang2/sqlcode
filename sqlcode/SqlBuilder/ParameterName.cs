@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    class ParameterName
+    class ParameterName : IQueryScript
     {
         private readonly string name;
 

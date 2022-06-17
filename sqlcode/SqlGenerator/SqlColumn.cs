@@ -22,7 +22,7 @@ using System.Reflection;
 
 namespace Sys.Data
 {
-    class SqlColumn
+    class SqlColumn : IQueryScript
     {
         private readonly string fieldName;
         private bool saved = true;

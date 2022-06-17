@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sys.Data
 {
-    public class NameOfPostgres : NameOfScript
+    class NameOfPostgres : NameOfScript
     {
         public NameOfPostgres(string name)
             :base(name)

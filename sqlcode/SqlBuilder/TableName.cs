@@ -18,7 +18,7 @@ using System;
 
 namespace Sys.Data.Text
 {
-    class TableName : ITableName
+    class TableName : IQueryScript, ITableName
     {
         public const string empty = "";
 

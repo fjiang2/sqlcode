@@ -2,7 +2,7 @@
 
 namespace Sys.Data
 {
-	public class SqlColumnValuePair
+	public class SqlColumnValuePair : IQueryScript
 	{
 		internal SqlColumn Column { get; }
 		public SqlValue Value { get; set; }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sys.Data
 {
-    public class NameOfScript
+    class NameOfScript
     {
         public const string empty = "";
         private readonly string name;

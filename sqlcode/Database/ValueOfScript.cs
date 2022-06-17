@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Sys.Data
 {
-	public class ValueOfScript
+	class ValueOfScript
 	{
 		protected const string DELIMETER = "'";
 		protected const string NULL = "NULL";

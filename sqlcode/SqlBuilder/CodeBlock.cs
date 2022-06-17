@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-	class CodeBlock
+	class CodeBlock : IQueryScript
 	{
 		private readonly List<object> script = new List<object>();
 		/// <summary>

@@ -20,6 +20,8 @@ namespace Sys.Data
                 case DbAgentStyle.SqlCe:
                     return new ValueOfSqlCe(obj).ToScript();
 
+                case DbAgentStyle.Postgres:
+                    return new ValueOfPostgre(obj).ToScript();
             }
 
             throw new NotImplementedException($"cannot find agent {style}");
