@@ -39,7 +39,7 @@ namespace Sys.Data
 		protected override string ToScript(byte[] data)
 		{
 			return new StringBuilder()
-			.Append("x")
+			.Append("\\x")
 			.Append(DELIMETER)
 			.Append(BitConverter.ToString(data).Replace("-", ""))
 			.Append(DELIMETER)

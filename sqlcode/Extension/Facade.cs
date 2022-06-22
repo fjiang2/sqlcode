@@ -32,6 +32,8 @@ namespace Sys.Data
             switch (style)
             {
                 case DbAgentStyle.SqlServer:
+                    return new NameOfSqlServer(name);
+
                 case DbAgentStyle.SQLite:
                 case DbAgentStyle.SqlCe:
                     return new NameOfScript(name);
