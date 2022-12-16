@@ -14,6 +14,9 @@ using Sys.Data.SqlRemote;
 
 namespace UnitTestProject
 {
+    /// <summary>
+    /// SqlWebServer must run before run the test cases of this class
+    /// </summary>
     [TestClass]
     public class UnitTest_SqlRemoteHttp
 
