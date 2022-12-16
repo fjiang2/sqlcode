@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-	class CodeBlock
+	class CodeBlock : IQueryScript
 	{
 		private readonly List<object> script = new List<object>();
 		/// <summary>
@@ -66,6 +66,12 @@ namespace Sys.Data.Text
 			return this;
 		}
 
+		public CodeBlock Append(ITableName tableName)
+		{
+			script.Add(tableName);
+			return this;
+		}
+
 		public CodeBlock AppendSpace(string text)
 		{
 			script.Add(text + " ");
@@ -96,6 +102,10 @@ namespace Sys.Data.Text
 				else if (item is Statement statement)
 				{
 					builder.Append(statement.ToScript(style));
+				}
+				else if (item is ITableName tableName)
+                {
+					builder.Append(tableName.ToScript(style));
 				}
 				else if (item is string str)
 				{

@@ -2,7 +2,7 @@
 
 namespace Sys.Data
 {
-	public class SqlColumnValuePair
+	public class SqlColumnValuePair : IQueryScript
 	{
 		internal SqlColumn Column { get; }
 		public SqlValue Value { get; set; }
@@ -16,24 +16,14 @@ namespace Sys.Data
 
 		public string ColumnName => Column.Name;
 
-		internal string ColumnFormalName => FormalName(ColumnName);
-
 		public string ToScript(DbAgentStyle style)
 		{
-			return string.Format("[{0}] = {1}", ColumnName, Value.ToScript(style));
+			return string.Format("{0} = {1}", Column.ToScript(style), Value.ToScript(style));
 		}
 
 		public override string ToString()
 		{
-			return string.Format("[{0}] = {1}", ColumnName, Value);
-		}
-
-		internal static string FormalName(string name)
-		{
-			if (name.StartsWith("[") && name.EndsWith("]"))
-				return name;
-
-			return $"[{name}]";
+			return ToScript(DbAgentOption.DefaultStyle);
 		}
 
 		internal BinaryExpression Reduce(string method)

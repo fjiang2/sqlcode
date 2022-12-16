@@ -18,115 +18,99 @@ using System;
 
 namespace Sys.Data.Text
 {
-	class TableName : ITableName
-	{
-		public const string dbo = "dbo";
-		public const string empty = "";
+    class TableName : IQueryScript, ITableName
+    {
+        public const string empty = "";
 
-		private readonly string databaseName;
-		private readonly string schemaName = dbo;
-		private readonly string tableName;
+        private readonly string databaseName;
+        private readonly string schemaName;
+        private readonly string tableName;
 
-		public TableName(string fullTableName)
-		{
-			//tableName may have format like [db.dbo.tableName], [db..tableName], or [tableName]
-			string[] t = fullTableName.Split(new char[] { '.' });
+        public TableName(string fullTableName)
+        {
+            //tableName may have format like [db.dbo.tableName], [db..tableName], or [tableName]
+            string[] t = fullTableName.Split(new char[] { '.' });
 
-			this.databaseName = empty;
-			this.tableName = empty;
-			if (t.Length > 2)
-			{
-				this.databaseName = t[0];
-				this.schemaName = t[1];
-				this.tableName = t[2];
-			}
-			else if (t.Length > 1)
-			{
-				this.schemaName = t[0];
-				this.tableName = t[1];
-			}
-			else
-				this.tableName = fullTableName;
+            this.databaseName = empty;
+            this.schemaName = empty;
+            this.tableName = empty;
 
-			this.databaseName = databaseName.Replace("[", "").Replace("]", "");
-			this.schemaName = this.schemaName.Replace("[", "").Replace("]", "");
-			this.tableName = this.tableName.Replace("[", "").Replace("]", "");
-		}
+            if (t.Length > 2)
+            {
+                this.databaseName = t[0];
+                this.schemaName = t[1];
+                this.tableName = t[2];
+            }
+            else if (t.Length > 1)
+            {
+                this.schemaName = t[0];
+                this.tableName = t[1];
+            }
+            else
+                this.tableName = fullTableName;
+        }
 
-		public TableName(string databaseName, string schemaName, string tableName)
-		{
-			this.databaseName = databaseName ?? string.Empty;
-			this.schemaName = schemaName ?? string.Empty;
-			this.tableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
-		}
+        public TableName(string databaseName, string schemaName, string tableName)
+        {
+            this.databaseName = databaseName ?? string.Empty;
+            this.schemaName = schemaName ?? string.Empty;
+            this.tableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
+        }
 
-		public TableName(string schemaName, string tableName)
-			: this(string.Empty, schemaName, tableName)
-		{
-		}
+        public TableName(string schemaName, string tableName)
+            : this(string.Empty, schemaName, tableName)
+        {
+        }
 
-		public string SchemaName => this.schemaName;
+        public string SchemaName => this.schemaName;
 
-		public string DatabaseName => this.databaseName;
+        public string DatabaseName => this.databaseName;
 
-		public string FormalName
-		{
-			get
-			{
-				if (this.schemaName != dbo && this.schemaName != empty)
-					return string.Format("[{0}].[{1}]", this.schemaName, this.tableName);
-				else
-					return string.Format("[{0}]", this.tableName);
-			}
-		}
+        public string Name => this.tableName;
 
-		public string ShortName
-		{
-			get
-			{
-				if (this.schemaName != dbo && this.schemaName != empty)
-				{
-					return string.Format("{0}.{1}", this.schemaName, this.tableName);
-				}
-				else
-				{
-					return this.tableName;
-				}
-			}
-		}
+        public string FormalName(DbAgentStyle style)
+        {
+            string _tableName = tableName.ToTableName(style);
+            string _schemaName = schemaName.ToSchemaName(style);
 
-		public string FullName
-		{
-			get
-			{
-				string _schema = this.schemaName;
-				if (_schema != dbo && this.schemaName != empty)
-				{
-					_schema = $"[{schemaName}]";
-				}
+            if (_schemaName != empty)
+                return $"{_schemaName}.{_tableName}";
+            else
+                return _tableName;
+        }
 
-				if (this.databaseName != empty)
-					return $"[{databaseName}].{_schema}.[{tableName}]";
-				else if (schemaName != dbo && schemaName != empty)
-					return $"{schemaName}.[{tableName}]";
-				else
-					return $"[{this.tableName}]";
-			}
-		}
+        public string ToScript(DbAgentStyle style)
+        {
+            string _tableName = tableName.ToTableName(style);
+            string _schemaName = schemaName.ToSchemaName(style);
 
 
+            if (this.databaseName != empty)
+            {
+                string _databaseName = databaseName.ToDatabaseName(style);
+                return $"{_databaseName}.{_schemaName}.{_tableName}";
+            }
+            else if (_schemaName != empty)
+            {
+                return $"{_schemaName}.{tableName}";
+            }
+            else
+            {
+                return _tableName;
+            }
+        }
 
 
-		public static implicit operator TableName(string tableName)
-		{
-			return new TableName(tableName);
-		}
+        public static implicit operator TableName(string tableName)
+        {
+            return new TableName(tableName);
+        }
 
 
-		public override string ToString()
-		{
-			return FullName;
-		}
+        public override string ToString()
+        {
+            return ToScript(DbAgentOption.DefaultStyle);
+        }
 
-	}
+    }
 }

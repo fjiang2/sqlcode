@@ -3,32 +3,37 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-    class ParameterName
-	{
-		private readonly string name;
+    class ParameterName : IQueryScript
+    {
+        private readonly string name;
 
-		public ParameterName(string name)
-		{
-			this.name = name;
-		}
+        public ParameterName(string name)
+        {
+            this.name = name;
+        }
 
-		public override int GetHashCode()
-		{
-			return name.GetHashCode();
-		}
+        public override int GetHashCode()
+        {
+            return name.GetHashCode();
+        }
 
-		public override bool Equals(object obj)
-		{
-			var x = obj as ParameterName;
-			if (x == null)
-				return false;
+        public override bool Equals(object obj)
+        {
+            var x = obj as ParameterName;
+            if (x == null)
+                return false;
 
-			return this.name == x.name;
-		}
+            return this.name == x.name;
+        }
 
-		public override string ToString()
-		{
-			return "@" + name;
-		}
-	}
+        public string ToScript(DbAgentStyle style)
+        {
+            return name.ToParameterName(style);
+        }
+
+        public override string ToString()
+        {
+            return ToScript(DbAgentOption.DefaultStyle);
+        }
+    }
 }

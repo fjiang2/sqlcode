@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Sys.Data
 {
-	public class ValueOfSQLite : ValueOfScript
+	class ValueOfSQLite : ValueOfScript
 	{
 		public ValueOfSQLite(object value)
 			: base(value)

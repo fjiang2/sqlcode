@@ -16,14 +16,13 @@
 //--------------------------------------------------------------------------------------------------//
 namespace Sys.Data
 {
-    public interface ITableName
+    public interface ITableName : IQueryScript
     {
-        /// <summary>
-        /// Table full name: 
-        ///     [Categories], 
-        ///     dbo.[Categories], 
-        ///     [Northwind].[dbo].[Categories]
-        /// </summary>
-        string FullName { get; }
+        string DatabaseName { get; }
+
+        string SchemaName { get; }
+
+        string Name { get; }
+
     }
 }

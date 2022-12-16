@@ -2,7 +2,7 @@
 
 let GitHub = typeof(System.Environment).GetEnvironmentVariable("GitHubHome");
 let SRC = GitHub + "\\sqlcode";
-let output = SRC + "\\UnitTestProject\\Entity";
+let output = SRC + "\\Northwind\\Entity";
 let ns = "UnitTestProject.Northwind";
 
 cd ..\Northwind

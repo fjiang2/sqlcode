@@ -24,7 +24,7 @@ namespace Sys.Data.SqlRemote
             this.requestUri = requestUri;
         }
 
-        public DbAgentStyle Style { get; set; } = DbAgentStyle.SqlServer;
+        public DbAgentStyle Style { get; set; } = DbAgentOption.DefaultStyle;
 
         public async Task<SqlRemoteResult> RequesteAsync(SqlRemoteRequest request)
         {
