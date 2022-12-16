@@ -27,6 +27,7 @@
 		<ProjectReference Include="..\sqlcode.sqlce\sqlcode.sqlce.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+		<ProjectReference Include="..\Northwind\Northwind.csproj" />
 		<ProjectReference Include="..\sqlcode.sqlclient\sqlcode.sqlclient.csproj" />
 		<ProjectReference Include="..\sqlcode.sqlite\sqlcode.sqlite.csproj" />
 		<ProjectReference Include="..\sqlcode.sqlremote\sqlcode.sqlremote.csproj" />
