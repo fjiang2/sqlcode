@@ -32,11 +32,11 @@
     <dependencies>
       <group targetFramework=".NETFramework4.8">
         <dependency id="sqlcode" version="1.0.12" />
-        <dependency id="System.Data.SQLite" version="1.0.115" />
+        <dependency id="System.Data.SQLite" version="1.0.117" />
       </group>
       <group targetFramework=".NET5.0">
         <dependency id="sqlcode" version="1.0.12" />
-        <dependency id="System.Data.SQLite" version="1.0.115" />
+        <dependency id="System.Data.SQLite" version="1.0.117" />
       </group>
     </dependencies>
   </metadata>

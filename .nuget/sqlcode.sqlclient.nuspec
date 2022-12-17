@@ -35,7 +35,7 @@
       </group>
       <group targetFramework=".NET5.0">
         <dependency id="sqlcode" version="1.0.12" />
-        <dependency id="System.Data.SqlClient" version="4.8.3" />
+        <dependency id="System.Data.SqlClient" version="4.8.5" />
       </group>
     </dependencies>
   </metadata>
