@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 			Access SqlCe database
-		</description>
+	</description>
     <summary>SQL server compact interface</summary>
     <releaseNotes>
 		3/23/2022 v1.0.12

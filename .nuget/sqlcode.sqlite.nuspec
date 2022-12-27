@@ -34,7 +34,7 @@
         <dependency id="sqlcode" version="1.0.12" />
         <dependency id="System.Data.SQLite" version="1.0.117" />
       </group>
-      <group targetFramework=".NET5.0">
+      <group targetFramework=".NET6.0">
         <dependency id="sqlcode" version="1.0.12" />
         <dependency id="System.Data.SQLite" version="1.0.117" />
       </group>
@@ -42,6 +42,6 @@
   </metadata>
   <files>
     <file src="..\sqlcode.sqlite\bin\Release\net48\sqlcode.sqlite.dll" target="lib\net48\sqlcode.sqlite.dll" />
-    <file src="..\sqlcode.sqlite\bin\Release\net5.0\sqlcode.sqlite.dll" target="lib\net5.0\sqlcode.sqlite.dll" />
+    <file src="..\sqlcode.sqlite\bin\Release\net6.0\sqlcode.sqlite.dll" target="lib\net6.0\sqlcode.sqlite.dll" />
   </files>
 </package>

@@ -33,7 +33,7 @@
       <group targetFramework=".NETFramework4.8">
         <dependency id="sqlcode" version="1.0.12" />
       </group>
-      <group targetFramework=".NET5.0">
+      <group targetFramework=".NET6.0">
         <dependency id="sqlcode" version="1.0.12" />
         <dependency id="System.Data.SqlClient" version="4.8.5" />
       </group>
@@ -41,6 +41,6 @@
   </metadata>
   <files>
     <file src="..\sqlcode.sqlclient\bin\Release\net48\sqlcode.sqlclient.dll" target="lib\net48\sqlcode.sqlclient.dll" />
-    <file src="..\sqlcode.sqlclient\bin\Release\net5.0\sqlcode.sqlclient.dll" target="lib\net5.0\sqlcode.sqlclient.dll" />
+    <file src="..\sqlcode.sqlclient\bin\Release\net6.0\sqlcode.sqlclient.dll" target="lib\net6.0\sqlcode.sqlclient.dll" />
   </files>
 </package>
