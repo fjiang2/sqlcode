@@ -7,7 +7,9 @@ using System.Data.SqlClient;
 
 namespace Sys.Data.SqlClient
 {
-
+	/// <summary>
+	/// Access SQL Server
+	/// </summary>
 	public class SqlDbAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
