@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
-namespace sqlcode.dynamodb.entity
+namespace sqlcode.dynamodb.entities
 {
     public class EntityTable : List<EntityRow>
     {

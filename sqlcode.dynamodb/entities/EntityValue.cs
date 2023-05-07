@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using sqlcode.dynamodb.extensions;
 
-namespace sqlcode.dynamodb.entity
+namespace sqlcode.dynamodb.entities
 {
     public class EntityValue
     {

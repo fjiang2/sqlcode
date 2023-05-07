@@ -2,7 +2,7 @@
 using System.Linq;
 using sqlcode.dynamodb.extensions;
 
-namespace sqlcode.dynamodb.entity
+namespace sqlcode.dynamodb.entities
 {
     public class EntityRow : Dictionary<string, EntityValue>
     {

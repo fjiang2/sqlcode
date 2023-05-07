@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using sqlcode.dynamodb.entity;
+using sqlcode.dynamodb.entities;
 
 namespace sqlcode.dynamodb.clients
 {
@@ -24,7 +24,12 @@ namespace sqlcode.dynamodb.clients
 
         public DynamoDBClient()
         {
-            dynamoDBClient = new AmazonDynamoDBClient();
+            this.dynamoDBClient = new AmazonDynamoDBClient();
+        }
+
+        public DynamoDBClient(IAmazonDynamoDB dynamoDBClient)
+        {
+            this.dynamoDBClient = dynamoDBClient;
         }
 
         public async Task<bool> Exists(string tableName, TimeSpan timeout)

@@ -6,12 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
 using Amazon.DynamoDBv2;
-using sqlcode.dynamodb.entity;
+using sqlcode.dynamodb.entities;
 
 namespace sqlcode.dynamodb.clients
 {
 
-    public class DynamoTable
+    public class DynamoTableClient : IDynamoTableClient
     {
         const string NO_RANGE_KEY = "no-rangeKey";
         private readonly IAmazonDynamoDB dynamoDBClient;
@@ -20,14 +20,19 @@ namespace sqlcode.dynamodb.clients
         private readonly string hashKey;
         private readonly string rangeKey;
 
-        public DynamoTable(string tableName, string hashKey)
+        public DynamoTableClient(string tableName, string hashKey)
             : this(tableName, hashKey, NO_RANGE_KEY)
         {
         }
 
-        public DynamoTable(string tableName, string hashKey, string rangeKey)
+        public DynamoTableClient(string tableName, string hashKey, string rangeKey)
+            : this(new AmazonDynamoDBClient(), tableName, hashKey, rangeKey)
         {
-            dynamoDBClient = new AmazonDynamoDBClient();
+        }
+
+        public DynamoTableClient(IAmazonDynamoDB dynamoDBClient, string tableName, string hashKey, string rangeKey)
+        {
+            this.dynamoDBClient = dynamoDBClient;
             this.tableName = tableName;
             this.hashKey = hashKey;
             this.rangeKey = rangeKey;

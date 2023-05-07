@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime.Internal.Transform;
-using sqlcode.dynamodb.entity;
+using sqlcode.dynamodb.entities;
 
 namespace sqlcode.dynamodb.clients
 {
