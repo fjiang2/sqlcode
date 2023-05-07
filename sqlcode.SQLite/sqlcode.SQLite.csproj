@@ -6,7 +6,7 @@
     <Version>1.0.12</Version>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="System.Data.SQLite" Version="1.0.115" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
