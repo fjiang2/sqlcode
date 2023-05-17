@@ -12,9 +12,9 @@ namespace sqlcode.dynamodb.entities
         public DataTable ToDataTable()
         {
             var dt = new DataTable();
-            foreach (var row in this)
+            foreach (EntityRow row in this)
             {
-                foreach (var col in row)
+                foreach (KeyValuePair<string, EntityValue> col in row)
                 {
                     string columnName = col.Key;
                     if (!dt.Columns.Contains(columnName))
@@ -24,7 +24,7 @@ namespace sqlcode.dynamodb.entities
                 }
             }
 
-            foreach (var row in this)
+            foreach (EntityRow row in this)
             {
                 var newRow = dt.NewRow();
                 foreach (var col in row)

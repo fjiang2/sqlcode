@@ -1,22 +1,22 @@
-﻿using Sys.Data.Entity;
+﻿//using Sys.Data.Entity;
 
-namespace Sys.Data.DynamoDb
-{
-	public class DbQuery : DataQuery
-	{
-		public DbQuery(string connectionString)
-			: this(new SqlConnectionStringBuilder(connectionString))
-		{
-		}
+//namespace Sys.Data.DynamoDb
+//{
+//	public class DbQuery : DataQuery
+//	{
+//		public DbQuery(string connectionString)
+//			: this(new SqlConnectionStringBuilder(connectionString))
+//		{
+//		}
 
-		public DbQuery(SqlConnectionStringBuilder connectionString)
-			: base(new SqlDbAgent(connectionString))
-		{
-		}
+//		public DbQuery(SqlConnectionStringBuilder connectionString)
+//			: base(new SqlDbAgent(connectionString))
+//		{
+//		}
 
-		public DbQuery(DynamoDbAgent agent)
-			: base(agent)
-		{
-		}
-	}
-}
+//		public DbQuery(DynamoDbAgent agent)
+//			: base(agent)
+//		{
+//		}
+//	}
+//}
