@@ -6,7 +6,7 @@ namespace Sys.Data.DynamoDb
 {
     public class DynamoDbAgent : DbAgent
 	{
-		public DynamoDbAgent(DynamoDBConnectionStringBuilder connectionString)
+		public DynamoDbAgent(DynamoDbConnectionStringBuilder connectionString)
 			: base(connectionString)
 		{
 		}

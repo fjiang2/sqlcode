@@ -63,7 +63,7 @@ namespace Sys.Data.DynamoDb
             try
             {
                 connection.Open();
-                DynamoDBDataAdapter adapter = new DynamoDBDataAdapter(command);
+                DynamoDbDataAdapter adapter = new DynamoDbDataAdapter(command);
                 return adapter.Fill(dataSet);
             }
             finally
@@ -77,7 +77,7 @@ namespace Sys.Data.DynamoDb
             try
             {
                 connection.Open();
-                DynamoDBDataAdapter adapter = new DynamoDBDataAdapter(command);
+                DynamoDbDataAdapter adapter = new DynamoDbDataAdapter(command);
                 return adapter.Fill(startRecord, maxRecords, dataTable);
             }
             finally

@@ -8,11 +8,14 @@ using Amazon.Runtime;
 
 namespace sqlcode.dynamodb.Dynamo
 {
-    public class DynamoDBConnectionStringBuilder : DbConnectionStringBuilder
+    public class DynamoDbConnectionStringBuilder : DbConnectionStringBuilder
     {
-        public DynamoDBConnectionStringBuilder(AWSCredentials connectionString)
+        public DynamoDbConnectionStringBuilder(string connectionString)
         {
         }
 
+        public DynamoDbConnectionStringBuilder(AWSCredentials connectionString)
+        {
+        }
     }
 }

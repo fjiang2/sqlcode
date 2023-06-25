@@ -1,26 +1,27 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using Sys.Data.Entity;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using sqlcode.dynamodb.Dynamo;
+using Sys.Data.Entity;
 
-//namespace Sys.Data.DynamoDb
-//{
-//    public class DbContext : DataContext
-//    {
-//        public DbContext(string connectionString)
-//            : this(new SqlConnectionStringBuilder(connectionString))
-//        {
-//        }
+namespace Sys.Data.DynamoDb
+{
+    public class DbContext : DataContext
+    {
+        public DbContext(string connectionString)
+            : this(new DynamoDbConnectionStringBuilder(connectionString))
+        {
+        }
 
-//        public DbContext(SqlConnectionStringBuilder connectionString)
-//            : base(new SqlDbAgent(connectionString))
-//        {
-//        }
+        public DbContext(DynamoDbConnectionStringBuilder connectionString)
+            : base(new DynamoDbAgent(connectionString))
+        {
+        }
 
-//        public DbContext(DynamoDbAgent agent)
-//            : base(agent)
-//        {
-//        }
-//    }
-//}
+        public DbContext(DynamoDbAgent agent)
+            : base(agent)
+        {
+        }
+    }
+}

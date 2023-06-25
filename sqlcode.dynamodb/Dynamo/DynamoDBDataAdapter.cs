@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace sqlcode.dynamodb.Dynamo
 {
-    class DynamoDBDataAdapter : DbDataAdapter
+    class DynamoDbDataAdapter : DbDataAdapter
     {
-        public DynamoDBDataAdapter(DynamoDbCommand command)
+        public DynamoDbDataAdapter(DynamoDbCommand command)
         {
         }
     }
