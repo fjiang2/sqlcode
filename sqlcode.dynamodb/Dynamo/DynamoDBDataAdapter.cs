@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,11 @@ namespace sqlcode.dynamodb.Dynamo
     {
         public DynamoDbDataAdapter(DynamoDbCommand command)
         {
+        }
+
+        protected override int Fill(DataSet dataSet, int startRecord, int maxRecords, string srcTable, IDbCommand command, CommandBehavior behavior)
+        {
+            return base.Fill(dataSet, startRecord, maxRecords, srcTable, command, behavior);
         }
     }
 }
