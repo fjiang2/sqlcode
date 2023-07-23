@@ -41,5 +41,10 @@ namespace Sys.Data
 		/// 
 		/// </summary>
 		Postgres,
+
+		/// <summary>
+		/// DynamoDB
+		/// </summary>
+		PartiQL,
 	}
 }
