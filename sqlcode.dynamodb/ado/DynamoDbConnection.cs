@@ -1,38 +1,49 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
+using Amazon.Lambda;
 
 namespace sqlcode.dynamodb.ado
 {
     class DynamoDbConnection : DbConnection
     {
-        public override string ConnectionString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        [AllowNull]
+        public override string ConnectionString { get; set; }
 
-        public override string Database => throw new NotImplementedException();
+        public override string Database => database;
 
-        public override string DataSource => throw new NotImplementedException();
+        public override string DataSource => datasource;
 
-        public override string ServerVersion => throw new NotImplementedException();
+        public override string ServerVersion => string.Empty;
 
-        public override ConnectionState State => ConnectionState.Closed;
+        public override ConnectionState State => state;
 
 
-        public DynamoDbConnection(string connectionString)
+        private string database;
+        private string datasource;
+        private ConnectionState state = ConnectionState.Closed;
+
+        public DynamoDbConnection(DynamoDbConnectionStringBuilder connecitonStingBuilder)
         {
-            ConnectionString = connectionString;
+            this.ConnectionString = connecitonStingBuilder.ConnectionString;
+            
+            this.database = connecitonStingBuilder.InitialCatalog;
+            this.datasource = connecitonStingBuilder.DataSource;
         }
 
         public override void ChangeDatabase(string databaseName)
         {
-            throw new NotImplementedException();
+            this.database = databaseName;
         }
 
         public override void Close()
         {
+            state = ConnectionState.Closed;
         }
 
         public override void Open()
         {
-
+            state = ConnectionState.Open;
         }
 
         protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)

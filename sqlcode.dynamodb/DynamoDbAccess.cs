@@ -26,7 +26,7 @@ namespace Sys.Data.DynamoDb
             object args = unit.Arguments;
             string sql = unit.Statement;
 
-            this.connection = new DynamoDbConnection(connectionString);
+            this.connection = new DynamoDbConnection(new DynamoDbConnectionStringBuilder(connectionString));
             this.command = new DynamoDbCommand(sql)
             {
                 CommandType = unit.CommandType,
