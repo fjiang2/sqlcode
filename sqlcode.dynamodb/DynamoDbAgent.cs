@@ -1,5 +1,5 @@
 ﻿using Amazon.Runtime;
-using sqlcode.dynamodb.Dynamo;
+using sqlcode.dynamodb.ado;
 using Sys.Data.Entity;
 
 namespace Sys.Data.DynamoDb

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using sqlcode.dynamodb.Dynamo;
+using sqlcode.dynamodb.ado;
 using Sys.Data.Entity;
 
 namespace Sys.Data.DynamoDb

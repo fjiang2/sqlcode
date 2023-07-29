@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sqlcode.dynamodb.Dynamo
+namespace sqlcode.dynamodb.ado
 {
     class DynamoDbDataAdapter : DbDataAdapter
     {

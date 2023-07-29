@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace sqlcode.dynamodb.Dynamo
+namespace sqlcode.dynamodb.ado
 {
 
     class DynamoDbCommand : DbCommand

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace sqlcode.dynamodb.Dynamo
+namespace sqlcode.dynamodb.ado
 {
     class DynamoDbConnection : DbConnection
     {
@@ -13,7 +13,7 @@ namespace sqlcode.dynamodb.Dynamo
 
         public override string ServerVersion => throw new NotImplementedException();
 
-        public override ConnectionState State => throw new NotImplementedException();
+        public override ConnectionState State => ConnectionState.Closed;
 
 
         public DynamoDbConnection(string connectionString)
@@ -28,7 +28,6 @@ namespace sqlcode.dynamodb.Dynamo
 
         public override void Close()
         {
-
         }
 
         public override void Open()
