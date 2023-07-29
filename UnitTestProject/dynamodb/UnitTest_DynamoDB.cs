@@ -18,7 +18,7 @@ namespace UnitTestProject.dynamodb
         [TestMethod]
         public async Task Test_PartiQL_SELECT()
         {
-            DynamoDBClient client = new DynamoDBClient();
+            DbClient client = new DbClient();
             string SQL = "SELECT * FROM \"DeviceList-taiga\" WHERE TenantId='dev'";
             EntityTable rows = await client.ExecuteStatementAsync(SQL);
             DataTable dt = rows.ToDataTable();
@@ -45,7 +45,7 @@ namespace UnitTestProject.dynamodb
             'StringSetType':<<'stringval','stringval2'>>}
             ";
 
-            DynamoDBClient client = new DynamoDBClient();
+            DbClient client = new DbClient();
             EntityTable rows = await client.ExecuteStatementAsync(SQL);
         }
 
@@ -81,7 +81,7 @@ namespace UnitTestProject.dynamodb
             ";
 
 
-            DynamoDBClient client = new DynamoDBClient();
+            DbClient client = new DbClient();
             EntityTable rows = await client.ExecuteStatementAsync(SQL);
         }
 
@@ -94,7 +94,7 @@ namespace UnitTestProject.dynamodb
              */
 
             string SQL = "";
-            DynamoDBClient client = new DynamoDBClient();
+            DbClient client = new DbClient();
             EntityTable rows = await client.ExecuteStatementAsync(SQL);
         }
 

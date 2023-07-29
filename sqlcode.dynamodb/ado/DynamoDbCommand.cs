@@ -17,14 +17,11 @@ namespace sqlcode.dynamodb.ado
 
         protected override DbTransaction? DbTransaction { get; set; }
 
-        public DynamoDbCommand()
+        public DynamoDbCommand(string cmdText, DynamoDbConnection connection)
         {
-            CommandText = string.Empty;
-        }
-
-        public DynamoDbCommand(string commandText)
-        {
-            CommandText = commandText;
+            CommandText = cmdText;
+            this.CommandType = CommandType.Text;
+            this.DbConnection = connection;
         }
 
         public override void Cancel()

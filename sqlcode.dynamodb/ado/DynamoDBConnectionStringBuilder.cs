@@ -16,7 +16,7 @@ namespace sqlcode.dynamodb.ado
 
 
         /// <summary>
-        /// connectionString = "Data Source=dynamoDB;Initial Catalog=table;accessKey=;secretKey=;region=;";
+        /// connectionString = "Data Source=dynamoDB;Initial Catalog=dev;accessKey=;secretKey=;region=;";
         /// </summary>
         /// <param name="connectionString"></param>
         public DynamoDbConnectionStringBuilder(string connectionString)

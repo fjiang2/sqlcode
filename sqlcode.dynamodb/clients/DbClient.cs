@@ -12,8 +12,7 @@ using sqlcode.dynamodb.entities;
 
 namespace sqlcode.dynamodb.clients
 {
-
-    public class DynamoDBClient : IDynamoDBClient
+    public class DbClient : IDbClient
     {
         private readonly IAmazonDynamoDB dynamoDBClient;
         public ProvisionedThroughput ProvisionedThroughput { get; set; } = new ProvisionedThroughput
@@ -22,12 +21,12 @@ namespace sqlcode.dynamodb.clients
             WriteCapacityUnits = 1,
         };
 
-        public DynamoDBClient()
+        public DbClient()
         {
             this.dynamoDBClient = new AmazonDynamoDBClient();
         }
 
-        public DynamoDBClient(IAmazonDynamoDB dynamoDBClient)
+        public DbClient(IAmazonDynamoDB dynamoDBClient)
         {
             this.dynamoDBClient = dynamoDBClient;
         }

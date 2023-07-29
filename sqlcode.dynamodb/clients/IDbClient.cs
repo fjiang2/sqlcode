@@ -4,7 +4,7 @@ using sqlcode.dynamodb.entities;
 
 namespace sqlcode.dynamodb.clients
 {
-    public interface IDynamoDBClient
+    public interface IDbClient
     {
         ProvisionedThroughput ProvisionedThroughput { get; set; }
 

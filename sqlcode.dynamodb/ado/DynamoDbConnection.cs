@@ -23,8 +23,11 @@ namespace sqlcode.dynamodb.ado
         private string datasource;
         private ConnectionState state = ConnectionState.Closed;
 
+        public DynamoDbConnectionStringBuilder ConnecitonStingBuilder { get; }
+
         public DynamoDbConnection(DynamoDbConnectionStringBuilder connecitonStingBuilder)
         {
+            this.ConnecitonStingBuilder = connecitonStingBuilder;
             this.ConnectionString = connecitonStingBuilder.ConnectionString;
             
             this.database = connecitonStingBuilder.InitialCatalog;
@@ -53,7 +56,7 @@ namespace sqlcode.dynamodb.ado
 
         protected override DbCommand CreateDbCommand()
         {
-            return new DynamoDbCommand();
+            return new DynamoDbCommand("", this);
         }
     }
 }
