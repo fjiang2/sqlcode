@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using sqlcode.dynamodb.entities;
+using Sys.Data;
 
 namespace sqlcode.dynamodb.clients
 {
@@ -285,23 +285,113 @@ namespace sqlcode.dynamodb.clients
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        public async Task<EntityTable> ExecuteStatementAsync(string sql)
+        public async Task<List<Dictionary<string, AttributeValue>>> ExecuteStatementAsync(string sql)
         {
-            //PartiQL
-            ExecuteStatementRequest request = new ExecuteStatementRequest
+            List<Dictionary<string, AttributeValue>> items = new List<Dictionary<string, AttributeValue>>();
+            string? nextToken = null;
+            do
             {
-                Statement = sql,
-                ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL
-            };
+                ExecuteStatementRequest request = new ExecuteStatementRequest
+                {
+                    Statement = sql,
+                    ReturnConsumedCapacity = ReturnConsumedCapacity.TOTAL,
+                    NextToken = nextToken,
+                };
 
-            ExecuteStatementResponse response = await dynamoDBClient.ExecuteStatementAsync(request);
+                ExecuteStatementResponse response = await dynamoDBClient.ExecuteStatementAsync(request);
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    nextToken = response.NextToken;
+                    items.AddRange(response.Items);
+                }
+                else
+                {
+                    break;
+                }
+            } while (nextToken != null);
+
+            return items;
+        }
+
+        public async Task<List<Dictionary<string, AttributeValue>>> ScanAsync(string tableName, string expression, Dictionary<string, AttributeValue> args, Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, AttributeValue>> items = new List<Dictionary<string, AttributeValue>>();
+
+            Dictionary<string, AttributeValue>? lastEvaluatedKey = null;
+            do
+            {
+                var request = new ScanRequest
+                {
+                    TableName = tableName,
+                    FilterExpression = expression,
+                    ExpressionAttributeValues = args,
+                    ExpressionAttributeNames = parameters,
+                    ExclusiveStartKey = lastEvaluatedKey,
+                    Limit = 50,
+                };
+
+                var response = await dynamoDBClient.ScanAsync(request);
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    lastEvaluatedKey = response.LastEvaluatedKey;
+                    items.AddRange(response.Items);
+                }
+
+            } while (lastEvaluatedKey != null && lastEvaluatedKey.Count != 0);
+
+            return items;
+        }
+
+        public async Task<List<Dictionary<string, AttributeValue>>> QueryAsync(string tableName, string expression, Dictionary<string, AttributeValue> args, Dictionary<string, string> parameters)
+        {
+            List<Dictionary<string, AttributeValue>> items = new List<Dictionary<string, AttributeValue>>();
+            Dictionary<string, AttributeValue>? lastKeyEvaluated = null;
+            do
+            {
+                var request = new QueryRequest
+                {
+                    TableName = tableName,
+                    ReturnConsumedCapacity = "TOTAL",
+                    KeyConditionExpression = expression,
+                    ExpressionAttributeNames = parameters,
+                    ExpressionAttributeValues = args,
+                    Limit = 100,
+                    ExclusiveStartKey = lastKeyEvaluated
+                };
+
+                var response = await dynamoDBClient.QueryAsync(request);
+                if (response.HttpStatusCode == HttpStatusCode.OK)
+                {
+                    lastKeyEvaluated = response.LastEvaluatedKey;
+                    items.AddRange(response.Items);
+                }
+            } while (lastKeyEvaluated != null && lastKeyEvaluated.Count != 0);
+
+            return items;
+        }
+
+        public async Task<bool> DeleteAsync(string tableName, Dictionary<string, AttributeValue> item)
+        {
+            var response = await dynamoDBClient.DeleteItemAsync(tableName, item);
             if (response.HttpStatusCode == HttpStatusCode.OK)
             {
-                var rows = response.Items.MapTable();
-                return rows;
+                return true;
             }
+            return false;
+        }
 
-            return new EntityTable();
+
+        public async Task<bool> SaveAsync(string tableName, Dictionary<string, AttributeValue> item)
+        {
+            var response = await dynamoDBClient.PutItemAsync(tableName, item);
+            if (response.HttpStatusCode == HttpStatusCode.OK)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
