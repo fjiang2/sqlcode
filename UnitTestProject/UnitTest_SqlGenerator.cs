@@ -42,10 +42,10 @@ namespace UnitTestProject
 			string SQL = gen.Select();
 			Debug.Assert(SQL == "SELECT * FROM [Categories] WHERE [CategoryID] = 1");
 
-			SQL = gen.SelectRows();
+			SQL = gen.SelectColumns();
 			Debug.Assert(SQL == "SELECT * FROM [Categories]");
 
-			SQL = gen.SelectRows(new string[] { _CATEGORYNAME, _DESCRIPTION });
+			SQL = gen.SelectColumns(new string[] { _CATEGORYNAME, _DESCRIPTION });
 			Debug.Assert(SQL == "SELECT [CategoryName],[Description] FROM [Categories]");
 
 		}
