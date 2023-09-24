@@ -1,9 +1,9 @@
-﻿using sqlcode.dynamodb.Dynamo;
+﻿using sqlcode.dynamodb.ado;
 using Sys.Data.Entity;
 
 namespace Sys.Data.DynamoDb
 {
-	public class DbQuery : DataQuery
+    public class DbQuery : DataQuery
 	{
 		public DbQuery(string connectionString)
 			: this(new DynamoDbConnectionStringBuilder(connectionString))

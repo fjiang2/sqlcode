@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace sqlcode.dynamodb.Dynamo
+namespace sqlcode.dynamodb.ado
 {
 
     class DynamoDbCommand : DbCommand
@@ -17,14 +17,11 @@ namespace sqlcode.dynamodb.Dynamo
 
         protected override DbTransaction? DbTransaction { get; set; }
 
-        public DynamoDbCommand()
+        public DynamoDbCommand(string cmdText, DynamoDbConnection connection)
         {
-            CommandText = string.Empty;
-        }
-
-        public DynamoDbCommand(string commandText)
-        {
-            CommandText = commandText;
+            CommandText = cmdText;
+            this.CommandType = CommandType.Text;
+            this.DbConnection = connection;
         }
 
         public override void Cancel()

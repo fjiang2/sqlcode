@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using sqlcode.dynamodb.extensions;
+﻿using sqlcode.dynamodb.extensions;
 
-namespace sqlcode.dynamodb.entities
+namespace sqlcode.dynamodb.clients.entities
 {
     public class EntityRow : Dictionary<string, EntityValue>
     {

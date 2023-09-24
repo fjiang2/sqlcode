@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 
-namespace sqlcode.dynamodb.entities
+namespace sqlcode.dynamodb.clients.entities
 {
     public class EntityTable : List<EntityRow>
     {
@@ -12,9 +11,9 @@ namespace sqlcode.dynamodb.entities
         public DataTable ToDataTable()
         {
             var dt = new DataTable();
-            foreach (EntityRow row in this)
+            foreach (var row in this)
             {
-                foreach (KeyValuePair<string, EntityValue> col in row)
+                foreach (var col in row)
                 {
                     string columnName = col.Key;
                     if (!dt.Columns.Contains(columnName))
@@ -24,7 +23,7 @@ namespace sqlcode.dynamodb.entities
                 }
             }
 
-            foreach (EntityRow row in this)
+            foreach (var row in this)
             {
                 var newRow = dt.NewRow();
                 foreach (var col in row)

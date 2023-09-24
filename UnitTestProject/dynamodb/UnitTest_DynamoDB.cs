@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #if NET6_0
 using sqlcode.dynamodb.clients;
-using sqlcode.dynamodb.entities;
 
 namespace UnitTestProject.dynamodb
 {
@@ -18,10 +17,9 @@ namespace UnitTestProject.dynamodb
         [TestMethod]
         public async Task Test_PartiQL_SELECT()
         {
-            DynamoDBClient client = new DynamoDBClient();
+            DbClient client = new DbClient();
             string SQL = "SELECT * FROM \"DeviceList-taiga\" WHERE TenantId='dev'";
-            EntityTable rows = await client.ExecuteStatementAsync(SQL);
-            DataTable dt = rows.ToDataTable();
+            var rows = await client.ExecuteStatementAsync(SQL);
         }
 
         [TestMethod]
@@ -45,8 +43,8 @@ namespace UnitTestProject.dynamodb
             'StringSetType':<<'stringval','stringval2'>>}
             ";
 
-            DynamoDBClient client = new DynamoDBClient();
-            EntityTable rows = await client.ExecuteStatementAsync(SQL);
+            DbClient client = new DbClient();
+            var rows = await client.ExecuteStatementAsync(SQL);
         }
 
 
@@ -81,8 +79,8 @@ namespace UnitTestProject.dynamodb
             ";
 
 
-            DynamoDBClient client = new DynamoDBClient();
-            EntityTable rows = await client.ExecuteStatementAsync(SQL);
+            DbClient client = new DbClient();
+            var rows = await client.ExecuteStatementAsync(SQL);
         }
 
         [TestMethod]
@@ -94,18 +92,12 @@ namespace UnitTestProject.dynamodb
              */
 
             string SQL = "";
-            DynamoDBClient client = new DynamoDBClient();
-            EntityTable rows = await client.ExecuteStatementAsync(SQL);
+            DbClient client = new DbClient();
+            var rows = await client.ExecuteStatementAsync(SQL);
         }
 
 
-        [TestMethod]
-        public async Task Test_Query()
-        {
-            DynamoTableClient client = new DynamoTableClient("DeviceCommand-taiga", "DcsDeviceId", "CommandRequestId");
-            EntityTable rows = await client.QueryAsync("001@dcs.devel");
-            DataTable dt = rows.ToDataTable();
-        }
+     
     }
 }
 #endif

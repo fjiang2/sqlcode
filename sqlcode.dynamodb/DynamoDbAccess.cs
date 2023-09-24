@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Data;
 using Sys.Data.Text;
 using sqlcode.dynamodb.clients;
-using sqlcode.dynamodb.Dynamo;
+using sqlcode.dynamodb.ado;
 
 namespace Sys.Data.DynamoDb
 {
@@ -26,8 +26,8 @@ namespace Sys.Data.DynamoDb
             object args = unit.Arguments;
             string sql = unit.Statement;
 
-            this.connection = new DynamoDbConnection(connectionString);
-            this.command = new DynamoDbCommand(sql)
+            this.connection = new DynamoDbConnection(new DynamoDbConnectionStringBuilder(connectionString));
+            this.command = new DynamoDbCommand(sql, connection)
             {
                 CommandType = unit.CommandType,
                 Connection = connection,

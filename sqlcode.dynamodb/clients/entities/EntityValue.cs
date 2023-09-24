@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection.Metadata.Ecma335;
 using sqlcode.dynamodb.extensions;
 
-namespace sqlcode.dynamodb.entities
+namespace sqlcode.dynamodb.clients.entities
 {
     public class EntityValue
     {

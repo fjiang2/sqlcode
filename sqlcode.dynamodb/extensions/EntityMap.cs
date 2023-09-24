@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
-using sqlcode.dynamodb.entities;
+using sqlcode.dynamodb.clients.entities;
 
-namespace sqlcode.dynamodb.clients
+namespace sqlcode.dynamodb.extensions
 {
-    static class DynamoDBAttributeValueMapping
+    static class EntityMap
     {
         private static EntityValue MapNumber(string value)
         {
