@@ -23,6 +23,11 @@ namespace Sys.Data.Text
 	class CodeBlock : IQueryScript
 	{
 		private readonly List<object> script = new List<object>();
+
+		public CodeBlock() 
+		{ 
+		}
+
 		/// <summary>
 		/// Append any code
 		/// </summary>

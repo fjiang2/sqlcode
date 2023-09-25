@@ -238,7 +238,14 @@ namespace Sys.Data.Text
         public SqlBuilder INSERT_INTO(string tableName, IEnumerable<string> columns) => INSERT_INTO(new TableName(tableName), columns);
         public SqlBuilder INSERT_INTO(ITableName tableName, IEnumerable<string> columns)
         {
-            WithTableName("INSERT INTO", tableName, null);
+            return INSERT().INTO(tableName, columns);
+        }
+
+        public SqlBuilder INTO(string tableName, IEnumerable<string> columns) => INTO(new TableName(tableName), columns);
+
+        public SqlBuilder INTO(ITableName tableName, IEnumerable<string> columns)
+        {
+            INTO(tableName);
 
             if (columns.Count() > 0)
                 AppendSpace($"({JoinColumns(columns)})");
@@ -373,6 +380,10 @@ namespace Sys.Data.Text
         public SqlBuilder UNION() => AppendSpace("UNION");
         public SqlBuilder DESC() => AppendSpace("DESC");
         public SqlBuilder ASC() => AppendSpace("ASC");
+
+        public SqlBuilder INSERT() => AppendSpace("INSERT");
+        public SqlBuilder OR_IGNORE() => AppendSpace("OR IGNORE");
+        public SqlBuilder OR_REPLACE() => AppendSpace("OR REPLACE");
 
         public SqlBuilder INTO(string tableName) => INTO(new TableName(tableName));
         public SqlBuilder INTO(ITableName tableName) => WithTableName("INTO", tableName, null);
