@@ -25,11 +25,9 @@ namespace UnitTestProject
 
 		public UnitTest_SqlGenerator()
 		{
-			gen = new SqlGenerator("[Categories]")
-			{
-				PrimaryKeys = new string[] { _CATEGORYID },
-				IdentityKeys = new string[] { _CATEGORYID },
-			};
+			gen = SqlGenerator.Create("[Categories]", SqlServer);
+			gen.PrimaryKeys = new string[] { _CATEGORYID };
+			gen.IdentityKeys = new string[] { _CATEGORYID };
 		}
 
 		[TestMethod]

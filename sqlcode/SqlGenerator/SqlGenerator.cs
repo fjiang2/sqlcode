@@ -33,22 +33,15 @@ namespace Sys.Data
         public string Where { get; set; } = string.Empty;
         public DbAgentOption Option { get; set; } = DbAgentOption.DefaultOption;
 
-        public SqlGenerator(string formalName)
+        internal readonly SqlTemplate template;
+        internal readonly SqlTemplateFormat Format = SqlTemplateFormat.SingleLine;
+
+        protected SqlGenerator(string formalName)
         {
             this.TableName = formalName;
+            this.template = new SqlTemplate(TableName, Format);
         }
 
-        private SqlTemplate _template = null;
-        private SqlTemplate template
-        {
-            get
-            {
-                if (_template == null)
-                    _template = new SqlTemplate(TableName) { Style = Option.Style };
-
-                return _template;
-            }
-        }
 
         public override SqlColumnValuePair Add(string name, object value)
         {
@@ -128,13 +121,24 @@ namespace Sys.Data
 
             if (PrimaryKeys.Length + NotUpdateColumns.Length == pairs.Count)
             {
-                return template.IfNotExistsInsert(where, Insert());
+                return IfNotExistsInsert(where);
             }
             else
             {
-                return template.IfExistsUpdateElseInsert(where, Update(), Insert());
+                return IfExistsUpdateElseInsert(where);
             }
         }
+
+        protected virtual string IfNotExistsInsert(string where)
+        {
+            return template.IfNotExistsInsert(where, Insert());
+        }
+
+        protected virtual string IfExistsUpdateElseInsert(string where)
+        {
+            return template.IfExistsUpdateElseInsert(where, Update(), Insert());
+        }
+
 
         /// <summary>
         ///  IF NOT EXISTS INSERT...
@@ -155,13 +159,15 @@ namespace Sys.Data
         /// INSERT INTO table (Col1,Col2,...) VALUES (val1,val2,...)
         /// </summary>
         /// <returns></returns>
-        public string Insert()
+        public string Insert() => Insert("INSERT");
+
+        protected string Insert(string cmd)
         {
             var C = pairs.Where(c => !c.Column.Identity && !c.Value.IsNull);
             var L1 = string.Join(",", C.Select(c => c.Column.ToScript(Option.Style)));
             var L2 = string.Join(",", C.Select(c => c.Value.ToScript(Option.Style)));
 
-            return template.Insert(L1, L2);
+            return template.Insert(cmd, L1, L2);
         }
 
         /// <summary>
@@ -242,7 +248,7 @@ namespace Sys.Data
             return template.Delete();
         }
 
-        private string Condition()
+        protected string Condition()
         {
             if (!string.IsNullOrEmpty(Where))
                 return Where;
@@ -255,6 +261,19 @@ namespace Sys.Data
             }
 
             return string.Empty;
+        }
+
+
+        public static SqlGenerator Create(string formalName, DbAgentOption option)
+        {
+            switch (option.Style)
+            {
+                case DbAgentStyle.SQLite:
+                    return new SqlGeneratorOfSQLite(formalName) { Option = option };
+
+                default:
+                    return new SqlGenerator(formalName) { Option = option };
+            }
         }
     }
 }
