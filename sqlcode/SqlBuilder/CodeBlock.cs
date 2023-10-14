@@ -20,112 +20,117 @@ using System.Text;
 
 namespace Sys.Data.Text
 {
-	class CodeBlock : IQueryScript
-	{
-		private readonly List<object> script = new List<object>();
-		/// <summary>
-		/// Append any code
-		/// </summary>
-		/// <param name="text"></param>
-		/// <returns></returns>
-		public CodeBlock Append(string text)
-		{
-			script.Add(text);
-			return this;
-		}
+    class CodeBlock : IQueryScript
+    {
+        private readonly List<object> script = new List<object>();
 
-		public CodeBlock AppendLine()
-		{
-			script.Add(Environment.NewLine);
-			return this;
-		}
+        public CodeBlock()
+        {
+        }
 
-		public CodeBlock AppendLine(string text)
-		{
-			script.Add(text);
-			script.Add(Environment.NewLine);
-			return this;
-		}
+        /// <summary>
+        /// Append any code
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public CodeBlock Append(string text)
+        {
+            script.Add(text);
+            return this;
+        }
 
-		public CodeBlock Append(Statement statement)
-		{
-			script.Add(statement);
-			return this;
-		}
+        public CodeBlock AppendLine()
+        {
+            script.Add(Environment.NewLine);
+            return this;
+        }
+
+        public CodeBlock AppendLine(string text)
+        {
+            script.Add(text);
+            script.Add(Environment.NewLine);
+            return this;
+        }
+
+        public CodeBlock Append(Statement statement)
+        {
+            script.Add(statement);
+            return this;
+        }
 
 
-		public CodeBlock Append(SqlBuilder builder)
-		{
-			script.Add(builder);
-			return this;
-		}
+        public CodeBlock Append(SqlBuilder builder)
+        {
+            script.Add(builder);
+            return this;
+        }
 
-		public CodeBlock Append(Expression expr)
-		{
-			script.Add(expr);
-			return this;
-		}
+        public CodeBlock Append(Expression expr)
+        {
+            script.Add(expr);
+            return this;
+        }
 
-		public CodeBlock Append(ITableName tableName)
-		{
-			script.Add(tableName);
-			return this;
-		}
+        public CodeBlock Append(ITableName tableName)
+        {
+            script.Add(tableName);
+            return this;
+        }
 
-		public CodeBlock AppendSpace(string text)
-		{
-			script.Add(text + " ");
-			return this;
-		}
+        public CodeBlock AppendSpace(string text)
+        {
+            script.Add(text + " ");
+            return this;
+        }
 
-		public CodeBlock AppendSpace()
-		{
-			script.Add(" ");
-			return this;
-		}
+        public CodeBlock AppendSpace()
+        {
+            script.Add(" ");
+            return this;
+        }
 
-		public string ToScript(DbAgentStyle style)
-		{
-			List<string> lines = new List<string>();
-			StringBuilder builder = new StringBuilder();
+        public string ToScript(DbAgentStyle style)
+        {
+            List<string> lines = new List<string>();
+            StringBuilder builder = new StringBuilder();
 
-			foreach (object item in script)
-			{
-				if (item is Expression expr)
-				{
-					builder.Append(expr.ToScript(style));
-				}
-				else if (item is SqlBuilder sql)
-				{
-					builder.Append(sql.ToScript(style));
-				}
-				else if (item is Statement statement)
-				{
-					builder.Append(statement.ToScript(style));
-				}
-				else if (item is ITableName tableName)
+            foreach (object item in script)
+            {
+                if (item is Expression expr)
                 {
-					builder.Append(tableName.ToScript(style));
-				}
-				else if (item is string str)
-				{
-					if (str == Environment.NewLine)
-					{
-						//remove extra space letter on each line
-						lines.Add(builder.ToString().Trim(' ', '\r', '\n'));
-						builder.Clear();
-					}
+                    builder.Append(expr.ToScript(style));
+                }
+                else if (item is SqlBuilder sql)
+                {
+                    builder.Append(sql.ToScript(style));
+                }
+                else if (item is Statement statement)
+                {
+                    builder.Append(statement.ToScript(style));
+                }
+                else if (item is ITableName tableName)
+                {
+                    builder.Append(tableName.ToScript(style));
+                }
+                else if (item is string str)
+                {
+                    if (str == Environment.NewLine)
+                    {
+                        //remove extra space letter on each line
+                        lines.Add(builder.ToString().Trim(' ', '\r', '\n'));
+                        builder.Clear();
+                    }
 
-					builder.Append(str);
-				}
-				else
-					throw new Exception();
-			}
+                    builder.Append(str);
+                }
+                else
+                    throw new Exception();
+            }
 
-			if (builder.Length > 0)
-				lines.Add(builder.ToString().Trim(' ', '\r', '\n'));
+            if (builder.Length > 0)
+                lines.Add(builder.ToString().Trim(' ', '\r', '\n'));
 
-			return string.Join(Environment.NewLine, lines);
-		}
-	}
+            return string.Join(Environment.NewLine, lines);
+        }
+    }
 }

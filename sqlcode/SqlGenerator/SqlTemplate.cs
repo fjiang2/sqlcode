@@ -6,123 +6,64 @@ using System.Threading.Tasks;
 
 namespace Sys.Data
 {
-	public class SqlTemplate
-	{
-		private readonly string formalName;
-		private SqlTemplateFormat format = SqlTemplateFormat.SingleLine;
-		private string NewLine = string.Empty;
-		public DbAgentStyle Style { get; set; } = DbAgentOption.DefaultStyle;
+    class SqlTemplate
+    {
+        private readonly string TableName;
+        private readonly string NewLine = string.Empty;
 
-		public SqlTemplate(string formalName)
-		{
-			this.formalName = formalName;
-		}
+        public SqlTemplate(string formalName, SqlTemplateFormat format)
+        {
+            this.TableName = formalName;
+            if (format == SqlTemplateFormat.Indent)
+            {
+                NewLine = Environment.NewLine + "  ";
+            }
+        }
 
+        private string IfNotExists(string where) => $"IF NOT EXISTS(SELECT * FROM {TableName} WHERE {where})";
+        private string IfExists(string where) => $"IF EXISTS(SELECT * FROM {TableName} WHERE {where})";
 
-		internal SqlTemplateFormat Format
-		{
-			get
-			{
-				return format;
-			}
-			set
-			{
-				format = value;
-				switch (format)
-				{
-					case SqlTemplateFormat.Indent:
-						NewLine = Environment.NewLine + "  ";
-						break;
+        public string IfNotExistsInsert(string where, string insert)
+            => $"{IfNotExists(where)} {NewLine}{insert}";
 
-					default:
-						NewLine = string.Empty;
-						break;
-				}
-			}
-		}
+        public string IfExistsUpdate(string where, string update)
+            => $"{IfExists(where)} {NewLine}{update}";
+        public string IfExistsUpdateElseInsert(string where, string update, string insert)
+            => $"{IfExists(where)} {NewLine}{update} {NewLine}ELSE {NewLine}{insert}";
 
-		private string IfNotExists(string where)
-			=> $"IF NOT EXISTS(SELECT * FROM {formalName} WHERE {where})";
-		private string IfExists(string where)
-			=> $"IF EXISTS(SELECT * FROM {formalName} WHERE {where})";
+        public string Select(string select)
+            => $"SELECT {select} {NewLine}FROM {TableName}";
+        public string Select(string select, string where)
+            => $"{Select(select)} {NewLine}WHERE {where}";
 
-		public string IfNotExistsInsert(string where, string insert)
-			=> $"{IfNotExists(where)} {NewLine}{insert}";
-		public string IfNotExistsInsertElseUpdate(string where, string insert, string update)
-			=> $@"{IfNotExists(where)} {NewLine}{insert} {NewLine}ELSE {NewLine}{update}";
+        public string Update(string set)
+            => $"UPDATE {TableName} {NewLine}SET {set}";
+        public string Update(string set, string where)
+            => $"{Update(set)} {NewLine}WHERE {where}";
 
-		public string IfExistsUpdate(string where, string update)
-			=> $"{IfExists(where)} {NewLine}{update}";
-		public string IfExistsUpdateElseInsert(string where, string update, string insert)
-			=> $"{IfExists(where)} {NewLine}{update} {NewLine}ELSE {NewLine}{insert}";
+        public string Insert(string cmd, string columns, string values)
+        {
+            string _columns = string.Empty;
+            if (!string.IsNullOrWhiteSpace(columns))
+                _columns = $"({columns})";
 
-		public string Select(string select)
-			=> $"SELECT {select} {NewLine}FROM {formalName}";
-		public string Select(string select, string where)
-			=> $"{Select(select)} {NewLine}WHERE {where}";
+            if (cmd == null)
+                cmd = "INSERT";
 
-		public string Update(string set)
-			=> $"UPDATE {formalName} {NewLine}SET {set}";
-		public string Update(string set, string where)
-			=> $"{Update(set)} {NewLine}WHERE {where}";
+            return $"{cmd} INTO {TableName}{_columns} {NewLine}VALUES({values})";
+        }
 
-		public string Insert(string values)
-			=> $"INSERT INTO {formalName} VALUES({values})";
-		public string Insert(string columns, string values)
-			=> $"INSERT INTO {formalName}({columns}) {NewLine}VALUES({values})";
-		public string Insert(string columns, string values, string identity)
-			=> $"{Insert(columns, values)} {NewLine}{identity}";
-		public string InsertWithIdentityOff(string columns, string values)
-			=> $"SET IDENTITY_INSERT {formalName} ON; {Insert(columns, values)}; SET IDENTITY_INSERT {formalName} OFF";
+        internal static string SetIdentityOutParameter(string parameterName)
+            => $"SET {parameterName}=@@IDENTITY";
 
-		public static string SetIdentityOutParameter(string parameterName)
-			=> $"SET {parameterName}=@@IDENTITY";
+        public string Delete()
+            => $"DELETE FROM {TableName}";
+        public string Delete(string where)
+            => $"{Delete()} {NewLine}WHERE {where}";
 
-		public string Delete()
-			=> $"DELETE FROM {formalName}";
-		public string Delete(string where)
-			=> $"{Delete()} {NewLine}WHERE {where}";
-
-
-		public string AddPrimaryKey(string primaryKey)
-			=> $"ALTER TABLE {formalName} ADD PRIMARY KEY ({primaryKey})";
-		public string DropPrimaryKey(string constraintName)
-			=> $"ALTER TABLE {formalName} DROP CONSTRAINT ({constraintName})";
-
-		public string DropForeignKey(string constraintName)
-			=> $"ALTER TABLE {formalName} DROP CONSTRAINT ({constraintName})";
-
-		public string AddColumn(string column)
-			=> $"ALTER TABLE {formalName} ADD {column}";
-
-		public string AddColumn(string column, object defaultValue)
-		{
-			string value = new SqlValue(defaultValue).ToScript(Style);
-			return $"ALTER TABLE {formalName} ADD {column} DEFAULT({value})";
-		}
-
-		public string AlterColumn(string column)
-			=> $"ALTER TABLE {formalName} ALTER COLUMN {column}";
-		public string DropColumn(string column)
-			=> $"ALTER TABLE {formalName} DROP COLUMN {column}";
-
-
-		public string DropTable(bool ifExists)
-		{
-			if (ifExists)
-			{
-				return new StringBuilder()
-				.AppendLine($"IF OBJECT_ID('{formalName}') IS NOT NULL")
-				.AppendLine($"  DROP TABLE {formalName}")
-				.ToString();
-			}
-
-			return $"DROP TABLE {formalName}";
-		}
-
-		public override string ToString()
-		{
-			return formalName;
-		}
-	}
+        public override string ToString()
+        {
+            return TableName;
+        }
+    }
 }
