@@ -8,7 +8,7 @@
 		<PackageOutputPath>c:\local\nuget</PackageOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\sqlcode\sqlcode.csproj" />
