@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using Sys.Data.Text;
-using sqlcode.dynamodb.clients;
 using sqlcode.dynamodb.ado;
 
 namespace Sys.Data.DynamoDb

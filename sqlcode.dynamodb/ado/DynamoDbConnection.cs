@@ -23,15 +23,15 @@ namespace sqlcode.dynamodb.ado
         private string datasource;
         private ConnectionState state = ConnectionState.Closed;
 
-        public DynamoDbConnectionStringBuilder ConnecitonStingBuilder { get; }
+        public DynamoDbConnectionStringBuilder ConnectionStringBuilder { get; }
 
-        public DynamoDbConnection(DynamoDbConnectionStringBuilder connecitonStingBuilder)
+        public DynamoDbConnection(DynamoDbConnectionStringBuilder connectionStingBuilder)
         {
-            this.ConnecitonStingBuilder = connecitonStingBuilder;
-            this.ConnectionString = connecitonStingBuilder.ConnectionString;
+            this.ConnectionStringBuilder = connectionStingBuilder;
+            this.ConnectionString = connectionStingBuilder.ConnectionString;
             
-            this.database = connecitonStingBuilder.InitialCatalog;
-            this.datasource = connecitonStingBuilder.DataSource;
+            this.database = connectionStingBuilder.InitialCatalog;
+            this.datasource = connectionStingBuilder.DataSource;
         }
 
         public override void ChangeDatabase(string databaseName)

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
+using mudu.aws.core;
 
 namespace sqlcode.dynamodb.ado
 {
@@ -13,7 +15,7 @@ namespace sqlcode.dynamodb.ado
     {
         public AWSCredentials Credentials { get; }
         public RegionEndpoint Region { get; }
-
+        public IAccount Account { get; }
 
         /// <summary>
         /// connectionString = "Data Source=dynamoDB;Initial Catalog=dev;accessKey=;secretKey=;region=;";
@@ -36,6 +38,14 @@ namespace sqlcode.dynamodb.ado
                 Region = RegionEndpoint.USEast1;
             else
                 Region = RegionEndpoint.GetBySystemName(region);
+
+            this.Account = new Account
+            {
+                Name = "DynamoDB",
+                AccessKey = accessKey,
+                SecretKey = secretKey,
+                Region = region,
+            };
         }
 
         public DynamoDbConnectionStringBuilder(AWSCredentials credentials, RegionEndpoint region, string? initialCatalog = null)
