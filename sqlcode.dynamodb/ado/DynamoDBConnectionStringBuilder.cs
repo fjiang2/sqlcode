@@ -55,6 +55,11 @@ namespace sqlcode.dynamodb.ado
 
             var x = credentials.GetCredentials();
             this.ConnectionString = $"data source=dynamoDB;InitialCatalog={initialCatalog};accessKey={x.AccessKey};secretKey={x.SecretKey};region={region.SystemName};";
+            this.Account = new Account
+            {
+                Name = "DynamoDB",
+                Region = region.SystemName,
+            };
         }
 
         public DynamoDbConnectionStringBuilder()

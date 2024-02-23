@@ -21,7 +21,7 @@ namespace UnitTestProject.DynamoDB
 
         public UnitTest_DynamoDB_Entity1()
         {
-            this.connectionString = File.ReadAllText(@"c:\local\settings\dynamodb.connection.string.txt");
+            this.connectionString = File.ReadAllText(@"c:\local\settings\DynamoDB.connection.string.txt");
 
             DataContext.EntityClassType = EntityClassType.ExtensionClass;
             Query = new DbQuery(connectionString);

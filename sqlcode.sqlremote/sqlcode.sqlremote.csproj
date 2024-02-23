@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<RootNamespace>Sys.Data.SqlRemote</RootNamespace>
+		<Version>1.0.12</Version>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Sys.Data.SqlRemote</RootNamespace>
-    <Version>1.0.12</Version>
-  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\sqlcode\sqlcode.csproj" />
+	</ItemGroup>
 
 </Project>

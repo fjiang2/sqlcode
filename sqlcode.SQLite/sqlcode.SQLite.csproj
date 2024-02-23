@@ -5,7 +5,7 @@
 		<RootNamespace>Sys.Data.SQLite</RootNamespace>
 		<Version>1.0.13</Version>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageOutputPath>c:\local\nuget</PackageOutputPath>
+		<PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
 		<PackageReference Include="System.Data.SQLite" Version="1.0.117" />

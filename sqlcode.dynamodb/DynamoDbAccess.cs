@@ -17,7 +17,7 @@ namespace Sys.Data.DynamoDb
         private readonly DynamoDbConnection connection;
 
         private readonly string[] statements;
-        private readonly IParameterFacet facet;
+        private readonly IParameterFacet? facet;
 
         public DynamoDbAccess(string connectionString, SqlUnit unit)
         {

@@ -5,7 +5,7 @@
 		<RootNamespace>Sys.Data.SqlClient</RootNamespace>
 		<Version>1.0.12</Version>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageOutputPath>c:\local\nuget</PackageOutputPath>
+		<PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
