@@ -1,5 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
+using mudu.aws.core.clients;
+using mudu.aws.core;
 
 namespace sqlcode.dynamodb.ado
 {
@@ -17,11 +19,19 @@ namespace sqlcode.dynamodb.ado
 
         protected override DbTransaction? DbTransaction { get; set; }
 
+        private readonly IDbClient dbClient;
+        private readonly PartiViewQuery query;
+
         public DynamoDbCommand(string cmdText, DynamoDbConnection connection)
         {
             CommandText = cmdText;
             this.CommandType = CommandType.Text;
             this.DbConnection = connection;
+
+            var connectionString = connection.ConnectionStringBuilder;
+            IAccount account = connectionString.Account;
+            this.dbClient = new DbClient(account);
+            this.query = new PartiViewQuery(dbClient, connectionString.InitialCatalog);
         }
 
         public override void Cancel()
@@ -30,12 +40,21 @@ namespace sqlcode.dynamodb.ado
 
         public override int ExecuteNonQuery()
         {
-            throw new NotImplementedException();
+            dbClient.ExecuteNonQueryAsync(CommandText).Wait();
+            return 1;
         }
 
         public override object? ExecuteScalar()
         {
-            throw new NotImplementedException();
+            var dt = query.FillDataTableAsync(CommandText, editable: true, maxRows: 10).Result;
+            if (dt.Rows.Count > 0)
+            {
+                DataRow row = dt.Rows[0];
+                if (row.ItemArray != null && row.ItemArray.Length > 0)
+                    return row.ItemArray[0];
+            }
+
+            return null;
         }
 
         public override void Prepare()
