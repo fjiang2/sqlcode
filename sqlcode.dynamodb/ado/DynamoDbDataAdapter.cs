@@ -30,7 +30,13 @@ namespace sqlcode.dynamodb.ado
 
             string SQL = command.CommandText;
             var query =  new PartiViewQuery(dbClient, connectionString.InitialCatalog);
-            var dt = query.FillDataTableAsync(SQL, editable: true, maxRows: -1).Result;
+
+            QueryOption option = new QueryOption
+            {
+                Editable = true,
+                MaxRows = 0,
+            };
+            var dt = query.FillDataTableAsync(SQL, option).Result;
             dataSet.Tables.Add(dt);
             return dt.Rows.Count;
         }

@@ -46,7 +46,12 @@ namespace sqlcode.dynamodb.ado
 
         public override object? ExecuteScalar()
         {
-            var dt = query.FillDataTableAsync(CommandText, editable: true, maxRows: 10).Result;
+            QueryOption option = new QueryOption
+            {
+                Editable = true,
+                MaxRows = 10,
+            };
+            var dt = query.FillDataTableAsync(CommandText, option).Result;
             if (dt.Rows.Count > 0)
             {
                 DataRow row = dt.Rows[0];
