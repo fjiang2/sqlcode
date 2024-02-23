@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFrameworks>net7.0;net48</TargetFrameworks>
-		<RootNamespace>Sys.Data.SqlClient</RootNamespace>
-		<Version>1.0.12</Version>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
-	</PropertyGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\sqlcode\sqlcode.csproj" />
-	</ItemGroup>
+  <PropertyGroup>
+    <TargetFrameworks>net7.0;net48</TargetFrameworks>
+    <RootNamespace>Sys.Data.SqlClient</RootNamespace>
+    <Version>1.0.13</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
+  </PropertyGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
+  </ItemGroup>
 </Project>

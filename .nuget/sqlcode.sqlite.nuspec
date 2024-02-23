@@ -34,7 +34,7 @@
         <dependency id="sqlcode" version="1.0.12" />
         <dependency id="System.Data.SQLite" version="1.0.117" />
       </group>
-      <group targetFramework=".NET6.0">
+      <group targetFramework=".NET7.0">
         <dependency id="sqlcode" version="1.0.12" />
         <dependency id="System.Data.SQLite" version="1.0.117" />
       </group>
