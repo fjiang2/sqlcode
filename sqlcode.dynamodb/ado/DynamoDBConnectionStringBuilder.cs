@@ -23,29 +23,38 @@ namespace sqlcode.dynamodb.ado
         /// <param name="connectionString"></param>
         public DynamoDbConnectionStringBuilder(string connectionString)
         {
-            base.ConnectionString = connectionString;
-
-            string accessKey = $"{this["accessKey"]}";
-            string secretKey = $"{this["secretKey"]}";
-
-            if (string.IsNullOrWhiteSpace(accessKey) || string.IsNullOrWhiteSpace(secretKey))
-                Credentials = FallbackCredentialsFactory.GetCredentials();
-            else
-                Credentials = new BasicAWSCredentials(accessKey, secretKey);
-
-            string region = $"{this["region"]}";
-            if (string.IsNullOrWhiteSpace(region))
-                Region = RegionEndpoint.USEast1;
-            else
-                Region = RegionEndpoint.GetBySystemName(region);
-
             this.Account = new Account
             {
                 Name = "DynamoDB",
-                AccessKey = accessKey,
-                SecretKey = secretKey,
-                Region = region,
             };
+
+            base.ConnectionString = connectionString;
+            if (this.ContainsKey("accessKey") && this.ContainsKey("secretKey"))
+            {
+                string accessKey = $"{this["accessKey"]}";
+                string secretKey = $"{this["secretKey"]}";
+
+                Credentials = new BasicAWSCredentials(accessKey, secretKey);
+
+                Account.AccessKey = accessKey;
+                Account.SecretKey = secretKey;
+            }
+            else
+            {
+                Credentials = FallbackCredentialsFactory.GetCredentials();
+            }
+
+            if (this.ContainsKey("region"))
+            {
+                string region = $"{this["region"]}";
+                Region = RegionEndpoint.GetBySystemName(region);
+                Account.Region = region;
+            }
+            else
+            {
+                Region = RegionEndpoint.USEast1;
+                Account.Region = Region.SystemName;
+            }
         }
 
         public DynamoDbConnectionStringBuilder(AWSCredentials credentials, RegionEndpoint region, string? initialCatalog = null)

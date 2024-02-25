@@ -21,7 +21,7 @@ namespace UnitTestProject.DynamoDB
 
         public UnitTest_DynamoDB_Entity1()
         {
-            this.connectionString = File.ReadAllText(@"c:\local\settings\DynamoDB.connection.string.txt");
+            this.connectionString = "Data Source=dynamoDB;Initial Catalog=taiga;accessKey=;secretKey=;region=us-east-1;";
 
             DataContext.EntityClassType = EntityClassType.ExtensionClass;
             Query = new DbQuery(connectionString);
@@ -34,6 +34,7 @@ namespace UnitTestProject.DynamoDB
             string SQL = $"SELECT * FROM DeviceList WHERE TenantId='{tenantId}'";
             var access = Query.Access(SQL);
             var devices = access.FillDataColumn<string>("DeviceId");
+            Assert.AreNotEqual(0, devices.Count);
         }
     }
 

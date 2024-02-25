@@ -29,7 +29,7 @@ namespace sqlcode.dynamodb.ado
             var dbClient = new DbClient(account);
 
             string SQL = command.CommandText;
-            var query =  new PartiViewQuery(dbClient, connectionString.InitialCatalog);
+            var query =  new DbQuery(dbClient, connectionString.InitialCatalog);
 
             QueryOption option = new QueryOption
             {

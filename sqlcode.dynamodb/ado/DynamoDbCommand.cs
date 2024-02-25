@@ -20,7 +20,7 @@ namespace sqlcode.dynamodb.ado
         protected override DbTransaction? DbTransaction { get; set; }
 
         private readonly IDbClient dbClient;
-        private readonly PartiViewQuery query;
+        private readonly DbQuery query;
 
         public DynamoDbCommand(string cmdText, DynamoDbConnection connection)
         {
@@ -31,7 +31,7 @@ namespace sqlcode.dynamodb.ado
             var connectionString = connection.ConnectionStringBuilder;
             IAccount account = connectionString.Account;
             this.dbClient = new DbClient(account);
-            this.query = new PartiViewQuery(dbClient, connectionString.InitialCatalog);
+            this.query = new DbQuery(dbClient, connectionString.InitialCatalog);
         }
 
         public override void Cancel()
