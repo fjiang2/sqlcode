@@ -48,7 +48,7 @@ namespace UnitTestProject
 				.SELECT().DISTINCT().COLUMNS(CategoryID).FROM("dbo.[Products]").WHERE(CategoryID >= 2)
 				.ToString();
 
-			Debug.Assert(SQL == "SELECT DISTINCT [CategoryID] FROM dbo.[Products] WHERE [CategoryID] >= 2");
+			Debug.Assert(SQL == "SELECT DISTINCT [CategoryID] FROM [Products] WHERE [CategoryID] >= 2");
 		}
 
 		[TestMethod]
@@ -68,10 +68,10 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_JOIN2()
 		{
-			string sql = @"SELECT [Categories].[CategoryName], Products.[ProductName], Products.[QuantityPerUnit], Products.[UnitsInStock], Products.[Discontinued]
+			string sql = @"SELECT [Categories].[CategoryName], [Products].[ProductName], [Products].[QuantityPerUnit], [Products].[UnitsInStock], [Products].[Discontinued]
 FROM [Categories]
-INNER JOIN [Products] ON [Categories].[CategoryID] = Products.[CategoryID]
-WHERE Products.[Discontinued] <> 1";
+INNER JOIN [Products] ON [Categories].[CategoryID] = [Products].[CategoryID]
+WHERE [Products].[Discontinued] <> 1";
 
 			string query = new SqlBuilder()
 				.SELECT()

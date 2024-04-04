@@ -22,7 +22,7 @@ using System.Reflection;
 
 namespace Sys.Data
 {
-    class SqlColumn
+    class SqlColumn : IQueryScript
     {
         private readonly string fieldName;
         private bool saved = true;
@@ -56,6 +56,11 @@ namespace Sys.Data
                 if (this.identity)
                     saved = false;
             }
+        }
+
+        public string ToScript(DbAgentStyle style)
+        {
+            return fieldName.ToColumnName(style);
         }
 
         public override string ToString()

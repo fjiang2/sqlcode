@@ -1,15 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net48</TargetFrameworks>
+    <TargetFrameworks>net7.0;net48</TargetFrameworks>
     <RootNamespace>Sys.Data.SQLite</RootNamespace>
-    <Version>1.0.12</Version>
+    <Version>1.0.13</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="System.Data.SQLite" Version="1.0.115" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <PackageReference Include="System.Data.SQLite" Version="1.0.115" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode</id>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <title>SQL code generator</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -10,58 +10,62 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>
 			Generate SQL code by SqlBuilder or SqlGenerator
-	</description>
+		</description>
     <summary>SQL code generator</summary>
     <releaseNotes>
-		3/23/2022 v1.0.12
-		Improvements/Enhancements:
-		1.bug fixes on Query.SelectRow()
-		
-		1/26/2022 v1.0.10
-		Improvements/Enhancements:
-		1.Support ReadDataTable/ReadDataSet to read bulk records
-		
-		9/24/2021 v1.0.9
-        Improvements:
-        1. Support CREATE FUNCTION statement on Statement
-        2. Support TRY-CATCH statement on Statement
-        3. Support TRANSACTION statement on Statement
-        4. Change CREATE PROCEDURE statement on Statement from SqlBuilder
+			4/5/2024 v1.0.13
+			Improvements/Enhancements:
+			1.Support SqlRemote
 
-        9/24/2021 v1.0.8
-        Improvements:
-        1. Support CREATE PROCEDURE statement on SqlBuilder
+			3/23/2022 v1.0.12
+			Improvements/Enhancements:
+			1.bug fixes on Query.SelectRow()
 
-        9/18/2021 v1.0.7
-        Improvements:
-        1. Support CREATE TABLE statement with PRIMARY KEY and FOREIGN KEY on SqlBuilder
+			1/26/2022 v1.0.10
+			Improvements/Enhancements:
+			1.Support ReadDataTable/ReadDataSet to read bulk records
 
-        9/12/2021 v1.0.5
-        Improvements:
-        1. Support SQLite syntax on SqlBuilder and SqlGenerator
+			9/24/2021 v1.0.9
+			Improvements:
+			1. Support CREATE FUNCTION statement on Statement
+			2. Support TRY-CATCH statement on Statement
+			3. Support TRANSACTION statement on Statement
+			4. Change CREATE PROCEDURE statement on Statement from SqlBuilder
 
-        9/6/2021 v1.0.4
-        Improvements:
-        1. Support parameter modifier in/out in AsParameter(...)
-        2. Support NOT BETWEEN on SqlBuilder
+			9/24/2021 v1.0.8
+			Improvements:
+			1. Support CREATE PROCEDURE statement on SqlBuilder
 
-        9/1/2021 v1.0.3
-        Improvements:
-        1. Support list in the operation IN or NOT IN on SqlBuilder
+			9/18/2021 v1.0.7
+			Improvements:
+			1. Support CREATE TABLE statement with PRIMARY KEY and FOREIGN KEY on SqlBuilder
 
-        8/30/2021 v1.0.2
-        Improvements:
-        1. Support parameters in class DelegateDbCmd
+			9/12/2021 v1.0.5
+			Improvements:
+			1. Support SQLite syntax on SqlBuilder and SqlGenerator
 
-        8/28/2021 v1.0.1
-        Features:
-        1. Query SQL database by entity class
+			9/6/2021 v1.0.4
+			Improvements:
+			1. Support parameter modifier in/out in AsParameter(...)
+			2. Support NOT BETWEEN on SqlBuilder
 
-        8/20/2021 v1.0.0
-        Features:
-        1. Create SQL by SqlBuilder
-        2. Create SQL by SqlGenerator
-</releaseNotes>
+			9/1/2021 v1.0.3
+			Improvements:
+			1. Support list in the operation IN or NOT IN on SqlBuilder
+
+			8/30/2021 v1.0.2
+			Improvements:
+			1. Support parameters in class DelegateDbCmd
+
+			8/28/2021 v1.0.1
+			Features:
+			1. Query SQL database by entity class
+
+			8/20/2021 v1.0.0
+			Features:
+			1. Create SQL by SqlBuilder
+			2. Create SQL by SqlGenerator
+		</releaseNotes>
     <dependencies>
       <group targetFramework=".NETStandard2.0"></group>
     </dependencies>

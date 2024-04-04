@@ -21,5 +21,10 @@ namespace Sys.Data.SqlCe
 		{
 		}
 
+		public DbContext(SqlCeAgent agent)
+			: base(agent)
+		{
+		}
+
 	}
 }

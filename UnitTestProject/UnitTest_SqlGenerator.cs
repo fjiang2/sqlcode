@@ -25,11 +25,9 @@ namespace UnitTestProject
 
 		public UnitTest_SqlGenerator()
 		{
-			gen = new SqlGenerator("[Categories]")
-			{
-				PrimaryKeys = new string[] { _CATEGORYID },
-				IdentityKeys = new string[] { _CATEGORYID },
-			};
+			gen = SqlGenerator.Create("[Categories]", SqlServer);
+			gen.PrimaryKeys = new string[] { _CATEGORYID };
+			gen.IdentityKeys = new string[] { _CATEGORYID };
 		}
 
 		[TestMethod]
@@ -42,10 +40,10 @@ namespace UnitTestProject
 			string SQL = gen.Select();
 			Debug.Assert(SQL == "SELECT * FROM [Categories] WHERE [CategoryID] = 1");
 
-			SQL = gen.SelectRows();
+			SQL = gen.SelectColumns();
 			Debug.Assert(SQL == "SELECT * FROM [Categories]");
 
-			SQL = gen.SelectRows(new string[] { _CATEGORYNAME, _DESCRIPTION });
+			SQL = gen.SelectColumns(new string[] { _CATEGORYNAME, _DESCRIPTION });
 			Debug.Assert(SQL == "SELECT [CategoryName],[Description] FROM [Categories]");
 
 		}

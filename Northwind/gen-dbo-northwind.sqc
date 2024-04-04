@@ -1,0 +1,15 @@
+﻿rem use tool sqlcli.exe to create entity class files
+
+let GitHub = typeof(System.Environment).GetEnvironmentVariable("GitHubHome");
+let SRC = GitHub + "\\sqlcode";
+let output = SRC + "\\Northwind\\Entity";
+let ns = "UnitTestProject.Northwind";
+
+cd ..\Northwind
+
+rem export * /ns:{ns}.dpo /dpo /out:{output}\dpo /method:GetField /using:Sys.Data;Sys.Data.Entity
+export * /ns:{ns}.dc1 /dc1 /out:{output}\dc1 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc /data-column-property
+export * /ns:{ns}.dc2 /dc2 /out:{output}\dc2 /method:GetField /using:Sys.Data;Sys.Data.Entity /assoc /data-column-property
+
+
+rem export * /ns:{ns}.l2s /l2s /out:{output}\l2s /method:GetField /using:Sys.Data;Sys.Data.Entity

@@ -22,7 +22,7 @@ namespace Sys.Data
 	/// <summary>
 	/// a value can be used on SQL statement
 	/// </summary>
-	public class SqlValue
+	public class SqlValue : IQueryScript
 	{
 		private readonly object value;
 

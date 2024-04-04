@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode.sqlclient</id>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <title>SqlClient Agent</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,34 +13,38 @@
 	</description>
     <summary>SQL Server database interface</summary>
     <releaseNotes>
-		3/23/2022 v1.0.12
-		Improvements/Enhancements:
-		1. Updated by sqlcode
+      1/30/2023 v1.0.13
+      Improvements/Enhancements:
+      1. Updated System.Data.SqlClient v4.8.5
 
-		1/26/2022 v1.0.10
-		Improvements/Enhancements:
-		1. Updated by sqlcode
+      3/23/2022 v1.0.12
+      Improvements/Enhancements:
+      1. Updated by sqlcode
 
-		9/24/2021 v1.0.8
-		Improvements:
-		1. Updated by sqlcode
+      1/26/2022 v1.0.10
+      Improvements/Enhancements:
+      1. Updated by sqlcode
 
-		9/18/2021 v1.0.7
-		Improvements:
-		1. First release
-</releaseNotes>
+      9/24/2021 v1.0.8
+      Improvements:
+      1. Updated by sqlcode
+
+      9/18/2021 v1.0.7
+      Improvements:
+      1. First release
+    </releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="sqlcode" version="1.0.12" />
+        <dependency id="sqlcode" version="1.0.13" />
       </group>
-      <group targetFramework=".NET5.0">
-        <dependency id="sqlcode" version="1.0.12" />
-        <dependency id="System.Data.SqlClient" version="4.8.3" />
+      <group targetFramework=".NET7.0">
+        <dependency id="sqlcode" version="1.0.13" />
+        <dependency id="System.Data.SqlClient" version="4.8.6" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="..\sqlcode.sqlclient\bin\Release\net48\sqlcode.sqlclient.dll" target="lib\net48\sqlcode.sqlclient.dll" />
-    <file src="..\sqlcode.sqlclient\bin\Release\net5.0\sqlcode.sqlclient.dll" target="lib\net5.0\sqlcode.sqlclient.dll" />
+    <file src="..\sqlcode.sqlclient\bin\Release\net7.0\sqlcode.sqlclient.dll" target="lib\net7.0\sqlcode.sqlclient.dll" />
   </files>
 </package>

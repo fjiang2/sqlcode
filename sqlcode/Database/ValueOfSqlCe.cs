@@ -19,7 +19,7 @@ using System.Text;
 
 namespace Sys.Data
 {
-	public class ValueOfSqlCe : ValueOfScript
+	class ValueOfSqlCe : ValueOfScript
 	{
 		public ValueOfSqlCe(object value)
 			: base(value)

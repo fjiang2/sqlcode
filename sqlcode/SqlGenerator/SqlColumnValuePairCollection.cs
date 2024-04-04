@@ -11,21 +11,21 @@ namespace Sys.Data
     /// </summary>
     public class SqlColumnValuePairCollection : IEnumerable<SqlColumnValuePair>
     {
-        protected List<SqlColumnValuePair> columns = new List<SqlColumnValuePair>();
+        protected List<SqlColumnValuePair> pairs = new List<SqlColumnValuePair>();
 
         public SqlColumnValuePairCollection()
         {
         }
 
-        public IEnumerator<SqlColumnValuePair> GetEnumerator() => columns.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator()=> ((IEnumerable)columns).GetEnumerator();
+        public IEnumerator<SqlColumnValuePair> GetEnumerator() => pairs.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()=> ((IEnumerable)pairs).GetEnumerator();
 
         /// <summary>
         /// Clear all column/value pairs
         /// </summary>
         public void Clear()
         {
-            columns.Clear();
+            pairs.Clear();
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace Sys.Data
 
         public virtual SqlColumnValuePair Add(string name, object value)
         {
-            SqlColumnValuePair found = columns.Find(c => c.ColumnName == name);
+            SqlColumnValuePair found = pairs.Find(c => c.ColumnName == name);
             if (found != null)
             {
                 found.Value = new SqlValue(value);
@@ -146,7 +146,7 @@ namespace Sys.Data
             else
             {
                 var pair = new SqlColumnValuePair(name, value);
-                columns.Add(pair);
+                pairs.Add(pair);
                 return pair;
             }
         }
@@ -165,16 +165,16 @@ namespace Sys.Data
 
         public bool Remove(string column)
         {
-            SqlColumnValuePair found = columns.Find(c => c.ColumnName == column);
+            SqlColumnValuePair found = pairs.Find(c => c.ColumnName == column);
             if (found != null)
-                return columns.Remove(found);
+                return pairs.Remove(found);
 
             return false;
         }
 
         public IDictionary<string, object> ToDictionary()
         {
-            return columns.ToDictionary(c => c.ColumnName, c => c.Value.Value);
+            return pairs.ToDictionary(c => c.ColumnName, c => c.Value.Value);
         }
 
 
@@ -184,18 +184,7 @@ namespace Sys.Data
         /// <returns></returns>
         public IEnumerable<SqlColumnValuePair> ToList()
         {
-            return columns;
-        }
-
-        public string Join(Func<SqlColumnValuePair, string> expr, string separator)
-        {
-            var L = columns.Select(pair => expr(pair));
-            return string.Join(separator, L);
-        }
-
-        public string Join(string separator)
-        {
-            return Join(pair => $"{pair.ColumnFormalName} = {pair.Value}", separator);
+            return pairs;
         }
 
         internal IEnumerable<Text.BinaryExpression> Reduce(string method)
@@ -205,7 +194,7 @@ namespace Sys.Data
 
         public override string ToString()
         {
-            return columns.ToString();
+            return pairs.ToString();
         }
 
 	}

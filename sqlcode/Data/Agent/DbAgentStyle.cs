@@ -36,5 +36,15 @@ namespace Sys.Data
 		/// SQLite database engine
 		/// </summary>
 		SQLite,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		Postgres,
+
+		/// <summary>
+		/// DynamoDB
+		/// </summary>
+		PartiQL,
 	}
 }

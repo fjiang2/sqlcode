@@ -14,5 +14,10 @@ namespace Sys.Data.SqlClient
 			: base(new SqlDbAgent(connectionString))
 		{
 		}
+
+		public DbQuery(SqlDbAgent agent)
+			: base(agent)
+		{
+		}
 	}
 }

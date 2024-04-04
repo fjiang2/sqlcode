@@ -20,5 +20,10 @@ namespace Sys.Data.SQLite
 			: base(new SQLiteAgent(connectionString))
 		{
 		}
+
+		public DbContext(SQLiteAgent agent)
+			: base(agent)
+		{
+		}
 	}
 }

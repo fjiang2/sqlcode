@@ -68,7 +68,7 @@ namespace Sys.Data.Entity
         }
 
         /// <summary>
-        /// Use SelectOnSumbit(...) in action
+        /// Use SelectOnSubmit(...) in action
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
@@ -247,7 +247,7 @@ namespace Sys.Data.Entity
         /// <param name="modifiedProperties">The properties are modified</param>
         /// <param name="where"></param>
         /// <returns></returns>
-        public int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
+        public int PartialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
             => Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, modifiedProperties, where));
 
         /// <summary>
@@ -319,7 +319,7 @@ namespace Sys.Data.Entity
             => Invoke(db => db.Expand<TEntity, TSubEntity>(entities));
 
         /// <summary>
-        /// Expand assocation tables with foreign keys
+        /// Expand association tables with foreign keys
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entities"></param>
