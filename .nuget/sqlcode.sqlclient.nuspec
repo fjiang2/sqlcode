@@ -39,7 +39,7 @@
       </group>
       <group targetFramework=".NET7.0">
         <dependency id="sqlcode" version="1.0.13" />
-        <dependency id="System.Data.SqlClient" version="4.8.5" />
+        <dependency id="System.Data.SqlClient" version="4.8.6" />
       </group>
     </dependencies>
   </metadata>
