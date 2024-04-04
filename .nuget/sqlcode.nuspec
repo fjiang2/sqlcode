@@ -18,8 +18,8 @@
 		1.bug fixes on Query.SelectRow()
 		
 		1/26/2022 v1.0.10
-		   Improvements/Enhancements:
-		   1.Support ReadDataTable/ReadDataSet to read bulk records
+		Improvements/Enhancements:
+		1.Support ReadDataTable/ReadDataSet to read bulk records
 		
 		9/24/2021 v1.0.9
         Improvements:

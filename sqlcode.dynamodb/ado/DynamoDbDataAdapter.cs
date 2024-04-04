@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using sqlcode.dynamodb.clients;
+using mudu.aws.core;
+using mudu.aws.core.clients;
 
 namespace sqlcode.dynamodb.ado
 {
@@ -23,15 +24,21 @@ namespace sqlcode.dynamodb.ado
 
         public override int Fill(DataSet dataSet)
         {
-            var credentials = connection.ConnecitonStingBuilder.Credentials;
-            var region = connection.ConnecitonStingBuilder.Region;
-            var amazonDynamoDBClient = new AmazonDynamoDBClient(credentials, region);
-            var dbClient = new DbClient(amazonDynamoDBClient);
+            var connectionString = connection.ConnectionStringBuilder;
+            IAccount account = connectionString.Account;
+            var dbClient = new DbClient(account);
 
-            string sql = command.CommandText;
-            var result = dbClient.ExecuteStatementAsync(sql).Result;
+            string SQL = command.CommandText;
+            var query =  new DbQuery(dbClient, connectionString.InitialCatalog);
 
-            return 0;
+            QueryOption option = new QueryOption
+            {
+                Editable = true,
+                MaxRows = 0,
+            };
+            var dt = query.FillDataTableAsync(SQL, option).Result;
+            dataSet.Tables.Add(dt);
+            return dt.Rows.Count;
         }
     }
 }

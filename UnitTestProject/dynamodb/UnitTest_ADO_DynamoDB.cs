@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#if NET6_0
+#if NET7_0
 using sqlcode.dynamodb.ado;
 
-namespace UnitTestProject.dynamodb
+namespace UnitTestProject.DynamoDB
 {
     [TestClass]
     public class UnitTest_ADO_DynamoDB

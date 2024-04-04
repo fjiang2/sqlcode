@@ -1,31 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
-	<metadata>
-		<id>sqlcode.sqlremote</id>
-		<version>1.0.12</version>
-		<title>SQL Remote Agent</title>
-		<authors>datconn</authors>
-		<license type="expression">MIT</license>
-		<projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
-		<requireLicenseAcceptance>true</requireLicenseAcceptance>
-		<description>
+  <metadata>
+    <id>sqlcode.sqlremote</id>
+    <version>1.0.13</version>
+    <title>SQL Remote Agent</title>
+    <authors>datconn</authors>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/fjiang2/sqlcode/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>
 			Access database through web server
 		</description>
-		<summary>SQL remote database interface</summary>
-		<releaseNotes>
-			12/26/2022 v1.0.12
+    <summary>SQL remote database interface</summary>
+    <releaseNotes>
+		2/23/2024 v1.0.13
+		Improvements/Enhancements:
+		1.
+		2.
+		Bug Fixes:
+		1.
+		2.
+		12/26/2022 v1.0.12
 			Improvements/Enhancements:
 			1.Initial release
-		</releaseNotes>
-		<dependencies>
-			<group targetFramework=".NETStandard2.0">
-				<dependency id="sqlcode" version="1.0.12" />
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
-			</group>
-		</dependencies>
-	</metadata>
-	<files>
-		<file src="..\sqlcode.sqlremote\bin\Release\netstandard2.0\sqlcode.sqlremote.dll" target="lib\netstandard2.0\sqlcode.sqlremote.dll" />
-		<file src="..\sqlcode.sqlremote\bin\Release\netstandard2.0\sqlcode.sqlremote.deps.json" target="lib\netstandard2.0\sqlcode.sqlremote.deps.json" />
-	</files>
+</releaseNotes>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="sqlcode" version="1.0.13" />
+        <dependency id="Newtonsoft.Json" version="13.0.2" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\sqlcode.sqlremote\bin\Release\netstandard2.0\sqlcode.sqlremote.dll" target="lib\netstandard2.0\sqlcode.sqlremote.dll" />
+    <file src="..\sqlcode.sqlremote\bin\Release\netstandard2.0\sqlcode.sqlremote.deps.json" target="lib\netstandard2.0\sqlcode.sqlremote.deps.json" />
+  </files>
 </package>

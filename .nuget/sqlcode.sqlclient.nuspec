@@ -35,10 +35,10 @@
     </releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="sqlcode" version="1.0.12" />
+        <dependency id="sqlcode" version="1.0.13" />
       </group>
-      <group targetFramework=".NET6.0">
-        <dependency id="sqlcode" version="1.0.12" />
+      <group targetFramework=".NET7.0">
+        <dependency id="sqlcode" version="1.0.13" />
         <dependency id="System.Data.SqlClient" version="4.8.5" />
       </group>
     </dependencies>

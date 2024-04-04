@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using Sys.Data.Text;
-using sqlcode.dynamodb.clients;
 using sqlcode.dynamodb.ado;
 
 namespace Sys.Data.DynamoDb
@@ -18,7 +17,7 @@ namespace Sys.Data.DynamoDb
         private readonly DynamoDbConnection connection;
 
         private readonly string[] statements;
-        private readonly IParameterFacet facet;
+        private readonly IParameterFacet? facet;
 
         public DynamoDbAccess(string connectionString, SqlUnit unit)
         {
