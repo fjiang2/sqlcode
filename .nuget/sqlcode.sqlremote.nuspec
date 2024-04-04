@@ -27,7 +27,7 @@
     <dependencies>
       <group targetFramework=".NETStandard2.0">
         <dependency id="sqlcode" version="1.0.13" />
-        <dependency id="Newtonsoft.Json" version="13.0.2" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
     </dependencies>
   </metadata>

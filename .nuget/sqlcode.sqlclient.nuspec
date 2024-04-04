@@ -39,12 +39,12 @@
       </group>
       <group targetFramework=".NET7.0">
         <dependency id="sqlcode" version="1.0.13" />
-        <dependency id="System.Data.SqlClient" version="4.8.5" />
+        <dependency id="System.Data.SqlClient" version="4.8.6" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="..\sqlcode.sqlclient\bin\Release\net48\sqlcode.sqlclient.dll" target="lib\net48\sqlcode.sqlclient.dll" />
-    <file src="..\sqlcode.sqlclient\bin\Release\net6.0\sqlcode.sqlclient.dll" target="lib\net6.0\sqlcode.sqlclient.dll" />
+    <file src="..\sqlcode.sqlclient\bin\Release\net7.0\sqlcode.sqlclient.dll" target="lib\net7.0\sqlcode.sqlclient.dll" />
   </files>
 </package>
