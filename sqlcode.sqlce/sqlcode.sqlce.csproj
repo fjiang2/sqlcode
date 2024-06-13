@@ -5,7 +5,7 @@
     <RootNamespace>Sys.Data.SqlCe</RootNamespace>
     <Version>1.0.13</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
+    <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
     <PackageReference Include="Microsoft.SqlServer.Compact" Version="4.0.8876.1" />

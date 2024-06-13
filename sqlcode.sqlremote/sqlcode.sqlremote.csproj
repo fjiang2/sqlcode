@@ -5,7 +5,7 @@
     <RootNamespace>Sys.Data.SqlRemote</RootNamespace>
     <Version>1.0.13</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
+    <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
