@@ -3,15 +3,15 @@
   <PropertyGroup>
     <TargetFrameworks>net7.0;net48</TargetFrameworks>
     <RootNamespace>Sys.Data.SQLite</RootNamespace>
-    <Version>1.0.13</Version>
+    <Version>1.0.14</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(LocalNugetPath)</PackageOutputPath>
+    <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />

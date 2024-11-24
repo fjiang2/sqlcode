@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode.sqlclient</id>
-    <version>1.0.13</version>
+    <version>1.0.14</version>
     <title>SqlClient Agent</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,7 +13,14 @@
 	</description>
     <summary>SQL Server database interface</summary>
     <releaseNotes>
-      1/30/2023 v1.0.13
+		11/24/2024 v1.0.14
+		Improvements/Enhancements:
+		1.
+		2.
+		Bug Fixes:
+		1.
+		2.
+		1/30/2023 v1.0.13
       Improvements/Enhancements:
       1. Updated System.Data.SqlClient v4.8.5
 
@@ -32,13 +39,13 @@
       9/18/2021 v1.0.7
       Improvements:
       1. First release
-    </releaseNotes>
+</releaseNotes>
     <dependencies>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="sqlcode" version="1.0.13" />
+        <dependency id="sqlcode" version="1.0.14" />
       </group>
       <group targetFramework=".NET7.0">
-        <dependency id="sqlcode" version="1.0.13" />
+        <dependency id="sqlcode" version="1.0.14" />
         <dependency id="System.Data.SqlClient" version="4.8.6" />
       </group>
     </dependencies>
