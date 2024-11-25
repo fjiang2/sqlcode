@@ -32,8 +32,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{57F3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind", "Northwind\Northwind.csproj", "{78ED3C76-764C-4668-836C-AB9B4F2D5016}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlcode.dynamodb", "sqlcode.dynamodb\sqlcode.dynamodb.csproj", "{D811613F-DD70-444F-BB0A-EDBB02D47B39}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,10 +70,6 @@ Global
 		{78ED3C76-764C-4668-836C-AB9B4F2D5016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78ED3C76-764C-4668-836C-AB9B4F2D5016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78ED3C76-764C-4668-836C-AB9B4F2D5016}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D811613F-DD70-444F-BB0A-EDBB02D47B39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D811613F-DD70-444F-BB0A-EDBB02D47B39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D811613F-DD70-444F-BB0A-EDBB02D47B39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D811613F-DD70-444F-BB0A-EDBB02D47B39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,7 +83,6 @@ Global
 		{7AD413DB-D5BB-4FE5-9991-B8906FF7ED4B} = {57F34FD0-8234-4D84-B073-E16B6F65906A}
 		{FC465A35-09F2-497B-8A3F-E4EED8B1580D} = {3C5187F6-FEBA-40C0-AA5A-D64CA87F008D}
 		{78ED3C76-764C-4668-836C-AB9B4F2D5016} = {3C5187F6-FEBA-40C0-AA5A-D64CA87F008D}
-		{D811613F-DD70-444F-BB0A-EDBB02D47B39} = {57F34FD0-8234-4D84-B073-E16B6F65906A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {41CE5E9C-67D4-46CD-8B7C-9460E6F4C501}
