@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>sqlcode.sqlremote</id>
-    <version>1.0.14</version>
+    <version>1.1.0</version>
     <title>SQL Remote Agent</title>
     <authors>datconn</authors>
     <license type="expression">MIT</license>
@@ -13,6 +13,13 @@
 		</description>
     <summary>SQL remote database interface</summary>
     <releaseNotes>
+		11/24/2024 v1.1.0
+		Improvements/Enhancements:
+		1.
+		2.
+		Bug Fixes:
+		1.
+		2.
 		11/24/2024 v1.0.14
 		Improvements/Enhancements:
 		1.
@@ -33,7 +40,7 @@
 </releaseNotes>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="sqlcode" version="1.0.14" />
+        <dependency id="sqlcode" version="1.1.0" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
     </dependencies>
