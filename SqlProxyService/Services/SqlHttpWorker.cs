@@ -41,6 +41,7 @@ namespace SqlProxyService.Services
 
             foreach (var prefix in serverOption.Prefixes)
             {
+                logger.LogInformation($"Listen: {prefix}");
                 listener.Prefixes.Add(prefix);
             }
         }
