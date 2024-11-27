@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.SqlClient;
 using Sys.Data.Entity;
+#if NET48
+using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
 
 namespace Sys.Data.SqlClient
 {

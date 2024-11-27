@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data;
+#if NET48
 using System.Data.SqlClient;
-
+#else
+using Microsoft.Data.SqlClient;
+#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;
@@ -17,7 +20,7 @@ namespace UnitTestProject
 	[TestClass]
 	public class UnitTest_Parameters
 	{
-		class Enitity
+		class Entity
 		{
 			public int Id { get; set; }
 			public string City { get; set; }
@@ -82,7 +85,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_Object_Parameter()
 		{
-			var args = new Enitity { Id = 20, City = "Houston" };
+			var args = new Entity { Id = 20, City = "Houston" };
 
 			IParameterFacet facet = ParameterFacet.Create(args);
 			List<IDataParameter> items = facet.CreateParameters();
@@ -108,13 +111,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test_XML_Parameter_Serialization()
 		{
-			var paramters = new List<IDataParameter>
+			var _parameters = new List<IDataParameter>
 			{
 				new Parameter("Id", 20),
 				new Parameter("City", "Houston") { Direction = ParameterDirection.Output },
 			};
 
-			string text = ParameterSerialization.Serialize(paramters);
+			string text = ParameterSerialization.Serialize(_parameters);
 			IEnumerable<IDataParameter> parameters = ParameterSerialization.Deserialize(text);
 			var items = parameters.ToList();
 

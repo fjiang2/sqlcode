@@ -6,7 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+#if NET48
 using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
+using Sys.Data.Entity;
 using System.Data;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;

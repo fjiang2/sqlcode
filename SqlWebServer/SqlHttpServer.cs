@@ -5,6 +5,12 @@ using System.Text;
 using System.IO;
 using System.Threading;
 
+#if NET48
+using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
+
 using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
 
@@ -108,7 +114,7 @@ namespace sqlcode.sqlweb
         private SqlRemoteResult Execute(SqlRemoteRequest request)
         {
             string connectionString = Program.connectionString;
-            var agent = new SqlDbAgent(new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString));
+            var agent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
