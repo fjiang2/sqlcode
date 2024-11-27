@@ -53,7 +53,7 @@
       </group>
       <group targetFramework=".NET8.0">
         <dependency id="sqlcode" version="1.1.0" />
-        <dependency id="Microsoft.SqlClient" version="5.2.2" />
+        <dependency id="Microsoft.Data.SqlClient" version="5.2.2" />
       </group>
     </dependencies>
   </metadata>
