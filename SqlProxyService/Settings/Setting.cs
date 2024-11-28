@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sys.Data;
 
 namespace SqlProxyService.Settings
 {
-
     public class Setting : ISetting
     {
         public ServerOption ServerOption { get; }

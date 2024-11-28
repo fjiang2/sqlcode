@@ -5,19 +5,7 @@ using System.Text;
 using System.IO;
 using System.Threading;
 
-#if NET8_0
-using Microsoft.Data.SqlClient;
-#else
-using System.Data.SqlClient;
-#endif
-
-
-using Sys.Data.SqlRemote;
-using Sys.Data.SqlClient;
 using SqlProxyService.Settings;
-using Sys.Data;
-using Sys.Data.SQLite;
-using System.Data.SQLite;
 
 namespace SqlProxyService.Services
 {
@@ -35,7 +23,7 @@ namespace SqlProxyService.Services
 
             if (!HttpListener.IsSupported)
             {
-                throw new NotSupportedException("Needs Windows XP SP2, Server 2003 or later.");
+                throw new NotSupportedException("Needs Windows 10, Server 2008 or later.");
             }
 
             if (serverOption.Prefixes == null || serverOption.Prefixes.Length == 0)
@@ -78,16 +66,7 @@ namespace SqlProxyService.Services
                     HttpListenerContext context = listener.GetContext();
                     try
                     {
-                        HttpListenerRequest request = context.Request;
-                        Stream input = request.InputStream;
-                        string requestString = StreamToString(request.InputStream);
-
-                        HttpListenerResponse response = context.Response;
-                        string responseString = Request(requestString);
-                        byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-
-                        response.ContentLength64 = buffer.Length;
-                        response.OutputStream.Write(buffer, 0, buffer.Length);
+                        Run(context);
                     }
                     catch (Exception ex)
                     {
@@ -95,10 +74,7 @@ namespace SqlProxyService.Services
                     }
                     finally
                     {
-                        if (context != null)
-                        {
-                            context.Response.OutputStream.Close();
-                        }
+                        context?.Response.OutputStream.Close();
                     }
 
                     await Task.Delay(100, stoppingToken);
@@ -112,57 +88,33 @@ namespace SqlProxyService.Services
             Stop();
         }
 
-
-        public static string StreamToString(Stream stream)
+        private void Run(HttpListenerContext context)
         {
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            HttpListenerRequest request = context.Request;
+            string requestString = StreamToString(request.InputStream);
+
+            byte[] buffer = Execute(requestString);
+
+            HttpListenerResponse response = context.Response;
+            response.ContentLength64 = buffer.Length;
+            response.OutputStream.Write(buffer, 0, buffer.Length);
+        }
+
+        private static string StreamToString(Stream stream)
+        {
+            using (StreamReader reader = new StreamReader(stream))
             {
                 return reader.ReadToEnd();
             }
         }
 
-        private string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-
-        public string Request(string json)
+        private byte[] Execute(string requestString)
         {
-            var request = Json.Deserialize<SqlRemoteRequest>(json);
-            Console.WriteLine($"{Now} [Req] {request}");
+            SqlRemoteProxy proxy = new SqlRemoteProxy(serverOption.ConnectionString);
+            string responseString = proxy.Execute(requestString);
 
-            SqlRemoteResult result = Execute(request);
-
-            json = Json.Serialize(result);
-            Console.WriteLine($"{Now} [Ret] {result}");
-
-            return json;
-        }
-
-
-        private SqlRemoteResult Execute(SqlRemoteRequest request)
-        {
-            DbAgent agent = CreateDbAgent(request);
-
-            SqlRemoteHandler handler = new SqlRemoteHandler(agent);
-            return handler.Execute(request);
-        }
-
-        private DbAgent CreateDbAgent(SqlRemoteRequest request)
-        {
-            string connectionString = serverOption.ConnectionString;
-            
-            DbAgent agent;
-            switch (request.AgentStyle)
-            {
-                case DbAgentStyle.SQLite:
-                    string fileName = "";
-                    agent = new SQLiteAgent(fileName);
-                    break;
-
-                default:
-                    agent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
-                    break;
-            }
-
-            return agent;
+            byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+            return buffer;
         }
     }
 }

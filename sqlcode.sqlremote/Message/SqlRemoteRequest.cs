@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -12,7 +11,7 @@ namespace Sys.Data.SqlRemote
     public class SqlRemoteRequest
     {
         [DataMember(Name = "agent", EmitDefaultValue = false)]
-        public DbAgentStyle AgentStyle { get; set; }
+        public DbAgentStyle Style { get; set; }
 
         [DataMember(Name = "sql", EmitDefaultValue = false)]
         public string CommandText { get; set; }
@@ -39,7 +38,7 @@ namespace Sys.Data.SqlRemote
 
         public SqlRemoteRequest(DbAgentStyle style, string sql)
         {
-            this.AgentStyle = style;
+            this.Style = style;
             this.CommandText = sql;
             this.CommandType = CommandType.Text;
             this.Parameters = new List<SqlRemoteParameter>();
@@ -49,7 +48,7 @@ namespace Sys.Data.SqlRemote
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.Append($"{AgentStyle}: {Function}(\"{CommandText}\"");
+            builder.Append($"{Style}: {Function}(\"{CommandText}\"");
             string args = string.Join(",", Parameters.Select(x => $"@{x}"));
             if(!string.IsNullOrEmpty(args))
                 builder.Append($", {args}");

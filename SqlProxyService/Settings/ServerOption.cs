@@ -1,6 +1,4 @@
-﻿using Sys.Data;
-
-namespace SqlProxyService.Settings
+﻿namespace SqlProxyService.Settings
 {
     public class ServerOption
     {
