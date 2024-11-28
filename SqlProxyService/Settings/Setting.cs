@@ -15,16 +15,9 @@ namespace SqlProxyService.Settings
         public Setting(IConfiguration configuration)
         {
             var section = configuration.GetSection("Server");
-            string? engine = section?.GetValue<string>("Engine");
-
-            if (!Enum.TryParse(engine, ignoreCase: true, out DbAgentStyle style))
-            {
-                style = DbAgentStyle.SqlServer;
-            }
 
             ServerOption = new ServerOption
             {
-                Style = style,
                 Prefixes = section?.GetSection("Url")
                 .GetChildren()
                 .Select(c => c.Value ?? string.Empty)

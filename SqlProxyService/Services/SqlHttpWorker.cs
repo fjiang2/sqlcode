@@ -121,15 +121,17 @@ namespace SqlProxyService.Services
             }
         }
 
+        private string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
         public string Request(string json)
         {
             var request = Json.Deserialize<SqlRemoteRequest>(json);
-            Console.WriteLine($"{DateTime.Now} [Req] {request}");
+            Console.WriteLine($"{Now} [Req] {request}");
 
             SqlRemoteResult result = Execute(request);
 
             json = Json.Serialize(result);
-            Console.WriteLine($"{DateTime.Now} [Ret] {result}");
+            Console.WriteLine($"{Now} [Ret] {result}");
 
             return json;
         }
@@ -137,20 +139,22 @@ namespace SqlProxyService.Services
 
         private SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            DbAgent agent = CreateDbAgent();
+            DbAgent agent = CreateDbAgent(request);
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
         }
 
-        private DbAgent CreateDbAgent()
+        private DbAgent CreateDbAgent(SqlRemoteRequest request)
         {
             string connectionString = serverOption.ConnectionString;
+            
             DbAgent agent;
-            switch (serverOption.Style)
+            switch (request.AgentStyle)
             {
                 case DbAgentStyle.SQLite:
-                    agent = new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString));
+                    string fileName = "";
+                    agent = new SQLiteAgent(fileName);
                     break;
 
                 default:

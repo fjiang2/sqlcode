@@ -24,7 +24,7 @@ namespace Sys.Data.SqlRemote
             object args = unit.Arguments;
             string sql = unit.Statement;
 
-            this.request = new SqlRemoteRequest(sql)
+            this.request = new SqlRemoteRequest(broker.Style, sql)
             {
                 CommandType = unit.CommandType,
             };
