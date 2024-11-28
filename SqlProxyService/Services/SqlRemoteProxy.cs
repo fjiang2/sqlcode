@@ -1,12 +1,5 @@
-﻿#if NET8_0
-using Microsoft.Data.SqlClient;
-#else
-using System.Data.SqlClient;
-#endif
-
-using Sys.Data.SqlRemote;
+﻿using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
-using Sys.Data;
 using Sys.Data.SQLite;
 using SqlProxyService.Settings;
 

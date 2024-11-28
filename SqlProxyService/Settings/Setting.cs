@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sys.Data;
 
 namespace SqlProxyService.Settings
 {
@@ -13,21 +12,31 @@ namespace SqlProxyService.Settings
 
         public Setting(IConfiguration configuration)
         {
-            var section = configuration.GetSection("Proxy");
-            var dbServers = new List<DbServerInfo>();
+            var proxy = configuration.GetSection("Proxy");
+            this.ServerOption = GetProxy(proxy);
+        }
 
-            ServerOption = new ServerOption
+        private static ServerOption GetProxy(IConfigurationSection? section)
+        {
+            var prefixes = section?
+                .GetSection("Url")
+                .GetChildren()
+                .Select(c => c.Value ?? string.Empty)
+                .ToArray();
+
+            if (prefixes == null)
             {
-                Prefixes = section?
-                    .GetSection("Url")
-                    .GetChildren()
-                    .Select(c => c.Value ?? string.Empty)
-                    .ToArray() ?? new string[] { "http://localhost/sqlhandler/" },
+                Console.Error.WriteLine($"Undefined \"Url\" in appsettings");
+            }
 
-                DbServers = dbServers,
+            var serverOption = new ServerOption
+            {
+                Prefixes = prefixes ?? new string[] { "http://localhost/sqlhandler/" },
+                DbServers = new List<DbServerInfo>(),
             };
 
-            GetDbServers(section, dbServers);
+            GetDbServers(section, serverOption.DbServers);
+            return serverOption;
         }
 
         private static void GetDbServers(IConfigurationSection? section, List<DbServerInfo> dbServers)
@@ -35,7 +44,10 @@ namespace SqlProxyService.Settings
             var servers = section?.GetSection("Servers").GetChildren();
 
             if (servers == null)
+            {
+                Console.Error.WriteLine($"Undefined \"Servers\" in appsettings");
                 return;
+            }
 
             foreach (var server in servers)
             {
@@ -55,7 +67,7 @@ namespace SqlProxyService.Settings
             string? provider = server?.GetValue<string>("Provider");
             if (!Enum.TryParse<DbAgentStyle>(provider, ignoreCase: true, out var style))
             {
-                Console.Error.WriteLine($"Invalid Provider :{provider}");
+                Console.Error.WriteLine($"Invalid provider: {provider}");
                 return null;
             }
 
