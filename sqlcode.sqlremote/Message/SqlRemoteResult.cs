@@ -44,7 +44,20 @@ namespace Sys.Data.SqlRemote
 
         public override string ToString()
         {
-            return $"Count={Count}, Scalar={Scalar}, Data-Length={Xml?.Length}, Error={Error}";
+            StringBuilder builder = new StringBuilder();
+
+            if (Scalar == null)
+                builder.Append($"Row-Count={Count}");
+            else
+                builder.Append($"Scalar={Scalar}");
+
+            if (Xml != null)
+                builder.Append($", Data-Length={Xml?.Length}");
+
+            if (!string.IsNullOrWhiteSpace(Error))
+                builder.Append($", Error=\"{Error}\"");
+
+            return builder.ToString();
         }
     }
 }

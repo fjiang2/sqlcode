@@ -19,9 +19,9 @@ namespace SqlProxyService.Settings
                 Prefixes = section?.GetSection("Url")
                 .GetChildren()
                 .Select(c => c.Value ?? string.Empty)
-                .ToArray() ?? new string[] { },
+                .ToArray() ?? new string[] { "http://localhost/sqlhandler/" },
 
-                ConnectionString = section?.GetValue<string>("ConnectionString") ?? "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;",
+                ConnectionString = section?.GetValue<string>("ConnectionString") ?? "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security=true;",
             };
         }
     }

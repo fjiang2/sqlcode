@@ -98,7 +98,7 @@ namespace SqlProxyService.Services
                         }
                     }
 
-                    await Task.Delay(1000, stoppingToken);
+                    await Task.Delay(100, stoppingToken);
                 }
             }
             catch (Exception ex)
@@ -120,8 +120,8 @@ namespace SqlProxyService.Services
 
         public string Request(string json)
         {
-            Console.WriteLine($"{DateTime.Now} [Req] {json}");
             var request = Json.Deserialize<SqlRemoteRequest>(json);
+            Console.WriteLine($"{DateTime.Now} [Req] {request}");
 
             SqlRemoteResult result = Execute(request);
 

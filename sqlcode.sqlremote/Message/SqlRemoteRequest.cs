@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Sys.Data.SqlRemote
 {
@@ -15,15 +18,15 @@ namespace Sys.Data.SqlRemote
         public CommandType CommandType { get; set; }
 
         [DataMember(Name = "args", EmitDefaultValue = false)]
-        public IList<SqlRemoteParameter> Parameters { get; set; } 
-        
+        public IList<SqlRemoteParameter> Parameters { get; set; }
+
         [DataMember(Name = "func", EmitDefaultValue = false)]
         public string Function { get; set; }
 
         [DataMember(Name = "start", EmitDefaultValue = false)]
         public int StartRecord { get; set; }
 
-        [DataMember(Name = "maxrows", EmitDefaultValue = false)]
+        [DataMember(Name = "maxRows", EmitDefaultValue = false)]
         public int MaxRecords { get; set; }
 
         public SqlRemoteRequest()
@@ -36,6 +39,19 @@ namespace Sys.Data.SqlRemote
             this.CommandText = sql;
             this.CommandType = CommandType.Text;
             this.Parameters = new List<SqlRemoteParameter>();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append($"{Function}(\"{CommandText}\"");
+            string args = string.Join(",", Parameters.Select(x => $"@{x}"));
+            if(!string.IsNullOrEmpty(args))
+                builder.Append($", {args}");
+            builder.Append($")");
+
+            return builder.ToString();
         }
     }
 }
