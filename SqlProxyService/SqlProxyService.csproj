@@ -14,6 +14,7 @@
 
   <ItemGroup>
 	<ProjectReference Include="..\sqlcode.sqlclient\sqlcode.sqlclient.csproj" />
+	<ProjectReference Include="..\sqlcode.sqlite\sqlcode.sqlite.csproj" />
     <ProjectReference Include="..\sqlcode.sqlremote\sqlcode.sqlremote.csproj" />
   </ItemGroup>
 </Project>

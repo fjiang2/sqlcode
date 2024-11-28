@@ -15,6 +15,9 @@ using System.Data.SqlClient;
 using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
 using SqlProxyService.Settings;
+using Sys.Data;
+using Sys.Data.SQLite;
+using System.Data.SQLite;
 
 namespace SqlProxyService.Services
 {
@@ -134,11 +137,28 @@ namespace SqlProxyService.Services
 
         private SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            string connectionString = serverOption.ConnectionString;
-            var agent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
+            DbAgent agent = CreateDbAgent();
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
+        }
+
+        private DbAgent CreateDbAgent()
+        {
+            string connectionString = serverOption.ConnectionString;
+            DbAgent agent;
+            switch (serverOption.Style)
+            {
+                case DbAgentStyle.SQLite:
+                    agent = new SQLiteAgent(new SQLiteConnectionStringBuilder(connectionString));
+                    break;
+
+                default:
+                    agent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
+                    break;
+            }
+
+            return agent;
         }
     }
 }

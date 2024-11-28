@@ -5,7 +5,7 @@ namespace SqlProxyService
 {
     class StartUp
     {
-        public const string ServiceName = "SQC";
+        public const string ServiceName = "SQLProxy";
 
         private readonly IConfiguration configuration;
 
@@ -28,7 +28,7 @@ namespace SqlProxyService
             return Host.CreateDefaultBuilder(args)
                   .UseWindowsService(options =>
                   {
-                      options.ServiceName = $"{ServiceName} Proxy Server";
+                      options.ServiceName = $"{ServiceName} Service";
                   })
                   .ConfigureAppConfiguration((hostingContext, configuration) =>
                   {
