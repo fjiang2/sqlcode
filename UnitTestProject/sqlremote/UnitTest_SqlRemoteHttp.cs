@@ -29,6 +29,7 @@ namespace UnitTestProject
         {
             SqlHttpBroker broker = new SqlHttpBroker(url)
             {
+                ProviderName = "Northwind",
                 Style = DbAgentStyle.SqlServer,
             };
 

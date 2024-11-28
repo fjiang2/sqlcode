@@ -110,7 +110,7 @@ namespace SqlProxyService.Services
 
         private byte[] Execute(string requestString)
         {
-            SqlRemoteProxy proxy = new SqlRemoteProxy(serverOption.ConnectionString);
+            SqlRemoteProxy proxy = new SqlRemoteProxy(serverOption.DbServers);
             string responseString = proxy.Execute(requestString);
 
             byte[] buffer = Encoding.UTF8.GetBytes(responseString);

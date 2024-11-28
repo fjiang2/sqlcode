@@ -7,11 +7,12 @@ using System.Text;
 
 namespace Sys.Data.SqlRemote
 {
+
     [DataContract]
     public class SqlRemoteRequest
     {
-        [DataMember(Name = "agent", EmitDefaultValue = false)]
-        public DbAgentStyle Style { get; set; }
+        [DataMember(Name = "dbx", EmitDefaultValue = false)]
+        public DbProvider Provider { get; set; }
 
         [DataMember(Name = "sql", EmitDefaultValue = false)]
         public string CommandText { get; set; }
@@ -36,9 +37,9 @@ namespace Sys.Data.SqlRemote
 
         }
 
-        public SqlRemoteRequest(DbAgentStyle style, string sql)
+        public SqlRemoteRequest(DbProvider provider, string sql)
         {
-            this.Style = style;
+            this.Provider = provider;
             this.CommandText = sql;
             this.CommandType = CommandType.Text;
             this.Parameters = new List<SqlRemoteParameter>();
@@ -48,7 +49,7 @@ namespace Sys.Data.SqlRemote
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.Append($"{Style}: {Function}(\"{CommandText}\"");
+            builder.Append($"{Provider}: {Function}(\"{CommandText}\"");
             string args = string.Join(",", Parameters.Select(x => $"@{x}"));
             if(!string.IsNullOrEmpty(args))
                 builder.Append($", {args}");

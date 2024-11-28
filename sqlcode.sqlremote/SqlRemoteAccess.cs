@@ -24,7 +24,13 @@ namespace Sys.Data.SqlRemote
             object args = unit.Arguments;
             string sql = unit.Statement;
 
-            this.request = new SqlRemoteRequest(broker.Style, sql)
+            DbProvider provider = new DbProvider
+            {
+                Name = broker.ProviderName,
+                Style = broker.Style,
+            };
+
+            this.request = new SqlRemoteRequest(provider, sql)
             {
                 CommandType = unit.CommandType,
             };
@@ -100,7 +106,7 @@ namespace Sys.Data.SqlRemote
         {
             if (statements.Length == 0)
                 return;
-            
+
             request.Function = nameof(ExecuteTransaction);
 
             adapter.ExecuteTransaction();

@@ -8,16 +8,17 @@ using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
 using Sys.Data;
 using Sys.Data.SQLite;
+using SqlProxyService.Settings;
 
 namespace SqlProxyService.Services
 {
     class SqlRemoteProxy
     {
-        private readonly string connectionString;
+        private readonly List<DbServerInfo> dbServers;
 
-        public SqlRemoteProxy(string connectionString)
+        public SqlRemoteProxy(List<DbServerInfo> dbServers)
         {
-            this.connectionString = connectionString;                
+            this.dbServers = dbServers;
         }
 
         private static string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -25,36 +26,43 @@ namespace SqlProxyService.Services
         public string Execute(string json)
         {
             var request = Json.Deserialize<SqlRemoteRequest>(json);
-            Console.WriteLine($"{Now} [Req] {request}");
+            Console.WriteLine($"{Now} [Tx] {request}");
 
             SqlRemoteResult result = Execute(request);
 
             json = Json.Serialize(result);
-            Console.WriteLine($"{Now} [Ret] {result}");
+            Console.WriteLine($"{Now} [Rx] {result}");
 
             return json;
         }
 
         public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            DbAgent agent = CreateDbAgent(request);
+            string providerName = request.Provider.Name;
+            DbServerInfo serverInfo = dbServers.Where(x => x.Name == providerName).First();
+            if (serverInfo == null)
+            {
+                return new SqlRemoteResult { Error = $"Cannot find provider name: {providerName}" };
+            }
+
+            DbAgent agent = CreateDbAgent(serverInfo);
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
         }
 
-        private DbAgent CreateDbAgent(SqlRemoteRequest request)
+        private DbAgent CreateDbAgent(DbServerInfo serverInfo)
         {
             DbAgent agent;
-            switch (request.Style)
+            switch (serverInfo.Style)
             {
                 case DbAgentStyle.SQLite:
-                    string fileName = connectionString;
+                    string fileName = serverInfo.ConnectionString;
                     agent = new SQLiteAgent(fileName);
                     break;
 
                 default:
-                    agent = new SqlDbAgent(new SqlConnectionStringBuilder(connectionString));
+                    agent = new SqlDbAgent(new SqlConnectionStringBuilder(serverInfo.ConnectionString));
                     break;
             }
 
