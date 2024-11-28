@@ -2,6 +2,8 @@
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
 using SqlProxyService.Settings;
+using Azure.Core;
+using System.Configuration.Provider;
 
 namespace SqlProxyService.Services
 {
@@ -31,22 +33,26 @@ namespace SqlProxyService.Services
 
         public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            string providerName = request.Provider.Name;
-            DbServerInfo serverInfo = dbServers.Where(x => x.Name == providerName).First();
-            if (serverInfo == null)
-            {
-                return new SqlRemoteResult { Error = $"Cannot find provider name: {providerName}" };
-            }
-
-            DbAgent agent = CreateDbAgent(serverInfo);
+            DbAgent? agent = CreateDbAgent(request.Provider);
+            if (agent == null)
+                return new SqlRemoteResult { Error = $"Cannot find provider or name: {request.Provider}" };
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
         }
 
-        private DbAgent CreateDbAgent(DbServerInfo serverInfo)
+        private DbAgent? CreateDbAgent(DbProvider dbProvider)
         {
-            DbAgent agent;
+            DbServerInfo? serverInfo;
+            if (!string.IsNullOrEmpty(dbProvider.Name))
+                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.Name);
+            else
+                serverInfo = dbServers.FirstOrDefault(x => x.Style == dbProvider.Style);
+
+            if (serverInfo == null)
+                return null;
+
+            DbAgent? agent = null;
             switch (serverInfo.Style)
             {
                 case DbAgentStyle.SQLite:
@@ -54,7 +60,7 @@ namespace SqlProxyService.Services
                     agent = new SQLiteAgent(fileName);
                     break;
 
-                default:
+                case DbAgentStyle.SqlServer:
                     agent = new SqlDbAgent(new SqlConnectionStringBuilder(serverInfo.ConnectionString));
                     break;
             }

@@ -49,7 +49,7 @@ namespace Sys.Data.SqlRemote
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.Append($"{Provider}: {Function}(\"{CommandText}\"");
+            builder.Append($"{Provider}:: {Function}(\"{CommandText}\"");
             string args = string.Join(",", Parameters.Select(x => $"@{x}"));
             if(!string.IsNullOrEmpty(args))
                 builder.Append($", {args}");
