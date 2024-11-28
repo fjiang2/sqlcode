@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Sys.Data.Entity;
-#if NET48
-using System.Data.SqlClient;
-#else
+#if NET8_0
 using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
 #endif
 
 namespace Sys.Data.SqlClient

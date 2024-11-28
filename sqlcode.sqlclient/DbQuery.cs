@@ -1,11 +1,10 @@
-﻿#if NET48
-using System.Data.SqlClient;
-#else
+﻿using Sys.Data.Entity;
+
+#if NET8_0
 using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
 #endif
-using Sys.Data.Entity;
-
-
 
 namespace Sys.Data.SqlClient
 {

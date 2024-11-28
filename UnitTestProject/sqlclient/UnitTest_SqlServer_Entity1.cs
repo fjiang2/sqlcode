@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
-#if NET48
-using System.Data.SqlClient;
-#else
+#if NET8_0
 using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
 #endif
+
 using Sys.Data.Entity;
 using UnitTestProject.Northwind.dc1;
 using Sys.Data.SqlClient;

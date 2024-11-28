@@ -5,11 +5,12 @@ using System.Text;
 using System.IO;
 using System.Threading;
 
-#if NET48
-using System.Data.SqlClient;
-#else
+#if NET8_0
 using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
 #endif
+
 
 using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
