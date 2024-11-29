@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace Sys.Data.SqlClient
 {
-	public class SqlDbAgent : DbAgent
+	internal class SqlDbAgent : DbAgent
 	{
 		public SqlDbAgent(SqlConnectionStringBuilder connectionString)
 			: base(connectionString)

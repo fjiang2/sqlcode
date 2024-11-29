@@ -33,7 +33,7 @@ namespace SqlProxyService.Services
 
         public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            DbAgent? agent = CreateDbAgent(request.Provider);
+            IDbAgent? agent = CreateDbAgent(request.Provider);
             if (agent == null)
                 return new SqlRemoteResult { Error = $"Cannot find provider or name: {request.Provider}" };
 
@@ -41,7 +41,7 @@ namespace SqlProxyService.Services
             return handler.Execute(request);
         }
 
-        private DbAgent? CreateDbAgent(DbProvider dbProvider)
+        private IDbAgent? CreateDbAgent(DbProvider dbProvider)
         {
             DbServerInfo? serverInfo;
             if (!string.IsNullOrEmpty(dbProvider.Name))
@@ -52,16 +52,16 @@ namespace SqlProxyService.Services
             if (serverInfo == null)
                 return null;
 
-            DbAgent? agent = null;
+            IDbAgent? agent = null;
             switch (serverInfo.Style)
             {
                 case DbAgentStyle.SQLite:
                     string fileName = serverInfo.ConnectionString;
-                    agent = new SQLiteAgent(fileName);
+                    agent = new SQLite(fileName, 100).Agent;
                     break;
 
                 case DbAgentStyle.SqlServer:
-                    agent = new SqlDbAgent(new SqlConnectionStringBuilder(serverInfo.ConnectionString));
+                    agent = new SqlDb(serverInfo.ConnectionString).Agent;
                     break;
             }
 

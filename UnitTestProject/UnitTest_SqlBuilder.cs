@@ -174,7 +174,7 @@ WHERE [Products].[Discontinued] <> 1";
 			Debug.Assert(SQL == @"DELETE FROM [Categories] WHERE [CategoryName] = N'Electronics'");
 
 #if HAS_SQL_SERVER
-			int result = new DbQuery(conn).Access(SQL, context.Parameters).ExecuteNonQuery();
+			int result = new SqlDb(conn).Query.Access(SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result >= 0);
 #endif
 
@@ -190,7 +190,7 @@ WHERE [Products].[Discontinued] <> 1";
 SET @CategoryId = @@IDENTITY");
 
 #if HAS_SQL_SERVER
-			result = new DbQuery(conn).Access(SQL, context.Parameters).ExecuteNonQuery();
+			result = new SqlDb(conn).Query.Access(SQL, context.Parameters).ExecuteNonQuery();
 			Debug.Assert(result == 1);
 
 			int CategoryId = (int)context["CategoryId"].Value;
@@ -388,16 +388,16 @@ SET @CategoryId = @@IDENTITY");
 
 #if HAS_SQL_SERVER
 
-			var dt1 = new DbQuery(conn).Access(SQL, new { Id = 7 }).FillDataTable();
+			var dt1 = new SqlDb(conn).Query.Access(SQL, new { Id = 7 }).FillDataTable();
 			Debug.Assert(dt1.Rows.Count >= 5);
 
-			var dt2 = new DbQuery(conn).Access(SQL, context.Parameters).FillDataTable();
+			var dt2 = new SqlDb(conn).Query.Access(SQL, context.Parameters).FillDataTable();
 			Debug.Assert(dt2.Rows.Count >= 5);
 
 			//if you want to change value of parameter from 7 to 10
 			context["Id"].Value = 10;
 
-			dt2 = new DbQuery(conn).Access(SQL, context.Parameters).FillDataTable();
+			dt2 = new SqlDb(conn).Query.Access(SQL, context.Parameters).FillDataTable();
 			Debug.Assert(dt2.Rows.Count == 0);
 
 #endif

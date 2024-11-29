@@ -3,13 +3,9 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlCe
 {
-	public class SqlCeAgent : DbAgent
+	internal class SqlCeAgent : DbAgent
 	{
-		public SqlCeAgent(string fileName)
-			: base(new SqlCeConnectionStringBuilder($"Data Source={fileName};Max Buffer Size=1024;Persist Security Info=False;"))
-		{
-		}
-
+	
 		public SqlCeAgent(SqlCeConnectionStringBuilder connectionString)
 			: base(connectionString)
 		{

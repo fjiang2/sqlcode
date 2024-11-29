@@ -3,13 +3,8 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SQLite
 {
-	public class SQLiteAgent : DbAgent
+    internal class SQLiteAgent : DbAgent
 	{
-		public SQLiteAgent(string fileName)
-			: base(new SQLiteConnectionStringBuilder($"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;"))
-		{
-		}
-
 		public SQLiteAgent(SQLiteConnectionStringBuilder connectionString)
 			: base(connectionString)
 		{

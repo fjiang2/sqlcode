@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Sys.Data.Entity
 {
-    public interface IDbContext
+    public interface IDbContext : IDisposable
     {
         string Description { get; set; }
         DbAgentOption Option { get; }
@@ -14,7 +14,6 @@ namespace Sys.Data.Entity
         event EventHandler<RowEventArgs> RowChanging;
 
         void Clear();
-        void Dispose();
 
         IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(IEnumerable<TEntity> entities) 
             where TEntity : class 
