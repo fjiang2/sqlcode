@@ -26,7 +26,7 @@ namespace UnitTestProject
 	public class UnitTest_SqlBuilder
 	{
 		private readonly DbAgentStyle SQLite = DbAgentStyle.SQLite;
-		private readonly SqlConnectionStringBuilder conn;
+		private readonly string conn;
 
 		private readonly Expression ProductId = "ProductId".AsColumn();
 		private readonly string Products = "Products";
@@ -34,7 +34,7 @@ namespace UnitTestProject
 
 		public UnitTest_SqlBuilder()
 		{
-			conn = new SqlConnectionStringBuilder(Setting.ConnectionString);
+			conn = Setting.ConnectionString;
 		}
 
 		[TestMethod]

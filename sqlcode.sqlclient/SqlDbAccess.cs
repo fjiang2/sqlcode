@@ -16,7 +16,7 @@ namespace Sys.Data.SqlClient
 	/// <summary>
 	/// Access SQL Server
 	/// </summary>
-	public class SqlDbAccess : DbAccess, IDbAccess
+	internal class SqlDbAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;
