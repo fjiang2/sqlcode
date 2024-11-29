@@ -13,10 +13,11 @@ namespace UnitTestProject
 			get
 			{
 				if (Environment.MachineName.StartsWith("XPS"))
-					return "data source=localhost\\sqlexpress;initial catalog=Northwind;integrated security=SSPI;packet size=4096";
+					return "data source=localhost\\SQLEXPRESS;initial catalog=Northwind;integrated security=SSPI;packet size=4096";
 				else
-					return "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
-			}
-		}
+                    //return "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
+					return "Server = localhost\\SQLEXPRESS;initial catalog=Northwind;Integrated Security = true;";
+            }
+        }
 	}
 }

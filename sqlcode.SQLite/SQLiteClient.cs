@@ -8,17 +8,17 @@ using System.IO;
 
 namespace Sys.Data.SQLite
 {
-    public class SQLite
+    public class SQLiteClient : IDbClient
     {
         private readonly string connection;
 
-        public SQLite(string fileName, int poolSize)
+        public SQLiteClient(string fileName, int poolSize)
         {
             string path = Path.GetFullPath(fileName);
             connection = $"provider=sqlite;Data Source={path};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size={poolSize};";
         }
 
-        public SQLite(string connectionString)
+        public SQLiteClient(string connectionString)
         {
             connection = connectionString;
         }

@@ -57,11 +57,11 @@ namespace SqlProxyService.Services
             {
                 case DbAgentStyle.SQLite:
                     string fileName = serverInfo.ConnectionString;
-                    agent = new SQLite(fileName, 100).Agent;
+                    agent = new SQLiteClient(fileName, 100).Agent;
                     break;
 
                 case DbAgentStyle.SqlServer:
-                    agent = new SqlDb(serverInfo.ConnectionString).Agent;
+                    agent = new SqlDbClient(serverInfo.ConnectionString).Agent;
                     break;
             }
 

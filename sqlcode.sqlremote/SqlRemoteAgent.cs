@@ -4,7 +4,7 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlRemote
 {
-    public class SqlRemoteAgent : DbAgent
+    internal class SqlRemoteAgent : DbAgent
     {
         private readonly ISqlRemoteBroker broker;
         

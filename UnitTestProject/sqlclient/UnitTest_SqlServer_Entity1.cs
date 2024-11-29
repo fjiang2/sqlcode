@@ -25,53 +25,54 @@ namespace UnitTestProject
 	public class UnitTest_SqlServer_Entity1
 	{
 		private readonly static string connectionString = Setting.ConnectionString;
-
+		private readonly SqlDbClient dbClient;
 #if !USE_Query_Class
 		private readonly DataQuery Query;
 #endif
 		public UnitTest_SqlServer_Entity1()
 		{
 			DataContext.EntityClassType = EntityClassType.ExtensionClass;
+			this.dbClient = new SqlDbClient(connectionString);
 
 #if USE_Query_Class
-			new SqlDb(connectionString).SetDefaultAgent();
+            dbClient.SetDefaultAgent();
 #else
-			Query = new DbQuery(connectionString);
+			Query = sqlDb.Query;
 #endif
-		}
+        }
 
 
 
-		#region Additional test attributes
-		//
-		// You can use the following additional attributes as you write your tests:
-		//
-		// Use ClassInitialize to run code before running the first test in the class
-		// [ClassInitialize()]
-		// public static void MyClassInitialize(TestContext testContext) { }
-		//
-		// Use ClassCleanup to run code after all tests in a class have run
-		// [ClassCleanup()]
-		// public static void MyClassCleanup() { }
-		//
-		// Use TestInitialize to run code before running each test 
-		// [TestInitialize()]
-		// public void MyTestInitialize() { }
-		//
-		// Use TestCleanup to run code after each test has run
-		// [TestCleanup()]
-		// public void MyTestCleanup() { }
-		//
-		#endregion
+        #region Additional test attributes
+        //
+        // You can use the following additional attributes as you write your tests:
+        //
+        // Use ClassInitialize to run code before running the first test in the class
+        // [ClassInitialize()]
+        // public static void MyClassInitialize(TestContext testContext) { }
+        //
+        // Use ClassCleanup to run code after all tests in a class have run
+        // [ClassCleanup()]
+        // public static void MyClassCleanup() { }
+        //
+        // Use TestInitialize to run code before running each test 
+        // [TestInitialize()]
+        // public void MyTestInitialize() { }
+        //
+        // Use TestCleanup to run code after each test has run
+        // [TestCleanup()]
+        // public void MyTestCleanup() { }
+        //
+        #endregion
 
-		[TestMethod]
+        [TestMethod]
 		public void TestMethodSelectIQueryable()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
 				int id = 1000;
 				string name = "Grandma's Boysenberry Spread";
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				var rows = table.Select(row => row.ProductID < id && row.ProductName == name);
 
 				Debug.Assert(rows.First(row => row.ProductID == 6).ProductName == "Grandma's Boysenberry Spread");
@@ -82,9 +83,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethod_Select()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				var rows = table.Select("ProductID < 1000");
 
 				Debug.Assert(rows.First(row => row.ProductID == 6).ProductName == "Grandma's Boysenberry Spread");
@@ -102,9 +103,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodInsert()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				Products product = new Products
 				{
 					ProductID = 100,    //identity
@@ -112,7 +113,7 @@ namespace UnitTestProject
 				};
 
 				table.InsertOnSubmit(product);
-				string SQL = db.GetNonQueryScript();
+				string SQL = ctx.GetNonQueryScript();
 				Debug.Assert(SQL.StartsWith("INSERT INTO [Products]([ProductName],[SupplierID],[CategoryID],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]) VALUES(N'iPhone',0,0,0,0,0,0,0)"));
 			}
 		}
@@ -120,9 +121,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodUpdate()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				var product = new
 				{
 					ProductID = 100,
@@ -130,20 +131,20 @@ namespace UnitTestProject
 				};
 
 				table.PartialUpdateOnSubmit(product);
-				string SQL = db.GetNonQueryScript();
+				string SQL = ctx.GetNonQueryScript();
 				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductName] = N'iPhone' WHERE [ProductID] = 100"));
 			}
 
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				Products prod = new Products
 				{
 					ProductID = 200,
 					ProductName = "iPhone"
 				};
 				table.PartialUpdateOnSubmit(prod, row => new { row.ProductID, row.ProductName }, row => row.ProductID == 1);
-				string SQL = db.GetNonQueryScript();
+				string SQL = ctx.GetNonQueryScript();
 				Debug.Assert(SQL.StartsWith("UPDATE [Products] SET [ProductID] = 200, [ProductName] = N'iPhone' WHERE (ProductID = 1)"));
 			}
 		}
@@ -151,9 +152,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodInsertOrUpdate()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				var product = new Products
 				{
 					ProductID = 100,
@@ -161,7 +162,7 @@ namespace UnitTestProject
 				};
 
 				table.InsertOrUpdateOnSubmit(product);
-				string SQL = db.GetNonQueryScript();
+				string SQL = ctx.GetNonQueryScript();
 				Debug.Assert(SQL.StartsWith("IF EXISTS(SELECT * FROM [Products] WHERE [ProductID] = 100) UPDATE [Products] SET [ProductName] = N'iPhone',[SupplierID] = 0,[CategoryID] = 0,[QuantityPerUnit] = NULL,[UnitPrice] = 0,[UnitsInStock] = 0,[UnitsOnOrder] = 0,[ReorderLevel] = 0,[Discontinued] = 0 WHERE [ProductID] = 100 ELSE INSERT INTO [Products]([ProductName],[SupplierID],[CategoryID],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]) VALUES(N'iPhone',0,0,0,0,0,0,0)"));
 			}
 		}
@@ -169,9 +170,9 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodDelete()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				var product = new Products
 				{
 					ProductID = 100,
@@ -179,7 +180,7 @@ namespace UnitTestProject
 				};
 
 				table.DeleteOnSubmit(product);
-				string SQL = db.GetNonQueryScript();
+				string SQL = ctx.GetNonQueryScript();
 				Debug.Assert(SQL.StartsWith("DELETE FROM [Products] WHERE [ProductID] = 100"));
 			}
 		}
@@ -187,18 +188,18 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodSelectOnSubmit()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var product = db.GetTable<Products>();
+				var product = ctx.GetTable<Products>();
 				product.SelectOnSubmit(row => row.ProductID == 6);
 
-				var customer = db.GetTable<Customers>();
+				var customer = ctx.GetTable<Customers>();
 				customer.SelectOnSubmit(row => row.CustomerID == "MAISD");
 
-				string SQL = db.GetQueryScript();
+				string SQL = ctx.GetQueryScript();
 				Debug.Assert(SQL == "SELECT * FROM [Products] WHERE (ProductID = 6)\r\nSELECT * FROM [Customers] WHERE (CustomerID = 'MAISD')");
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 				var L1 = reader.Read<Products>();
 				var L2 = reader.Read<Customers>();
 
@@ -211,15 +212,15 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodSelectOnSubmitChanges()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				db.SelectOnSubmit<Products>(row => row.ProductID == 6);
-				db.SelectOnSubmit<Customers>(row => row.CustomerID == "MAISD");
+				ctx.SelectOnSubmit<Products>(row => row.ProductID == 6);
+				ctx.SelectOnSubmit<Customers>(row => row.CustomerID == "MAISD");
 
-				string SQL = db.GetQueryScript();
+				string SQL = ctx.GetQueryScript();
 				Debug.Assert(SQL == "SELECT * FROM [Products] WHERE (ProductID = 6)\r\nSELECT * FROM [Customers] WHERE (CustomerID = 'MAISD')");
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 				var L1 = reader.Read<Products>();
 				var L2 = reader.Read<Customers>();
 
@@ -232,13 +233,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMethodAssociation()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var order_table = db.GetTable<Orders>();
+				var order_table = ctx.GetTable<Orders>();
 				var order = order_table.Select(row => row.OrderID == 10256).FirstOrDefault();
 				order_table.ExpandOnSubmit<Customers>(order);
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 				var L2 = reader.Read<Customers>();
 
 				Debug.Assert(L2.First().CompanyName == "Wellington Importadora");
@@ -251,13 +252,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMasterDetail()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var customer_table = db.GetTable<Customers>();
+				var customer_table = ctx.GetTable<Customers>();
 				var customer = customer_table.Select(row => row.CustomerID == "THECR").FirstOrDefault();
 				customer_table.ExpandOnSubmit<Orders>(customer);
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 				var orders = reader.Read<Orders>();
 				var order = orders.FirstOrDefault();
 
@@ -266,7 +267,7 @@ namespace UnitTestProject
 				var demographics = customer_table.Expand<CustomerCustomerDemo>(customer).FirstOrDefault();
 				Debug.Assert(demographics == null);
 
-				var order_table = db.GetTable<Orders>();
+				var order_table = ctx.GetTable<Orders>();
 				var shippers = order_table.Expand<Shippers>(order);
 				Debug.Assert(shippers.FirstOrDefault().Phone == "(503) 555-3199");
 
@@ -276,20 +277,20 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMasterDetail2()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var customers = db.Select<Customers>(row => row.CustomerID == "THECR");
+				var customers = ctx.Select<Customers>(row => row.CustomerID == "THECR");
 				var customer = customers.FirstOrDefault();
 
-				var orders = db.Expand<Customers, Orders>(customer);
+				var orders = ctx.Expand<Customers, Orders>(customer);
 				var order = orders.FirstOrDefault();
 				Debug.Assert(order.ShipName == "The Cracker Box");
 
-				var demographics = db.Expand<Customers, CustomerCustomerDemo>(customer);
+				var demographics = ctx.Expand<Customers, CustomerCustomerDemo>(customer);
 				var demo = demographics.FirstOrDefault();
 				Debug.Assert(demo == null);
 
-				var shippers = db.Expand<Orders, Shippers>(order);
+				var shippers = ctx.Expand<Orders, Shippers>(order);
 				Debug.Assert(shippers.FirstOrDefault().Phone == "(503) 555-3199");
 
 			}
@@ -298,15 +299,15 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestMasterDetail3()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var customers = db.Select<Customers>(row => row.CustomerID == "THECR");
+				var customers = ctx.Select<Customers>(row => row.CustomerID == "THECR");
 				var customer = customers.FirstOrDefault();
 
-				db.ExpandOnSubmit<Customers, Orders>(customer);
-				db.ExpandOnSubmit<Customers, CustomerCustomerDemo>(customer);
+				ctx.ExpandOnSubmit<Customers, Orders>(customer);
+				ctx.ExpandOnSubmit<Customers, CustomerCustomerDemo>(customer);
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 
 				var orders = reader.Read<Orders>();
 				var order = orders.FirstOrDefault();
@@ -316,8 +317,8 @@ namespace UnitTestProject
 				var demo = demographics.FirstOrDefault();
 				Debug.Assert(demo == null);
 
-				db.ExpandOnSubmit<Orders, Shippers>(order);
-				reader = db.SubmitQueries();
+				ctx.ExpandOnSubmit<Orders, Shippers>(order);
+				reader = ctx.SubmitQueries();
 				var shippers = reader.Read<Shippers>();
 				Debug.Assert(shippers.FirstOrDefault().Phone == "(503) 555-3199");
 
@@ -328,13 +329,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestEntityExpandAll()
 		{
-            using (var db = new SqlDb(connectionString).Context)
+            using (var ctx =  dbClient.Context)
             {
-				var customer_table = db.GetTable<Customers>();
+				var customer_table = ctx.GetTable<Customers>();
 				var customer = customer_table.Select(row => row.CustomerID == "THECR").FirstOrDefault();
 				Type[] types = customer_table.ExpandOnSubmit(customer);
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 				var orders = reader.Read<Orders>();
 				var order = orders.FirstOrDefault();
 				Debug.Assert(order.ShipName == "The Cracker Box");
@@ -348,13 +349,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestExpandAllCustomers()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var customer_table = db.GetTable<Customers>();
+				var customer_table = ctx.GetTable<Customers>();
 				var customers = customer_table.Select(row => row.CustomerID == "THECR" || row.CustomerID == "SUPRD");
-				Type[] types = db.ExpandOnSubmit(customers);
+				Type[] types = ctx.ExpandOnSubmit(customers);
 
-				var reader = db.SubmitQueries();
+				var reader = ctx.SubmitQueries();
 				var orders = reader.Read<Orders>();
 				var order = orders.FirstOrDefault(row => row.CustomerID == "THECR");
 				Debug.Assert(order.ShipName == "The Cracker Box");
@@ -369,17 +370,17 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestExpandAllOnSubmitOrders()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var order_table = db.GetTable<Orders>();
+				var order_table = ctx.GetTable<Orders>();
 				var orders = order_table.Select(row => row.OrderID == 10254 || row.OrderID == 10260);
 
-				Type[] types = db.ExpandOnSubmit(orders);
-				var reader = db.SubmitQueries();
+				Type[] types = ctx.ExpandOnSubmit(orders);
+				var reader = ctx.SubmitQueries();
 				var order_details = reader.Read<Order_Details>();
 
-				types = db.ExpandOnSubmit(order_details);
-				reader = db.SubmitQueries();
+				types = ctx.ExpandOnSubmit(order_details);
+				reader = ctx.SubmitQueries();
 				var products = reader.Read<Products>();
 
 				var product = products.First(row => row.ProductName == "Tarte au sucre");
@@ -391,14 +392,14 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestExpandAllOrders()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				var orders = db.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
+				var orders = ctx.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
 
-				var reader = db.Expand(orders);
+				var reader = ctx.Expand(orders);
 				var order_details = reader.Read<Order_Details>();
 
-				reader = db.Expand(order_details);
+				reader = ctx.Expand(order_details);
 				var products = reader.Read<Products>();
 
 				var product = products.First(row => row.ProductName == "Tarte au sucre");
@@ -410,12 +411,12 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestExpandAllOrders2()
 		{
-            using (var db = new SqlDb(connectionString).Context)
+            using (var ctx =  dbClient.Context)
             {
-				var orders = db.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
+				var orders = ctx.Select<Orders>(row => row.OrderID == 10254 || row.OrderID == 10260);
 
-				var order_details = db.Expand<Orders, Order_Details>(orders);
-				var products = db.Expand<Order_Details, Products>(order_details);
+				var order_details = ctx.Expand<Orders, Order_Details>(orders);
+				var products = ctx.Expand<Order_Details, Products>(order_details);
 
 				var product = products.First(row => row.ProductName == "Tarte au sucre");
 				Debug.Assert(product.UnitsInStock == 17);
@@ -423,10 +424,10 @@ namespace UnitTestProject
 
 
 
-				var order = db.Select<Orders>(row => row.OrderID == 10260).First();
+				var order = ctx.Select<Orders>(row => row.OrderID == 10260).First();
 
-				var order_detail = db.Expand<Orders, Order_Details>(order).First();
-				products = db.Expand<Order_Details, Products>(order_detail);
+				var order_detail = ctx.Expand<Orders, Order_Details>(order).First();
+				products = ctx.Expand<Order_Details, Products>(order_detail);
 
 				product = products.First(row => row.ProductName == "Jack's New England Clam Chowder");
 				Debug.Assert(product.UnitsInStock == 85);
@@ -485,9 +486,9 @@ namespace UnitTestProject
 		}
 
 		[TestMethod]
-		public void TestAssoicationClass()
+		public void TestAssociationClass()
 		{
-			var query = new SqlDb(connectionString).Query;
+			var query = new SqlDbClient(connectionString).Query;
 			var product = query.Select<Products>(row => row.ProductID == 14).FirstOrDefault();
 			var A = product.GetAssociation(query);
 			var D = A.Order_Details;
@@ -500,32 +501,32 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestRowChangedEvent()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
-				db.RowChanged += (sender, args) =>
+				ctx.RowChanged += (sender, args) =>
 				 {
 					 var evt = args.Events.First();
 					 Debug.Assert(evt.TypeName == "CustomerDemographics");
 					 Debug.Assert(evt.Operation == RowOperation.InsertOrUpdate);
 				 };
 
-				var table = db.GetTable<CustomerDemographics>();
+				var table = ctx.GetTable<CustomerDemographics>();
 				table.InsertOrUpdateOnSubmit(new CustomerDemographics { CustomerTypeID = "IT", CustomerDesc = "Computer Science" });
 
-				db.SubmitChanges();
+				ctx.SubmitChanges();
 			}
 		}
 
 		[TestMethod]
 		public void TestContains1()
 		{
-            using (var db = new SqlDb(connectionString).Context)
+            using (var ctx =  dbClient.Context)
             {
 				var L = new int[] { 10, 30, 40 }.AsQueryable();
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				table.SelectOnSubmit(row => L.Contains(row.ProductID));
 
-				string SQL = db.GetQueryScript();
+				string SQL = ctx.GetQueryScript();
 				Debug.Assert(SQL == "SELECT * FROM [Products] WHERE ProductID IN (10,30,40)");
 			}
 		}
@@ -533,13 +534,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestContains2()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
 				var L = new int[] { 10 };
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				table.SelectOnSubmit(row => L.Contains(row.ProductID));
 
-				string SQL = db.GetQueryScript();
+				string SQL = ctx.GetQueryScript();
 				Debug.Assert(SQL == "SELECT * FROM [Products] WHERE ProductID IN (10)");
 			}
 		}
@@ -547,13 +548,13 @@ namespace UnitTestProject
 		[TestMethod]
 		public void TestContains3()
 		{
-			using (var db = new SqlDb(connectionString).Context)
+			using (var ctx =  dbClient.Context)
 			{
 				var L = new int[] { };
-				var table = db.GetTable<Products>();
+				var table = ctx.GetTable<Products>();
 				table.SelectOnSubmit(row => L.Contains(row.ProductID));
 
-				string SQL = db.GetQueryScript();
+				string SQL = ctx.GetQueryScript();
 				Debug.Assert(SQL == "SELECT * FROM [Products] WHERE ProductID IN ()");
 			}
 		}
@@ -562,7 +563,7 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2TableContains()
 		{
-            using (var db = new SqlDb(connectionString).Context)
+            using (var ctx =  dbClient.Context)
             {
 				//"SELECT * FROM [Products] WHERE CategoryID IN (SELECT CategoryID FROM Categories WHERE CategoryName == 'Beverages')"
 				var products = Query.Select<Categories, Products>(row => row.CategoryName == "Beverages", row => row.CategoryID, row => row.CategoryID);
@@ -575,11 +576,11 @@ namespace UnitTestProject
 		[TestMethod]
 		public void Test2DeleteManyRows()
 		{
-            using (var db = new SqlDb(connectionString).Context)
+            using (var ctx =  dbClient.Context)
             {
-				var products = db.GetTable<Products>();
+				var products = ctx.GetTable<Products>();
 				products.DeleteOnSubmit(row => row.CategoryID == 1 && row.ProductName == "Apple");
-				string SQL = db.GetNonQueryScript();
+				string SQL = ctx.GetNonQueryScript();
 				Debug.Assert(SQL == "DELETE FROM [Products] WHERE ((CategoryID = 1) AND (ProductName = 'Apple'))");
 			}
 		}
