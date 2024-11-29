@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
+
+#if NET8_0
+using Microsoft.Data.SqlClient;
+#else
 using System.Data.SqlClient;
+#endif
+
 
 namespace Sys.Data.SqlClient
 {
 	/// <summary>
 	/// Access SQL Server
 	/// </summary>
-	public class SqlDbAccess : DbAccess, IDbAccess
+	internal class SqlDbAccess : DbAccess, IDbAccess
 	{
 		private readonly SqlCommand command;
 		private readonly SqlConnection connection;

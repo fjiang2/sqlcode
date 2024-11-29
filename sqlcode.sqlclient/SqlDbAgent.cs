@@ -1,5 +1,10 @@
-﻿using System.Data.SqlClient;
-using Sys.Data.Entity;
+﻿using Sys.Data.Entity;
+
+#if NET8_0
+using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
+#endif
 
 namespace Sys.Data.SqlClient
 {

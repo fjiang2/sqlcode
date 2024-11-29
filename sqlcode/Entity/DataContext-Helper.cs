@@ -25,13 +25,13 @@ namespace Sys.Data.Entity
 		public IQueryResultReader Expand<TEntity>(TEntity entity) where TEntity : class
 		{
 			ExpandOnSubmit(entity);
-			return SumbitQueries();
+			return SubmitQueries();
 		}
 
 		public IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
 		{
 			ExpandOnSubmit(entities);
-			return SumbitQueries();
+			return SubmitQueries();
 		}
 
 		public void ExpandOnSubmit<TEntity, TSubEntity>(TEntity entity) where TEntity : class where TSubEntity : class

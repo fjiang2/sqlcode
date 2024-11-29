@@ -98,7 +98,7 @@ namespace Sys.Data.Entity
         }
 
         /// <summary>
-        /// Use SelectOnSumbit(...) in action
+        /// Use SelectOnSubmit(...) in action
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>

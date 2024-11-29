@@ -6,7 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+#if NET48
 using System.Data.SqlClient;
+#else
+using Microsoft.Data.SqlClient;
+#endif
+using Sys.Data.Entity;
 using System.Data;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,7 +26,7 @@ namespace UnitTestProject
 	public class UnitTest_SqlBuilder
 	{
 		private readonly DbAgentStyle SQLite = DbAgentStyle.SQLite;
-		private readonly SqlConnectionStringBuilder conn;
+		private readonly string conn;
 
 		private readonly Expression ProductId = "ProductId".AsColumn();
 		private readonly string Products = "Products";
@@ -29,7 +34,7 @@ namespace UnitTestProject
 
 		public UnitTest_SqlBuilder()
 		{
-			conn = new SqlConnectionStringBuilder(Setting.ConnectionString);
+			conn = Setting.ConnectionString;
 		}
 
 		[TestMethod]

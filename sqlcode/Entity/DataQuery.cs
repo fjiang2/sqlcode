@@ -77,7 +77,7 @@ namespace Sys.Data.Entity
             return Invoke(db =>
             {
                 action(db);
-                return db.SumbitQueries();
+                return db.SubmitQueries();
             });
         }
 

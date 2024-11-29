@@ -9,7 +9,7 @@ namespace Sys.Data.SqlRemote
     internal class SqlRemoteAdapter
     {
         private readonly SqlRemoteRequest request;
-        public readonly ISqlRemoteBroker broker;
+        private readonly ISqlRemoteBroker broker;
 
         public SqlRemoteAdapter(ISqlRemoteBroker broker, SqlRemoteRequest request)
         {
@@ -66,7 +66,7 @@ namespace Sys.Data.SqlRemote
 
         private SqlRemoteResult Request()
         {
-            SqlRemoteResult result = broker.RequesteAsync(request).Result;
+            SqlRemoteResult result = broker.RequestAsync(request).Result;
             if (result.Error != null)
                 throw new Exception(result.Error);
 
