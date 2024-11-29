@@ -9,7 +9,7 @@ namespace Sys.Data.SqlRemote
         private readonly ISqlRemoteBroker broker;
         
         public SqlRemoteAgent(ISqlRemoteBroker broker)
-            : base(new DbConnectionStringBuilder())
+            : base("N/A")
         {
             this.broker = broker;
         }

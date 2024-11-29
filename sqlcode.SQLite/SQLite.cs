@@ -2,31 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data.SqlClient;
 
-using System.Data.SQLite;
 using Sys.Data.Entity;
-using System.Drawing;
 using System.IO;
 
 namespace Sys.Data.SQLite
 {
     public class SQLite
     {
-        private readonly SQLiteConnectionStringBuilder connection;
+        private readonly string connection;
 
         public SQLite(string fileName, int poolSize)
         {
             string path = Path.GetFullPath(fileName);
-            connection = new SQLiteConnectionStringBuilder($"provider=sqlite;Data Source={path};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size={poolSize};");
+            connection = $"provider=sqlite;Data Source={path};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size={poolSize};";
         }
 
         public SQLite(string connectionString)
-        {
-            connection = new SQLiteConnectionStringBuilder(connectionString);
-        }
-
-        public SQLite(SQLiteConnectionStringBuilder connectionString)
         {
             connection = connectionString;
         }

@@ -5,13 +5,13 @@ namespace Sys.Data.SQLite
 {
     internal class SQLiteAgent : DbAgent
 	{
-		public SQLiteAgent(SQLiteConnectionStringBuilder connectionString)
+		public SQLiteAgent(string connectionString)
 			: base(connectionString)
 		{
 		}
 
 		public override DbAgentOption Option => new DbAgentOption { Style = DbAgentStyle.SQLite };
-		public override IDbAccess Access(SqlUnit unit) => new SQLiteAccess(ConnectionString.ConnectionString, unit);
+		public override IDbAccess Access(SqlUnit unit) => new SQLiteAccess(ConnectionString, unit);
 
 	}
 }

@@ -11,20 +11,15 @@ namespace Sys.Data.SqlCe
 {
     public class SqlCe
     {
-        private readonly SqlCeConnectionStringBuilder connection;
+        private readonly string connection;
 
         public SqlCe(string fileName, int bufferSize)
         {
             string path = Path.GetFullPath(fileName);
-            connection = new SqlCeConnectionStringBuilder($"Data Source={path};Max Buffer Size={bufferSize};Persist Security Info=False;");
+            connection = $"Data Source={path};Max Buffer Size={bufferSize};Persist Security Info=False;";
         }
 
         public SqlCe(string connectionString)
-        {
-            connection = new SqlCeConnectionStringBuilder(connectionString);
-        }
-
-        public SqlCe(SqlCeConnectionStringBuilder connectionString)
         {
             connection = connectionString;
         }
