@@ -183,7 +183,7 @@ namespace UnitTestProject
                 string SQL = db.GetQueryScript();
                 Debug.Assert(SQL == "SELECT * FROM [Products] WHERE (ProductID = 6)\r\nSELECT * FROM [Customers] WHERE (CustomerID = 'MAISD')");
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var L1 = reader.Read<Products>();
                 var L2 = reader.Read<Customers>();
 
@@ -204,7 +204,7 @@ namespace UnitTestProject
                 string SQL = db.GetQueryScript();
                 Debug.Assert(SQL == "SELECT * FROM [Products] WHERE (ProductID = 6)\r\nSELECT * FROM [Customers] WHERE (CustomerID = 'MAISD')");
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var L1 = reader.Read<Products>();
                 var L2 = reader.Read<Customers>();
 
@@ -223,7 +223,7 @@ namespace UnitTestProject
                 var order = order_table.Select(row => row.OrderID == 10256).FirstOrDefault();
                 order_table.ExpandOnSubmit<Customers>(order);
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var L2 = reader.Read<Customers>();
 
                 Debug.Assert(L2.First().CompanyName == "Wellington Importadora");
@@ -242,7 +242,7 @@ namespace UnitTestProject
                 var customer = customer_table.Select(row => row.CustomerID == "THECR").FirstOrDefault();
                 customer_table.ExpandOnSubmit<Orders>(customer);
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var orders = reader.Read<Orders>();
                 var order = orders.FirstOrDefault();
 
@@ -291,7 +291,7 @@ namespace UnitTestProject
                 db.ExpandOnSubmit<Customers, Orders>(customer);
                 db.ExpandOnSubmit<Customers, CustomerCustomerDemo>(customer);
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
 
                 var orders = reader.Read<Orders>();
                 var order = orders.FirstOrDefault();
@@ -302,7 +302,7 @@ namespace UnitTestProject
                 Debug.Assert(demo == null);
 
                 db.ExpandOnSubmit<Orders, Shippers>(order);
-                reader = db.SumbitQueries();
+                reader = db.SubmitQueries();
                 var shippers = reader.Read<Shippers>();
                 Debug.Assert(shippers.FirstOrDefault().Phone == "(503) 555-3199");
 
@@ -319,7 +319,7 @@ namespace UnitTestProject
                 var customer = customer_table.Select(row => row.CustomerID == "THECR").FirstOrDefault();
                 Type[] types = customer_table.ExpandOnSubmit(customer);
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var orders = reader.Read<Orders>();
                 var order = orders.FirstOrDefault();
                 Debug.Assert(order.ShipName == "The Cracker Box");
@@ -339,7 +339,7 @@ namespace UnitTestProject
                 var customers = customer_table.Select(row => row.CustomerID == "THECR" || row.CustomerID == "SUPRD");
                 Type[] types = db.ExpandOnSubmit(customers);
 
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var orders = reader.Read<Orders>();
                 var order = orders.FirstOrDefault(row => row.CustomerID == "THECR");
                 Debug.Assert(order.ShipName == "The Cracker Box");
@@ -360,11 +360,11 @@ namespace UnitTestProject
                 var orders = order_table.Select(row => row.OrderID == 10254 || row.OrderID == 10260);
 
                 Type[] types = db.ExpandOnSubmit(orders);
-                var reader = db.SumbitQueries();
+                var reader = db.SubmitQueries();
                 var order_details = reader.Read<Order_Details>();
 
                 types = db.ExpandOnSubmit(order_details);
-                reader = db.SumbitQueries();
+                reader = db.SubmitQueries();
                 var products = reader.Read<Products>();
 
                 var product = products.First(row => row.ProductName == "Tarte au sucre");

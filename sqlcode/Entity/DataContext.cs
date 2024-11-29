@@ -10,7 +10,7 @@ namespace Sys.Data.Entity
     /// <summary>
     /// Database context
     /// </summary>
-    public partial class DataContext : IDisposable
+    public partial class DataContext : IDisposable, IDbContext
     {
         private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
         protected readonly IDbAgent agent;
@@ -164,10 +164,10 @@ namespace Sys.Data.Entity
         }
 
         /// <summary>
-        /// Sumbit query's changes
+        /// Submit query's changes
         /// </summary>
         /// <returns></returns>
-        public IQueryResultReader SumbitQueries()
+        public IQueryResultReader SubmitQueries()
         {
             if (CodeBlock.Length == 0)
                 return null;
