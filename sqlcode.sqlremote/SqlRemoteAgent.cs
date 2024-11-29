@@ -4,18 +4,21 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.SqlRemote
 {
-    internal class SqlRemoteAgent : DbAgent
+    internal class SqlRemoteAgent : IDbAgent
     {
         private readonly ISqlRemoteBroker broker;
         
         public SqlRemoteAgent(ISqlRemoteBroker broker)
-            : base("N/A")
         {
             this.broker = broker;
         }
 
-        public override DbAgentOption Option => new DbAgentOption { Style = broker.Style };
-        public override IDbAccess Access(SqlUnit unit) => new SqlRemoteAccess(broker, unit);
-
+        public DbAgentOption Option => new DbAgentOption { Style = broker.Style };
+        public IDbAccess Access(SqlUnit unit) => new SqlRemoteAccess(broker, unit);
+        
+        public override string ToString()
+        {
+            return $"{broker}";
+        }
     }
 }

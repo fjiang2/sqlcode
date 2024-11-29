@@ -55,5 +55,13 @@ namespace Sys.Data.SqlRemote
                 }
             }
         }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrEmpty(ProviderName))
+                return requestUri;
+            else
+                return $"{requestUri} :: {ProviderName}";
+        }
     }
 }

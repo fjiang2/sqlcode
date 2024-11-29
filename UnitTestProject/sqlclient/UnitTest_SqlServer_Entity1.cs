@@ -25,7 +25,7 @@ namespace UnitTestProject
 	public class UnitTest_SqlServer_Entity1
 	{
 		private readonly static string connectionString = Setting.ConnectionString;
-		private readonly SqlDbClient dbClient;
+		private readonly IDbClient dbClient;
 #if !USE_Query_Class
 		private readonly DataQuery Query;
 #endif

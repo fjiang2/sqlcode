@@ -15,6 +15,7 @@ using UnitTestProject.Northwind.dc2;
 using Sys.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data.Text;
+using Sys.Data;
 
 namespace UnitTestProject
 {
@@ -25,7 +26,7 @@ namespace UnitTestProject
     public class UnitTest_SqlServer_Entity2
     {
         private readonly string connectionString = Setting.ConnectionString;
-        private readonly SqlDbClient dbClient;
+        private readonly IDbClient dbClient;
         private readonly DataQuery Query;
 
         public UnitTest_SqlServer_Entity2()

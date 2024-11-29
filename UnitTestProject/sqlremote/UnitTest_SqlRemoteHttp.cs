@@ -59,9 +59,9 @@ namespace UnitTestProject
         [TestMethod]
         public void TestMethodInsert()
         {
-            using (var db = dbClient.Context)
+            using (var ctx = dbClient.Context)
             {
-                var table = db.GetTable<Products>();
+                var table = ctx.GetTable<Products>();
                 Products product = new Products
                 {
                     ProductID = 100,    //identity
@@ -69,7 +69,7 @@ namespace UnitTestProject
                 };
 
                 table.UpdateOnSubmit(product);
-                db.SubmitChanges();
+                ctx.SubmitChanges();
             }
         }
     }
