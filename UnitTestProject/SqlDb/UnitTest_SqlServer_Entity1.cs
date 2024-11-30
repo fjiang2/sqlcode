@@ -16,7 +16,7 @@ using UnitTestProject.Northwind.dc1;
 using Sys.Data.SqlClient;
 using Sys.Data;
 
-namespace UnitTestProject
+namespace UnitTestProject.SqlDb
 {
 	/// <summary>
 	/// Summary description for UnitTestDataContext
@@ -25,7 +25,7 @@ namespace UnitTestProject
 	public class UnitTest_SqlServer_Entity1
 	{
 		private readonly static string connectionString = Setting.ConnectionString;
-		private readonly IDbClient dbClient;
+		private readonly SqlDbClient dbClient;
 #if !USE_Query_Class
 		private readonly DataQuery Query;
 #endif

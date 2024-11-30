@@ -11,21 +11,22 @@ using Sys.Data;
 using Sys.Data.SqlRemote;
 using Sys.Data.Entity;
 
-namespace UnitTestProject
+namespace UnitTestProject.SqlRemote
 {
     /// <summary>
     /// SqlWebServer must run before run the test cases of this class
     /// </summary>
     [TestClass]
-    public class UnitTest_SqlRemoteHttp
+    public class UnitTest_SqlRemote_SQLite
     {
-        private readonly string url = "http://localhost/sqlhandler/";
+        private readonly string url = "http://localhost:5689/sqlhandler/";
         private readonly SqlRemoteClient dbClient;
         private readonly DataQuery Query;
 
-        public UnitTest_SqlRemoteHttp()
+        public UnitTest_SqlRemote_SQLite()
         {
-            dbClient = new SqlRemoteClient(url, DbAgentStyle.SqlServer, "Northwind");
+            //url = "https://localhost:5690/sqlhandler/";
+            dbClient = new SqlRemoteClient(url, DbAgentStyle.SQLite, "LocalNorthwind");
             Query = dbClient.Query;
         }
 

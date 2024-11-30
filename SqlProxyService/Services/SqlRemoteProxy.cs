@@ -56,8 +56,7 @@ namespace SqlProxyService.Services
             switch (serverInfo.Style)
             {
                 case DbAgentStyle.SQLite:
-                    string fileName = serverInfo.ConnectionString;
-                    agent = new SQLiteClient(fileName, 100).Agent;
+                    agent = new SQLiteClient(serverInfo.ConnectionString).Agent;
                     break;
 
                 case DbAgentStyle.SqlServer:

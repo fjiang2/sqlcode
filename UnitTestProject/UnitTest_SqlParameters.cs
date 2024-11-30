@@ -18,7 +18,7 @@ using Sys.Data.Text;
 namespace UnitTestProject
 {
 	[TestClass]
-	public class UnitTest_Parameters
+	public class UnitTest_SqlParameters
 	{
 		class Entity
 		{

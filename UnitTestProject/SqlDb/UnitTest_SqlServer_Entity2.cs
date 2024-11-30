@@ -17,7 +17,7 @@ using Sys.Data.Entity;
 using Sys.Data.Text;
 using Sys.Data;
 
-namespace UnitTestProject
+namespace UnitTestProject.SqlDb
 {
     /// <summary>
     /// Summary description for UnitTestDataContext
@@ -26,7 +26,7 @@ namespace UnitTestProject
     public class UnitTest_SqlServer_Entity2
     {
         private readonly string connectionString = Setting.ConnectionString;
-        private readonly IDbClient dbClient;
+        private readonly SqlDbClient dbClient;
         private readonly DataQuery Query;
 
         public UnitTest_SqlServer_Entity2()

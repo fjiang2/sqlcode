@@ -12,7 +12,7 @@ using Sys.Data.SQLite;
 using Sys.Data.Entity;
 using Sys.Data;
 
-namespace UnitTestProject
+namespace UnitTestProject.SQLite
 {
     /// <summary>
     /// Summary description for UnitTestDataContext
@@ -23,7 +23,7 @@ namespace UnitTestProject
         private readonly string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
         private readonly string connectionString;
         private readonly DataQuery Query;
-        private readonly IDbClient dbClient;
+        private readonly SQLiteClient dbClient;
 
         public UnitTest_SQLite_Entity1()
         {

@@ -8,11 +8,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if NET48
 using Sys.Data.SqlCe;
 
-namespace UnitTestProject.sqlce
+namespace UnitTestProject.SqlCe
 {
     [TestClass]
     public class UnitTest_SqlCe
     {
     }
 }
+
 #endif
