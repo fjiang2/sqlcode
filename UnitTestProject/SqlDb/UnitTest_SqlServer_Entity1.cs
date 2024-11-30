@@ -31,7 +31,7 @@ namespace UnitTestProject.SqlDb
 #endif
 		public UnitTest_SqlServer_Entity1()
 		{
-			DataContext.EntityClassType = EntityClassType.ExtensionClass;
+			DbContext.EntityClassType = EntityClassType.ExtensionClass;
 			this.dbClient = new SqlDbClient(connectionString);
 
 #if USE_Query_Class

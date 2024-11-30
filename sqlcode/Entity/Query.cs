@@ -32,7 +32,7 @@ namespace Sys.Data.Entity
         }
 
 
-        private static DataQuery DbQuery => new DataQuery(DefaultAgent);
+        private static DbQuery DbQuery => new DbQuery(DefaultAgent);
 
         /// <summary>
         /// Create DbCommand
@@ -73,9 +73,9 @@ namespace Sys.Data.Entity
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static T Invoke<T>(Func<DataContext, T> func)
+        public static T Invoke<T>(Func<DbContext, T> func)
         {
-            using (var db = new DataContext(DefaultAgent))
+            using (var db = new DbContext(DefaultAgent))
             {
                 return func(db);
             }
@@ -102,7 +102,7 @@ namespace Sys.Data.Entity
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static IQueryResultReader Select(Action<DataContext> action)
+        public static IQueryResultReader Select(Action<DbContext> action)
             => DbQuery.Select(action);
 
         /// <summary>

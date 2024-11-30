@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlProxy.Service", "SqlProx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{23CEFE28-1871-44F9-8373-DE82CBF7FA75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlProxy.Example", "SqlProxy.Example\SqlProxy.Example.csproj", "{3BD8C3B7-9FEC-4CC2-9E28-6B4A0EB81075}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlWebServer", "SqlProxy.Example\SqlWebServer.csproj", "{3BD8C3B7-9FEC-4CC2-9E28-6B4A0EB81075}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

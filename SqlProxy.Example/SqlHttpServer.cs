@@ -8,7 +8,7 @@ using System.Threading;
 using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
 
-namespace SqlProxy.Example
+namespace SqlWebServer
 {
     public class SqlHttpServer
     {

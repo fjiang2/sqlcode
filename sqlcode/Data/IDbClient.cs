@@ -7,7 +7,7 @@ namespace Sys.Data
     {
         IDbAgent Agent { get; }
         IDbContext Context { get; }
-        DataQuery Query { get; }
+        DbQuery Query { get; }
 
         void SetDefaultAgent();
     }

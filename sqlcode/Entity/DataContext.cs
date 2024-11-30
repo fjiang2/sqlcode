@@ -10,7 +10,7 @@ namespace Sys.Data.Entity
     /// <summary>
     /// Database context
     /// </summary>
-    public partial class DataContext : IDisposable, IDbContext
+    public partial class DbContext : IDisposable, IDbContext
     {
         private readonly Dictionary<Type, ITable> tables = new Dictionary<Type, ITable>();
         protected readonly IDbAgent agent;
@@ -42,10 +42,10 @@ namespace Sys.Data.Entity
         /// 
         /// </summary>
         /// <param name="agent"></param>
-        public DataContext(IDbAgent agent)
+        public DbContext(IDbAgent agent)
         {
             this.agent = agent;
-            this.Description = nameof(DataContext);
+            this.Description = nameof(DbContext);
         }
 
         /// <summary>

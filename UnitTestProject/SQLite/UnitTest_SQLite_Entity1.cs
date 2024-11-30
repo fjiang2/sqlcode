@@ -22,7 +22,7 @@ namespace UnitTestProject.SQLite
     {
         private readonly string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
         private readonly string connectionString;
-        private readonly DataQuery Query;
+        private readonly DbQuery Query;
         private readonly SQLiteClient dbClient;
 
         public UnitTest_SQLite_Entity1()
@@ -30,7 +30,7 @@ namespace UnitTestProject.SQLite
             string fileName = Path.Combine(PATH_PROJECT, "..\\Northwind\\db\\Northwind.db");
             this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
-            DataContext.EntityClassType = EntityClassType.ExtensionClass;
+            DbContext.EntityClassType = EntityClassType.ExtensionClass;
             dbClient = new SQLiteClient(connectionString);
             Query = dbClient.Query;
         }

@@ -19,7 +19,7 @@ namespace Sys.Data.Entity
 		int Delete<TEntity>(string where) where TEntity : class;
 
 		IQueryResultReader Expand<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
-		IQueryResultReader Select(Action<DataContext> action);
+		IQueryResultReader Select(Action<DbContext> action);
 
 	}
 }

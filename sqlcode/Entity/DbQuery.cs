@@ -9,11 +9,11 @@ using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
-    public class DataQuery : IQuery, IDisposable
+    public class DbQuery : IQuery, IDisposable
     {
         private readonly IDbAgent agent;
 
-        public DataQuery(IDbAgent agent)
+        public DbQuery(IDbAgent agent)
         {
             this.agent = agent ?? throw new ArgumentNullException("undefined agent");
         }
@@ -43,9 +43,9 @@ namespace Sys.Data.Entity
 
         public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
 
-        private T Invoke<T>(Func<DataContext, T> func)
+        private T Invoke<T>(Func<DbContext, T> func)
         {
-            using (var db = new DataContext(agent))
+            using (var db = new DbContext(agent))
             {
                 return func(db);
             }
@@ -72,7 +72,7 @@ namespace Sys.Data.Entity
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public IQueryResultReader Select(Action<DataContext> action)
+        public IQueryResultReader Select(Action<DbContext> action)
         {
             return Invoke(db =>
             {

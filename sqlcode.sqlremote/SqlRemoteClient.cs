@@ -21,8 +21,8 @@ namespace Sys.Data.SqlRemote
         }
 
         public IDbAgent Agent => new SqlRemoteAgent(connection);
-        public IDbContext Context => new DataContext(Agent);
-        public DataQuery Query => new DataQuery(Agent);
+        public IDbContext Context => new DbContext(Agent);
+        public DbQuery Query => new DbQuery(Agent);
 
         public void SetDefaultAgent()
         {

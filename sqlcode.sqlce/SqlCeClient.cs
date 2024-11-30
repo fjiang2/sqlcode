@@ -25,8 +25,8 @@ namespace Sys.Data.SqlCe
         }
 
         public IDbAgent Agent => new SqlCeAgent(connection);
-        public IDbContext Context => new DataContext(Agent);
-        public DataQuery Query => new DataQuery(Agent);
+        public IDbContext Context => new DbContext(Agent);
+        public DbQuery Query => new DbQuery(Agent);
 
         public void SetDefaultAgent()
         {

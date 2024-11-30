@@ -27,11 +27,11 @@ namespace UnitTestProject.SqlDb
     {
         private readonly string connectionString = Setting.ConnectionString;
         private readonly SqlDbClient dbClient;
-        private readonly DataQuery Query;
+        private readonly DbQuery Query;
 
         public UnitTest_SqlServer_Entity2()
         {
-            DataContext.EntityClassType = EntityClassType.SingleClass;
+            DbContext.EntityClassType = EntityClassType.SingleClass;
             dbClient = new SqlDbClient(connectionString);
             Query = dbClient.Query;
         }

@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace SqlProxy.Example
+namespace SqlWebServer
 {
     class Program
     {
-        public const string url = "http://localhost/sqlhandler/";
+        public const string url = "http://localhost:5689/sqlhandler/";
         public const string connectionString = "Server = (LocalDB)\\MSSQLLocalDB;initial catalog=Northwind;Integrated Security = true;";
 
         private static void Main()
