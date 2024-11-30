@@ -26,7 +26,7 @@ namespace UnitTestProject.SqlRemote
         public UnitTest_SqlRemote_SQLite()
         {
             //url = "https://localhost:5690/sqlhandler/";
-            dbClient = new SqlRemoteClient(url, DbAgentStyle.SQLite, "LocalNorthwind");
+            dbClient = new SqlRemoteClient(url, DbAgentStyle.SQLite, "SQLiteNorthwind");
             Query = dbClient.Query;
         }
 
