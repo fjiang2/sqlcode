@@ -12,7 +12,7 @@ using System.Data.SqlClient;
 #endif
 
 using Sys.Data.Entity;
-using UnitTestProject.Northwind.dc1;
+using Northwind.Entity.dc1;
 using Sys.Data.SqlClient;
 using Sys.Data;
 

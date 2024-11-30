@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 #endif
 
 
-using UnitTestProject.Northwind.dc2;
+using Northwind.Entity.dc2;
 using Sys.Data.SqlClient;
 using Sys.Data.Entity;
 using Sys.Data.Text;

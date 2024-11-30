@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc1
+namespace Northwind.Entity.dc1
 {
 	public partial class Suppliers
 	{

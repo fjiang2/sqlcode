@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;
 using Sys.Data.SqlClient;
-using UnitTestProject.Northwind.dc1;
+using Northwind.Entity.dc1;
 
 namespace UnitTestProject
 {

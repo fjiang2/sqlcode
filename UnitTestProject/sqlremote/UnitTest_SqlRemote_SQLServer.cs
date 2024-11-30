@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTestProject.Northwind.dc2;
+using Northwind.Entity.dc2;
 using Sys.Data;
 using Sys.Data.SqlRemote;
 using Sys.Data.Entity;

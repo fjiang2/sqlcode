@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.IO;
 
-using UnitTestProject.Northwind.dc1;
+using Northwind.Entity.dc1;
 using System.Data.SQLite;
 using Sys.Data.SQLite;
 using Sys.Data.Entity;
