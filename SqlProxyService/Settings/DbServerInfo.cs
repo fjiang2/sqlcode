@@ -1,6 +1,6 @@
 ﻿using Sys.Data;
 
-namespace SqlProxyService.Settings
+namespace SqlProxy.Service.Settings
 {
     public class DbServerInfo
     {

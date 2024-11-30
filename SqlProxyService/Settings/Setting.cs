@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlProxyService.Settings
+namespace SqlProxy.Service.Settings
 {
     public class Setting : ISetting
     {

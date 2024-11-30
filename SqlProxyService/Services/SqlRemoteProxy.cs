@@ -1,11 +1,11 @@
 ﻿using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
-using SqlProxyService.Settings;
+using SqlProxy.Service.Settings;
 using Azure.Core;
 using System.Configuration.Provider;
 
-namespace SqlProxyService.Services
+namespace SqlProxy.Service.Services
 {
     class SqlRemoteProxy
     {

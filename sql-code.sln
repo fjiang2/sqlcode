@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind", "Northwind\Nort
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{CFF8C2B2-E67E-4847-AD3E-59ABA0BC0197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlProxyService", "SqlProxyService\SqlProxyService.csproj", "{FFE2D156-2F2D-401C-8671-5D334230C802}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlProxy.Service", "SqlProxyService\SqlProxy.Service.csproj", "{FFE2D156-2F2D-401C-8671-5D334230C802}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
