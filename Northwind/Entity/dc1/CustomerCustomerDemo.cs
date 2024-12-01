@@ -106,24 +106,24 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this CustomerCustomerDemo a, CustomerCustomerDemo b)
+		public static bool CompareTo(this CustomerCustomerDemo a, CustomerCustomerDemo b)
 		{
 			return a.CustomerID == b.CustomerID
 			&& a.CustomerTypeID == b.CustomerTypeID;
 		}
 		
-		public static void Copy(this CustomerCustomerDemo from, CustomerCustomerDemo to)
+		public static void CopyTo(this CustomerCustomerDemo from, CustomerCustomerDemo to)
 		{
 			to.CustomerID = from.CustomerID;
 			to.CustomerTypeID = from.CustomerTypeID;
 		}
 		
-		public static CustomerCustomerDemoAssociation GetAssociation(this CustomerCustomerDemo entity, IQuery query)
+		public static CustomerCustomerDemoAssociation GetAssociation(this CustomerCustomerDemo entity, IDbQuery query)
 		{
 			return GetAssociation(new CustomerCustomerDemo[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(this IEnumerable<CustomerCustomerDemo> entities, IQuery query)
+		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(this IEnumerable<CustomerCustomerDemo> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

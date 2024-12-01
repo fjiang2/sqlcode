@@ -194,7 +194,7 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Orders a, Orders b)
+		public static bool CompareTo(this Orders a, Orders b)
 		{
 			return a.OrderID == b.OrderID
 			&& a.CustomerID == b.CustomerID
@@ -212,7 +212,7 @@ namespace Northwind.Entity.dc1
 			&& a.ShipCountry == b.ShipCountry;
 		}
 		
-		public static void Copy(this Orders from, Orders to)
+		public static void CopyTo(this Orders from, Orders to)
 		{
 			to.OrderID = from.OrderID;
 			to.CustomerID = from.CustomerID;
@@ -230,12 +230,12 @@ namespace Northwind.Entity.dc1
 			to.ShipCountry = from.ShipCountry;
 		}
 		
-		public static OrdersAssociation GetAssociation(this Orders entity, IQuery query)
+		public static OrdersAssociation GetAssociation(this Orders entity, IDbQuery query)
 		{
 			return GetAssociation(new Orders[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<OrdersAssociation> GetAssociation(this IEnumerable<Orders> entities, IQuery query)
+		public static IEnumerable<OrdersAssociation> GetAssociation(this IEnumerable<Orders> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

@@ -80,12 +80,12 @@ namespace Northwind.Entity.dc2
 			this.Phone = (string)dict[_PHONE];
 		}
 		
-		public ShippersAssociation GetAssociation(IQuery query)
+		public ShippersAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Shippers[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<ShippersAssociation> GetAssociation(IQuery query, IEnumerable<Shippers> entities)
+		public static IEnumerable<ShippersAssociation> GetAssociation(IDbQuery query, IEnumerable<Shippers> entities)
 		{
 			var reader = query.Expand(entities);
 			

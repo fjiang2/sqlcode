@@ -97,24 +97,24 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this CustomerDemographics a, CustomerDemographics b)
+		public static bool CompareTo(this CustomerDemographics a, CustomerDemographics b)
 		{
 			return a.CustomerTypeID == b.CustomerTypeID
 			&& a.CustomerDesc == b.CustomerDesc;
 		}
 		
-		public static void Copy(this CustomerDemographics from, CustomerDemographics to)
+		public static void CopyTo(this CustomerDemographics from, CustomerDemographics to)
 		{
 			to.CustomerTypeID = from.CustomerTypeID;
 			to.CustomerDesc = from.CustomerDesc;
 		}
 		
-		public static CustomerDemographicsAssociation GetAssociation(this CustomerDemographics entity, IQuery query)
+		public static CustomerDemographicsAssociation GetAssociation(this CustomerDemographics entity, IDbQuery query)
 		{
 			return GetAssociation(new CustomerDemographics[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerDemographicsAssociation> GetAssociation(this IEnumerable<CustomerDemographics> entities, IQuery query)
+		public static IEnumerable<CustomerDemographicsAssociation> GetAssociation(this IEnumerable<CustomerDemographics> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

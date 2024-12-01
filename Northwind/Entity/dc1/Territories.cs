@@ -111,26 +111,26 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Territories a, Territories b)
+		public static bool CompareTo(this Territories a, Territories b)
 		{
 			return a.TerritoryID == b.TerritoryID
 			&& a.TerritoryDescription == b.TerritoryDescription
 			&& a.RegionID == b.RegionID;
 		}
 		
-		public static void Copy(this Territories from, Territories to)
+		public static void CopyTo(this Territories from, Territories to)
 		{
 			to.TerritoryID = from.TerritoryID;
 			to.TerritoryDescription = from.TerritoryDescription;
 			to.RegionID = from.RegionID;
 		}
 		
-		public static TerritoriesAssociation GetAssociation(this Territories entity, IQuery query)
+		public static TerritoriesAssociation GetAssociation(this Territories entity, IDbQuery query)
 		{
 			return GetAssociation(new Territories[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<TerritoriesAssociation> GetAssociation(this IEnumerable<Territories> entities, IQuery query)
+		public static IEnumerable<TerritoriesAssociation> GetAssociation(this IEnumerable<Territories> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

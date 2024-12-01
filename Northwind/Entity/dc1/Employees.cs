@@ -209,7 +209,7 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Employees a, Employees b)
+		public static bool CompareTo(this Employees a, Employees b)
 		{
 			return a.EmployeeID == b.EmployeeID
 			&& a.LastName == b.LastName
@@ -231,7 +231,7 @@ namespace Northwind.Entity.dc1
 			&& a.PhotoPath == b.PhotoPath;
 		}
 		
-		public static void Copy(this Employees from, Employees to)
+		public static void CopyTo(this Employees from, Employees to)
 		{
 			to.EmployeeID = from.EmployeeID;
 			to.LastName = from.LastName;
@@ -253,12 +253,12 @@ namespace Northwind.Entity.dc1
 			to.PhotoPath = from.PhotoPath;
 		}
 		
-		public static EmployeesAssociation GetAssociation(this Employees entity, IQuery query)
+		public static EmployeesAssociation GetAssociation(this Employees entity, IDbQuery query)
 		{
 			return GetAssociation(new Employees[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<EmployeesAssociation> GetAssociation(this IEnumerable<Employees> entities, IQuery query)
+		public static IEnumerable<EmployeesAssociation> GetAssociation(this IEnumerable<Employees> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

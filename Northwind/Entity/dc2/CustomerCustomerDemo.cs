@@ -72,12 +72,12 @@ namespace Northwind.Entity.dc2
 			this.CustomerTypeID = (string)dict[_CUSTOMERTYPEID];
 		}
 		
-		public CustomerCustomerDemoAssociation GetAssociation(IQuery query)
+		public CustomerCustomerDemoAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new CustomerCustomerDemo[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(IQuery query, IEnumerable<CustomerCustomerDemo> entities)
+		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(IDbQuery query, IEnumerable<CustomerCustomerDemo> entities)
 		{
 			var reader = query.Expand(entities);
 			

@@ -27,7 +27,7 @@ namespace UnitTestProject.SqlDb
     {
         private readonly string connectionString = Setting.ConnectionString;
         private readonly SqlDbClient dbClient;
-        private readonly DbQuery Query;
+        private readonly IDbQuery Query;
 
         public UnitTest_SqlServer_Entity2()
         {

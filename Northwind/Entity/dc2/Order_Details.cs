@@ -96,12 +96,12 @@ namespace Northwind.Entity.dc2
 			this.Discount = (float)dict[_DISCOUNT];
 		}
 		
-		public Order_DetailsAssociation GetAssociation(IQuery query)
+		public Order_DetailsAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Order_Details[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<Order_DetailsAssociation> GetAssociation(IQuery query, IEnumerable<Order_Details> entities)
+		public static IEnumerable<Order_DetailsAssociation> GetAssociation(IDbQuery query, IEnumerable<Order_Details> entities)
 		{
 			var reader = query.Expand(entities);
 			

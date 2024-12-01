@@ -104,26 +104,26 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Shippers a, Shippers b)
+		public static bool CompareTo(this Shippers a, Shippers b)
 		{
 			return a.ShipperID == b.ShipperID
 			&& a.CompanyName == b.CompanyName
 			&& a.Phone == b.Phone;
 		}
 		
-		public static void Copy(this Shippers from, Shippers to)
+		public static void CopyTo(this Shippers from, Shippers to)
 		{
 			to.ShipperID = from.ShipperID;
 			to.CompanyName = from.CompanyName;
 			to.Phone = from.Phone;
 		}
 		
-		public static ShippersAssociation GetAssociation(this Shippers entity, IQuery query)
+		public static ShippersAssociation GetAssociation(this Shippers entity, IDbQuery query)
 		{
 			return GetAssociation(new Shippers[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<ShippersAssociation> GetAssociation(this IEnumerable<Shippers> entities, IQuery query)
+		public static IEnumerable<ShippersAssociation> GetAssociation(this IEnumerable<Shippers> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

@@ -136,12 +136,12 @@ namespace Northwind.Entity.dc2
 			this.Discontinued = (bool)dict[_DISCONTINUED];
 		}
 		
-		public ProductsAssociation GetAssociation(IQuery query)
+		public ProductsAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Products[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<ProductsAssociation> GetAssociation(IQuery query, IEnumerable<Products> entities)
+		public static IEnumerable<ProductsAssociation> GetAssociation(IDbQuery query, IEnumerable<Products> entities)
 		{
 			var reader = query.Expand(entities);
 			

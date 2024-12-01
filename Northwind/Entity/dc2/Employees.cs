@@ -200,12 +200,12 @@ namespace Northwind.Entity.dc2
 			this.PhotoPath = (string)dict[_PHOTOPATH];
 		}
 		
-		public EmployeesAssociation GetAssociation(IQuery query)
+		public EmployeesAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Employees[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<EmployeesAssociation> GetAssociation(IQuery query, IEnumerable<Employees> entities)
+		public static IEnumerable<EmployeesAssociation> GetAssociation(IDbQuery query, IEnumerable<Employees> entities)
 		{
 			var reader = query.Expand(entities);
 			

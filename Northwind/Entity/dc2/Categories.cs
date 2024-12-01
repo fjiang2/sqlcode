@@ -88,12 +88,12 @@ namespace Northwind.Entity.dc2
 			this.Picture = (byte[])dict[_PICTURE];
 		}
 		
-		public CategoriesAssociation GetAssociation(IQuery query)
+		public CategoriesAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Categories[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CategoriesAssociation> GetAssociation(IQuery query, IEnumerable<Categories> entities)
+		public static IEnumerable<CategoriesAssociation> GetAssociation(IDbQuery query, IEnumerable<Categories> entities)
 		{
 			var reader = query.Expand(entities);
 			

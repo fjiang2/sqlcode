@@ -158,7 +158,7 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Customers a, Customers b)
+		public static bool CompareTo(this Customers a, Customers b)
 		{
 			return a.CustomerID == b.CustomerID
 			&& a.CompanyName == b.CompanyName
@@ -173,7 +173,7 @@ namespace Northwind.Entity.dc1
 			&& a.Fax == b.Fax;
 		}
 		
-		public static void Copy(this Customers from, Customers to)
+		public static void CopyTo(this Customers from, Customers to)
 		{
 			to.CustomerID = from.CustomerID;
 			to.CompanyName = from.CompanyName;
@@ -188,12 +188,12 @@ namespace Northwind.Entity.dc1
 			to.Fax = from.Fax;
 		}
 		
-		public static CustomersAssociation GetAssociation(this Customers entity, IQuery query)
+		public static CustomersAssociation GetAssociation(this Customers entity, IDbQuery query)
 		{
 			return GetAssociation(new Customers[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomersAssociation> GetAssociation(this IEnumerable<Customers> entities, IQuery query)
+		public static IEnumerable<CustomersAssociation> GetAssociation(this IEnumerable<Customers> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

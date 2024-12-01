@@ -97,24 +97,24 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Region a, Region b)
+		public static bool CompareTo(this Region a, Region b)
 		{
 			return a.RegionID == b.RegionID
 			&& a.RegionDescription == b.RegionDescription;
 		}
 		
-		public static void Copy(this Region from, Region to)
+		public static void CopyTo(this Region from, Region to)
 		{
 			to.RegionID = from.RegionID;
 			to.RegionDescription = from.RegionDescription;
 		}
 		
-		public static RegionAssociation GetAssociation(this Region entity, IQuery query)
+		public static RegionAssociation GetAssociation(this Region entity, IDbQuery query)
 		{
 			return GetAssociation(new Region[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<RegionAssociation> GetAssociation(this IEnumerable<Region> entities, IQuery query)
+		public static IEnumerable<RegionAssociation> GetAssociation(this IEnumerable<Region> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

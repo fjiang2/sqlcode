@@ -110,7 +110,7 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Categories a, Categories b)
+		public static bool CompareTo(this Categories a, Categories b)
 		{
 			return a.CategoryID == b.CategoryID
 			&& a.CategoryName == b.CategoryName
@@ -118,7 +118,7 @@ namespace Northwind.Entity.dc1
 			&& a.Picture == b.Picture;
 		}
 		
-		public static void Copy(this Categories from, Categories to)
+		public static void CopyTo(this Categories from, Categories to)
 		{
 			to.CategoryID = from.CategoryID;
 			to.CategoryName = from.CategoryName;
@@ -126,12 +126,12 @@ namespace Northwind.Entity.dc1
 			to.Picture = from.Picture;
 		}
 		
-		public static CategoriesAssociation GetAssociation(this Categories entity, IQuery query)
+		public static CategoriesAssociation GetAssociation(this Categories entity, IDbQuery query)
 		{
 			return GetAssociation(new Categories[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CategoriesAssociation> GetAssociation(this IEnumerable<Categories> entities, IQuery query)
+		public static IEnumerable<CategoriesAssociation> GetAssociation(this IEnumerable<Categories> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

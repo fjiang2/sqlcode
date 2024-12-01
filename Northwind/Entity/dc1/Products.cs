@@ -162,7 +162,7 @@ namespace Northwind.Entity.dc1
 			};
 		}
 		
-		public static bool Compare(this Products a, Products b)
+		public static bool CompareTo(this Products a, Products b)
 		{
 			return a.ProductID == b.ProductID
 			&& a.ProductName == b.ProductName
@@ -176,7 +176,7 @@ namespace Northwind.Entity.dc1
 			&& a.Discontinued == b.Discontinued;
 		}
 		
-		public static void Copy(this Products from, Products to)
+		public static void CopyTo(this Products from, Products to)
 		{
 			to.ProductID = from.ProductID;
 			to.ProductName = from.ProductName;
@@ -190,12 +190,12 @@ namespace Northwind.Entity.dc1
 			to.Discontinued = from.Discontinued;
 		}
 		
-		public static ProductsAssociation GetAssociation(this Products entity, IQuery query)
+		public static ProductsAssociation GetAssociation(this Products entity, IDbQuery query)
 		{
 			return GetAssociation(new Products[] { entity }, query).FirstOrDefault();
 		}
 		
-		public static IEnumerable<ProductsAssociation> GetAssociation(this IEnumerable<Products> entities, IQuery query)
+		public static IEnumerable<ProductsAssociation> GetAssociation(this IEnumerable<Products> entities, IDbQuery query)
 		{
 			var reader = query.Expand(entities);
 			

@@ -72,12 +72,12 @@ namespace Northwind.Entity.dc2
 			this.TerritoryID = (string)dict[_TERRITORYID];
 		}
 		
-		public EmployeeTerritoriesAssociation GetAssociation(IQuery query)
+		public EmployeeTerritoriesAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new EmployeeTerritories[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<EmployeeTerritoriesAssociation> GetAssociation(IQuery query, IEnumerable<EmployeeTerritories> entities)
+		public static IEnumerable<EmployeeTerritoriesAssociation> GetAssociation(IDbQuery query, IEnumerable<EmployeeTerritories> entities)
 		{
 			var reader = query.Expand(entities);
 			

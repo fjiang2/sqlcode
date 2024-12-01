@@ -22,7 +22,7 @@ namespace UnitTestProject.SQLite
     {
         private readonly string PATH_PROJECT = Path.GetFullPath("..\\..\\..");
         private readonly string connectionString;
-        private readonly DbQuery Query;
+        private readonly IDbQuery Query;
         private readonly SQLiteClient dbClient;
 
         public UnitTest_SQLite_Entity1()

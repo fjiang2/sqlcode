@@ -144,12 +144,12 @@ namespace Northwind.Entity.dc2
 			this.Fax = (string)dict[_FAX];
 		}
 		
-		public CustomersAssociation GetAssociation(IQuery query)
+		public CustomersAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Customers[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomersAssociation> GetAssociation(IQuery query, IEnumerable<Customers> entities)
+		public static IEnumerable<CustomersAssociation> GetAssociation(IDbQuery query, IEnumerable<Customers> entities)
 		{
 			var reader = query.Expand(entities);
 			

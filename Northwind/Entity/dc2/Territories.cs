@@ -80,12 +80,12 @@ namespace Northwind.Entity.dc2
 			this.RegionID = (int)dict[_REGIONID];
 		}
 		
-		public TerritoriesAssociation GetAssociation(IQuery query)
+		public TerritoriesAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Territories[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<TerritoriesAssociation> GetAssociation(IQuery query, IEnumerable<Territories> entities)
+		public static IEnumerable<TerritoriesAssociation> GetAssociation(IDbQuery query, IEnumerable<Territories> entities)
 		{
 			var reader = query.Expand(entities);
 			

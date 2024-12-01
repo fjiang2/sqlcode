@@ -21,7 +21,7 @@ namespace Sys.Data.SqlClient
 
         public IDbAgent Agent => new SqlDbAgent(connection);
         public IDbContext Context => new DbContext(Agent);
-        public DbQuery Query => new DbQuery(Agent);
+        public IDbQuery Query => new DbQuery(Agent);
 
         public void SetDefaultAgent()
         {

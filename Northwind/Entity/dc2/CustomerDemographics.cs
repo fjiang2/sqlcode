@@ -72,12 +72,12 @@ namespace Northwind.Entity.dc2
 			this.CustomerDesc = (string)dict[_CUSTOMERDESC];
 		}
 		
-		public CustomerDemographicsAssociation GetAssociation(IQuery query)
+		public CustomerDemographicsAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new CustomerDemographics[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerDemographicsAssociation> GetAssociation(IQuery query, IEnumerable<CustomerDemographics> entities)
+		public static IEnumerable<CustomerDemographicsAssociation> GetAssociation(IDbQuery query, IEnumerable<CustomerDemographics> entities)
 		{
 			var reader = query.Expand(entities);
 			

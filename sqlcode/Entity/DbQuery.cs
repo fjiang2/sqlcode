@@ -9,7 +9,7 @@ using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
-    public class DbQuery : IQuery, IDisposable
+    public class DbQuery : IDbQuery, IDisposable
     {
         private readonly IDbAgent agent;
 

@@ -21,7 +21,7 @@ namespace UnitTestProject.SqlRemote
     {
         private readonly string url = "http://localhost:5689/sqlhandler/";
         private readonly SqlRemoteClient dbClient;
-        private readonly DbQuery Query;
+        private readonly IDbQuery Query;
 
         public UnitTest_SqlRemote_SQLite()
         {
