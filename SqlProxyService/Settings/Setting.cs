@@ -52,7 +52,6 @@ namespace SqlProxy.Service.Settings
             foreach (var server in servers)
             {
                 DbServerInfo? dbServerInfo = GetDbServerInfo(server);
-                string name = server?.GetValue<string>("Name") ?? string.Empty;
 
                 if (dbServerInfo != null)
                 {
@@ -64,6 +63,11 @@ namespace SqlProxy.Service.Settings
         private static DbServerInfo? GetDbServerInfo(IConfigurationSection? server)
         {
             string name = server?.GetValue<string>("Name") ?? string.Empty;
+            bool active = server?.GetValue<bool>("Active") ?? false;
+
+            if (!active)
+                return null;
+
             string? provider = server?.GetValue<string>("Provider");
             if (!Enum.TryParse<DbAgentStyle>(provider, ignoreCase: true, out var style))
             {
