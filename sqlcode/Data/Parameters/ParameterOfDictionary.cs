@@ -7,7 +7,7 @@ namespace Sys.Data
 {
 	class ParameterOfDictionary : ParameterFacet
 	{
-		private IDictionary<string, object> dict;
+		private readonly IDictionary<string, object> dict;
 
 		public ParameterOfDictionary(IDictionary<string, object> parameters)
 		{

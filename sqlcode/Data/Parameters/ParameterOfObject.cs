@@ -8,7 +8,7 @@ namespace Sys.Data
 {
 	class ParameterOfObject : ParameterFacet
 	{
-		private object obj;
+		private readonly object obj;
 		public ParameterOfObject(object parameters)
 		{
 			this.obj = parameters;
