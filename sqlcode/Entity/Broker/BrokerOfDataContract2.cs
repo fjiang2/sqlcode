@@ -20,7 +20,7 @@ namespace Sys.Data.Entity
             this.Schema = type.GetTableSchemaFromType();
         }
 
-        public ITableSchema GetSchmea(Type type)
+        public ITableSchema GetSchema(Type type)
         {
             return type.GetTableSchemaFromType();
         }

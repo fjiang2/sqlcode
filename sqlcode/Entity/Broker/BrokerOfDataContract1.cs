@@ -26,7 +26,7 @@ namespace Sys.Data.Entity
             this.functionToDictionary = extension.GetMethod(nameof(ToDictionary), BindingFlags.Public | BindingFlags.Static);
         }
 
-        public ITableSchema GetSchmea(Type type)
+        public ITableSchema GetSchema(Type type)
         {
             var extension = GetType(type, type.FullName + EXTENSION);
             return extension.GetTableSchemaFromType();

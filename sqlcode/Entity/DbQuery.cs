@@ -217,7 +217,7 @@ namespace Sys.Data.Entity
             => Submit<TEntity>(table => table.UpdateOnSubmit(entity));
 
         /// <summary>
-        /// Update partial columns of entity, values of primary key requried
+        /// Update partial columns of entity, values of primary key required
         /// example of partial entity
         ///   1.object: new { Id=7, Name="XXXX"} 
         ///   2.Dictionary: new Dictionary&lt;string, object&gt;{["Id"]=7, ["Name"]="XXXX"}</string>

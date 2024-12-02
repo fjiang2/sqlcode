@@ -108,7 +108,7 @@ namespace Sys.Data.Entity
 
 
         /// <summary>
-        /// Update partial columns of entity, values of primary key requried
+        /// Update partial columns of entity, values of primary key required
         /// </summary>
         /// <param name="entity">
         /// example of partial entity

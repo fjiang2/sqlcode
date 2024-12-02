@@ -8,7 +8,7 @@ namespace Sys.Data
 {
 	static class Iteration
 	{
-		public static IEnumerable<DataRow> AsEumerableRows(this DataTable dt)
+		public static IEnumerable<DataRow> AsEnumerableRows(this DataTable dt)
 		{
 			foreach (DataRow row in dt.Rows)
 			{
@@ -16,7 +16,7 @@ namespace Sys.Data
 			}
 		}
 
-		public static IEnumerable<(int, DataRow)> AsEumerableIndexRows(this DataTable dt)
+		public static IEnumerable<(int, DataRow)> AsEnumerableIndexRows(this DataTable dt)
 		{
 			int i = 0;
 			foreach (DataRow row in dt.Rows)

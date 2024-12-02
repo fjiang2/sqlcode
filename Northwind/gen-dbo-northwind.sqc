@@ -1,7 +1,7 @@
 ﻿rem use tool sqlcli.exe to create entity class files
-rem [Environment]::SetEnvironmentVariable("GitHub", "C:\devel\GitHub", "User")
+rem [Environment]::SetEnvironmentVariable("GitHubHome", "C:\devel\GitHub", "User")
 
-let GitHub = typeof(System.Environment).GetEnvironmentVariable("GitHub");
+let GitHub = typeof(System.Environment).GetEnvironmentVariable("GitHubHome");
 let SRC = GitHub + "\\sqlcode";
 let output = SRC + "\\Northwind\\Entity";
 let ns = "Northwind.Entity";

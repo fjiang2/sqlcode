@@ -48,7 +48,7 @@ namespace Sys.Data.Text
 		}
 
 		/// <summary>
-		/// Assing value to variable: variable = value
+		/// Assign value to variable: variable = value
 		/// </summary>
 		/// <param name="variableName"></param>
 		/// <param name="value"></param>
@@ -77,7 +77,7 @@ namespace Sys.Data.Text
 		/// <param name="context"></param>
 		/// <param name="parameterName">name of parameter</param>
 		/// <param name="value">the value of parameter</param>
-		/// <param name="direction">the parameter directior: in,out,in/out,return</param>
+		/// <param name="direction">the parameter direction: in,out,in/out,return</param>
 		/// <returns></returns>
 		public static Expression AsParameter(this ParameterContext context, string parameterName, object value = null, ParameterDirection direction = ParameterDirection.Input)
 		{
@@ -208,7 +208,7 @@ namespace Sys.Data.Text
 		}
 
 		/// <summary>
-		/// Assing value to column: [column-name] = value
+		/// Assign value to column: [column-name] = value
 		/// </summary>
 		/// <param name="columnName"></param>
 		/// <param name="value"></param>

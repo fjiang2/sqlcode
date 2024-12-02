@@ -28,7 +28,7 @@ namespace Sys.Data.Text
     public sealed class SqlBuilder : IQueryScript
     {
 
-        CodeBlock block = new CodeBlock();
+        readonly CodeBlock block = new CodeBlock();
         public SqlBuilder()
         {
         }
