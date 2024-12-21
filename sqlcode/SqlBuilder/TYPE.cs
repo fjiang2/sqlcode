@@ -6,7 +6,7 @@ namespace Sys.Data.Text
 {
 	public class TYPE : IQueryScript
 	{
-		string type;
+		readonly string type;
 		private TYPE(string type)
 		{
 			this.type = type;

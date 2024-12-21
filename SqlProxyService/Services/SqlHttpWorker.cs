@@ -5,9 +5,9 @@ using System.Text;
 using System.IO;
 using System.Threading;
 
-using SqlProxyService.Settings;
+using SqlProxy.Service.Settings;
 
-namespace SqlProxyService.Services
+namespace SqlProxy.Service.Services
 {
     public class SqlHttpWorker : BackgroundService
     {

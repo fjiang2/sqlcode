@@ -1,7 +1,7 @@
-﻿using SqlProxyService.Services;
-using SqlProxyService.Settings;
+﻿using SqlProxy.Service.Services;
+using SqlProxy.Service.Settings;
 
-namespace SqlProxyService
+namespace SqlProxy.Service
 {
     class StartUp
     {

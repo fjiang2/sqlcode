@@ -27,9 +27,9 @@ namespace Sys.Data
 	/// </summary>
 	public abstract class DbAgent : IDbAgent
 	{
-		protected readonly DbConnectionStringBuilder ConnectionString;
+		protected readonly string ConnectionString;
 
-		protected DbAgent(DbConnectionStringBuilder connectionString)
+		protected DbAgent(string connectionString)
 		{
 			this.ConnectionString = connectionString;
 		}
@@ -40,7 +40,7 @@ namespace Sys.Data
 
 		public override string ToString()
 		{
-			return ConnectionString.ToString();
+			return ConnectionString;
 		}
 	}
 }

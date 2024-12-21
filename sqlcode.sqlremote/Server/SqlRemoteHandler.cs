@@ -10,9 +10,9 @@ namespace Sys.Data.SqlRemote
 {
     public class SqlRemoteHandler : ISqlRemoteHandler
     {
-        private readonly DbAgent agent;
+        private readonly IDbAgent agent;
 
-        public SqlRemoteHandler(DbAgent agent)
+        public SqlRemoteHandler(IDbAgent agent)
         {
             this.agent = agent;
         }

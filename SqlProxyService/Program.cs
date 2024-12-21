@@ -1,4 +1,4 @@
-namespace SqlProxyService
+namespace SqlProxy.Service
 {
     class Program
     {

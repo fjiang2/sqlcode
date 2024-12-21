@@ -27,5 +27,17 @@ namespace Sys.Data.Entity
             }
             return list;
         }
+
+        public static void UpdateTable<TEntity>(this DataTable dt, IEnumerable<TEntity> items) where TEntity : IEntityRow
+        {
+            foreach (var item in items)
+            {
+                var row = dt.NewRow();
+                item.UpdateRow(row);
+                dt.Rows.Add(row);
+            }
+
+            dt.AcceptChanges();
+        }
     }
 }

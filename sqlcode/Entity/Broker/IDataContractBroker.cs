@@ -7,7 +7,7 @@ namespace Sys.Data.Entity
     interface IDataContractBroker<TEntity>
     {
         ITableSchema Schema { get; }
-        ITableSchema GetSchmea(Type type);
+        ITableSchema GetSchema(Type type);
         IDictionary<string, object> ToDictionary(TEntity entity);
         List<TEntity> ToList(DataTable dt);
     }

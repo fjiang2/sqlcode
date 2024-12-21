@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 
 namespace Sys.Data.Entity
 {
-	partial class DataContext
+	partial class DbContext
 	{
 
 		public IEnumerable<TSubEntity> Expand<TEntity, TSubEntity>(TEntity entity) where TEntity : class where TSubEntity : class

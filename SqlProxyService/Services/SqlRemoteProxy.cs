@@ -1,11 +1,11 @@
 ﻿using Sys.Data.SqlRemote;
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
-using SqlProxyService.Settings;
+using SqlProxy.Service.Settings;
 using Azure.Core;
 using System.Configuration.Provider;
 
-namespace SqlProxyService.Services
+namespace SqlProxy.Service.Services
 {
     class SqlRemoteProxy
     {
@@ -33,7 +33,7 @@ namespace SqlProxyService.Services
 
         public SqlRemoteResult Execute(SqlRemoteRequest request)
         {
-            DbAgent? agent = CreateDbAgent(request.Provider);
+            IDbAgent? agent = CreateDbAgent(request.Provider);
             if (agent == null)
                 return new SqlRemoteResult { Error = $"Cannot find provider or name: {request.Provider}" };
 
@@ -41,7 +41,7 @@ namespace SqlProxyService.Services
             return handler.Execute(request);
         }
 
-        private DbAgent? CreateDbAgent(DbProvider dbProvider)
+        private IDbAgent? CreateDbAgent(DbProvider dbProvider)
         {
             DbServerInfo? serverInfo;
             if (!string.IsNullOrEmpty(dbProvider.Name))
@@ -52,16 +52,15 @@ namespace SqlProxyService.Services
             if (serverInfo == null)
                 return null;
 
-            DbAgent? agent = null;
+            IDbAgent? agent = null;
             switch (serverInfo.Style)
             {
                 case DbAgentStyle.SQLite:
-                    string fileName = serverInfo.ConnectionString;
-                    agent = new SQLiteAgent(fileName);
+                    agent = new SQLiteClient(serverInfo.ConnectionString).Agent;
                     break;
 
                 case DbAgentStyle.SqlServer:
-                    agent = new SqlDbAgent(new SqlConnectionStringBuilder(serverInfo.ConnectionString));
+                    agent = new SqlDbClient(serverInfo.ConnectionString).Agent;
                     break;
             }
 

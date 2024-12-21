@@ -3,7 +3,7 @@
     enum StringType
     {
         String,
-        Varible,
+        Variable,
         Parameter,
         ColumnName,
         TableName,

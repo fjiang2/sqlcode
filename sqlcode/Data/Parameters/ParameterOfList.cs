@@ -6,7 +6,7 @@ namespace Sys.Data
 {
 	class ParameterOfList : ParameterFacet
 	{
-		private IEnumerable<IDataParameter> list;
+		private readonly IEnumerable<IDataParameter> list;
 
 		public ParameterOfList(IEnumerable<IDataParameter> parameters)
 		{

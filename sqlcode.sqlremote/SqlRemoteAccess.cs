@@ -9,7 +9,7 @@ namespace Sys.Data.SqlRemote
     /// <summary>
     /// Access database server through remote broker
     /// </summary>
-    public class SqlRemoteAccess : DbAccess, IDbAccess
+    internal class SqlRemoteAccess : DbAccess, IDbAccess
     {
         private readonly SqlRemoteRequest request;
 

@@ -4,45 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Data.SqlClient;
-using System.Net.Http;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitTestProject.Northwind.dc2;
+using Northwind.Entity.dc2;
 using Sys.Data;
 using Sys.Data.SqlRemote;
+using Sys.Data.Entity;
 
-namespace UnitTestProject
+namespace UnitTestProject.SqlRemote
 {
     /// <summary>
     /// SqlWebServer must run before run the test cases of this class
     /// </summary>
     [TestClass]
-    public class UnitTest_SqlRemoteHttp
-
+    public class UnitTest_SqlRemote_SQLServer
     {
-        string url = "http://localhost/sqlhandler/";
-        SqlRemoteAgent agent;
-        DbQuery query;
+        private readonly string url = "http://localhost:5689/sqlhandler/";
+        private readonly SqlRemoteClient dbClient;
+        private readonly IDbQuery Query;
 
-        public UnitTest_SqlRemoteHttp()
+        public UnitTest_SqlRemote_SQLServer()
         {
-            SqlHttpBroker broker = new SqlHttpBroker(url)
-            {
-                ProviderName = "Northwind",
-                Style = DbAgentStyle.SqlServer,
-            };
-
-            agent = new SqlRemoteAgent(broker);
-            query = new DbQuery(agent);
-
+            //url = "https://localhost:5690/sqlhandler/";
+            dbClient = new SqlRemoteClient(url, DbAgentStyle.SqlServer, "Northwind");
+            Query = dbClient.Query;
         }
 
         [TestMethod]
         public void Test_SELECT()
         {
             string SQL = "SELECT * FROM Products";
-            var dt = query.Access(SQL).FillDataTable();
+            var dt = Query.Access(SQL).FillDataTable();
 
             Debug.Assert(dt.Rows.Count == 77);
         }
@@ -51,7 +43,7 @@ namespace UnitTestProject
         public void Test_SELECT_Parameters()
         {
             string SQL = "SELECT * FROM Products WHERE UnitsInStock > @Number";
-            var dt = query.Access(SQL, new { Number = 20 }).FillDataTable();
+            var dt = Query.Access(SQL, new { Number = 20 }).FillDataTable();
 
             Debug.Assert(dt.Rows.Count == 48);
         }
@@ -59,7 +51,7 @@ namespace UnitTestProject
         [TestMethod]
         public void Test_Query_SELECT()
         {
-            var rows = query.Select<Products>(row => row.UnitsInStock > 20);
+            var rows = Query.Select<Products>(row => row.UnitsInStock > 20);
 
             Debug.Assert(rows.Count() == 48);
         }
@@ -68,9 +60,9 @@ namespace UnitTestProject
         [TestMethod]
         public void TestMethodInsert()
         {
-            using (var db = new DbContext(agent))
+            using (var ctx = dbClient.Context)
             {
-                var table = db.GetTable<Products>();
+                var table = ctx.GetTable<Products>();
                 Products product = new Products
                 {
                     ProductID = 100,    //identity
@@ -78,7 +70,7 @@ namespace UnitTestProject
                 };
 
                 table.UpdateOnSubmit(product);
-                db.SubmitChanges();
+                ctx.SubmitChanges();
             }
         }
     }

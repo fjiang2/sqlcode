@@ -9,11 +9,11 @@ using Sys.Data.Text;
 
 namespace Sys.Data.Entity
 {
-    public class DataQuery : IQuery, IDisposable
+    public class DbQuery : IDbQuery, IDisposable
     {
         private readonly IDbAgent agent;
 
-        public DataQuery(IDbAgent agent)
+        public DbQuery(IDbAgent agent)
         {
             this.agent = agent ?? throw new ArgumentNullException("undefined agent");
         }
@@ -43,9 +43,9 @@ namespace Sys.Data.Entity
 
         public DbAccess Access(string query, object args) => Access(new SqlUnit(query, args));
 
-        private T Invoke<T>(Func<DataContext, T> func)
+        private T Invoke<T>(Func<DbContext, T> func)
         {
-            using (var db = new DataContext(agent))
+            using (var db = new DbContext(agent))
             {
                 return func(db);
             }
@@ -72,7 +72,7 @@ namespace Sys.Data.Entity
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public IQueryResultReader Select(Action<DataContext> action)
+        public IQueryResultReader Select(Action<DbContext> action)
         {
             return Invoke(db =>
             {
@@ -217,7 +217,7 @@ namespace Sys.Data.Entity
             => Submit<TEntity>(table => table.UpdateOnSubmit(entity));
 
         /// <summary>
-        /// Update partial columns of entity, values of primary key requried
+        /// Update partial columns of entity, values of primary key required
         /// example of partial entity
         ///   1.object: new { Id=7, Name="XXXX"} 
         ///   2.Dictionary: new Dictionary&lt;string, object&gt;{["Id"]=7, ["Name"]="XXXX"}</string>

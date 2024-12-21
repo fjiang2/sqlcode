@@ -1,4 +1,4 @@
-﻿namespace SqlProxyService.Settings
+﻿namespace SqlProxy.Service.Settings
 {
     public interface ISetting
     {

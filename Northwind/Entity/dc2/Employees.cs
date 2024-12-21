@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc2
+namespace Northwind.Entity.dc2
 {
 	public partial class Employees
 		: IEntityRow, IEquatable<Employees>
@@ -200,12 +200,12 @@ namespace UnitTestProject.Northwind.dc2
 			this.PhotoPath = (string)dict[_PHOTOPATH];
 		}
 		
-		public EmployeesAssociation GetAssociation(IQuery query)
+		public EmployeesAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Employees[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<EmployeesAssociation> GetAssociation(IQuery query, IEnumerable<Employees> entities)
+		public static IEnumerable<EmployeesAssociation> GetAssociation(IDbQuery query, IEnumerable<Employees> entities)
 		{
 			var reader = query.Expand(entities);
 			

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SqlProxyService.Settings
+namespace SqlProxy.Service.Settings
 {
     public class Setting : ISetting
     {
@@ -52,7 +52,6 @@ namespace SqlProxyService.Settings
             foreach (var server in servers)
             {
                 DbServerInfo? dbServerInfo = GetDbServerInfo(server);
-                string name = server?.GetValue<string>("Name") ?? string.Empty;
 
                 if (dbServerInfo != null)
                 {
@@ -64,6 +63,11 @@ namespace SqlProxyService.Settings
         private static DbServerInfo? GetDbServerInfo(IConfigurationSection? server)
         {
             string name = server?.GetValue<string>("Name") ?? string.Empty;
+            bool active = server?.GetValue<bool>("Active") ?? false;
+
+            if (!active)
+                return null;
+
             string? provider = server?.GetValue<string>("Provider");
             if (!Enum.TryParse<DbAgentStyle>(provider, ignoreCase: true, out var style))
             {

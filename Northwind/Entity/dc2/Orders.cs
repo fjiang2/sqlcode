@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc2
+namespace Northwind.Entity.dc2
 {
 	public partial class Orders
 		: IEntityRow, IEquatable<Orders>
@@ -168,12 +168,12 @@ namespace UnitTestProject.Northwind.dc2
 			this.ShipCountry = (string)dict[_SHIPCOUNTRY];
 		}
 		
-		public OrdersAssociation GetAssociation(IQuery query)
+		public OrdersAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Orders[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<OrdersAssociation> GetAssociation(IQuery query, IEnumerable<Orders> entities)
+		public static IEnumerable<OrdersAssociation> GetAssociation(IDbQuery query, IEnumerable<Orders> entities)
 		{
 			var reader = query.Expand(entities);
 			
