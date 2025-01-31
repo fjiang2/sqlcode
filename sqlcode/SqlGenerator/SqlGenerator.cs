@@ -36,11 +36,24 @@ namespace Sys.Data
         internal readonly SqlTemplate template;
         internal readonly SqlTemplateFormat Format = SqlTemplateFormat.SingleLine;
 
-        public SqlGenerator(string formalName)
+        protected SqlGenerator(string formalName)
         {
             this.TableName = formalName;
             this.template = new SqlTemplate(TableName, Format);
         }
+
+        public SqlGenerator AddPrimaryKeys(IEnumerable<string> keys)
+        {
+            this.PrimaryKeys = keys.ToArray();
+            return this;
+        }
+
+        public SqlGenerator AddIdentityKeys(IEnumerable<string> keys)
+        {
+            this.IdentityKeys = keys.ToArray();
+            return this;
+        }
+
 
         public override SqlColumnValuePair Add(string name, object value)
         {
