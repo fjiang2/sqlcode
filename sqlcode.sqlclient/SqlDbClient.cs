@@ -13,8 +13,12 @@ namespace Sys.Data.SqlClient
 
         public SqlDbClient(string connectionString)
         {
-            connection = connectionString;
+            connection = connectionString.Trim();
+
 #if NET8_0
+            if (!connection.EndsWith(";"))
+                connection += ";";
+
             connection += "TrustServerCertificate=True;";
 #endif
         }
