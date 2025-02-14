@@ -68,10 +68,11 @@ namespace Sys.Data
                     if (row.Table.Columns.Contains(columnName))
                     {
                         var value = row[columnName];
-                        if (value != DBNull.Value)
-                        {
-                            property.SetValue(item, value);
-                        }
+
+                        if (value == DBNull.Value)
+                            value = null;
+
+                        property.SetValue(item, value);
                     }
                 }
 
