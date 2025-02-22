@@ -182,7 +182,7 @@ namespace Sys.Data
         /// To SQL column/value list
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<SqlColumnValuePair> ToList()
+        public IList<SqlColumnValuePair> ToList()
         {
             return pairs;
         }

@@ -6,10 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-#if NET48
-using System.Data.SqlClient;
-#else
+#if NET8_0
 using Microsoft.Data.SqlClient;
+#else
+using System.Data.SqlClient;
 #endif
 using Sys.Data.Entity;
 using System.Data;

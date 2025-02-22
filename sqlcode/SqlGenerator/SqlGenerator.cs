@@ -42,6 +42,18 @@ namespace Sys.Data
             this.template = new SqlTemplate(TableName, Format);
         }
 
+        public SqlGenerator AddPrimaryKeys(IEnumerable<string> keys)
+        {
+            this.PrimaryKeys = keys.ToArray();
+            return this;
+        }
+
+        public SqlGenerator AddIdentityKeys(IEnumerable<string> keys)
+        {
+            this.IdentityKeys = keys.ToArray();
+            return this;
+        }
+
 
         public override SqlColumnValuePair Add(string name, object value)
         {
