@@ -2,8 +2,6 @@
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
 using SqlProxy.Service.Settings;
-using Azure.Core;
-using System.Configuration.Provider;
 
 namespace SqlProxy.Service.Services
 {
