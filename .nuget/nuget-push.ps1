@@ -1,18 +1,10 @@
 # Usage: & ./nuget-push.ps1 <version>
+# Example: & ./nuget-push.ps1 1.2.0
 
 param(
-    [string]$Version=$Env:BUILDVER 	#BUILDVER X.Y.Z.A
+	[Parameter(Mandatory=$true, Position=0)]
+    [string]$Version
 )
-
-$versionPattern = "\d+(\.\d+){1,2}"
-$match = $Version | Select-String -Pattern $versionPattern
-if ($match) {
-    $versionNumber = $match.Matches.Value
-    Write-Host "Version: $versionNumber"
-} else {
-    Write-Host "No version number found."
-}
-
 
 cd C:\devel\GitHub\sqlcode\.nuget
 
@@ -28,14 +20,15 @@ $projects = @(
 ) 
 
 For ($i=0; $i -lt $projects.Length; $i++) {
+   nuget pack "$($projects[$i]).nuspec"
+}
+
+For ($i=0; $i -lt $projects.Length; $i++) {
    $pak = "$Env:NugetReleasePath\$($projects[$i]).$Env:Version.nupkg"
-   if (Test-Path -Path $pak) 
-   {
+   if (Test-Path -Path $pak) {
       nuget push $pak -Source https://api.nuget.org/v3/index.json
    }
-   else 
-   {
+   else {
       Write-Host "not found" $pak
    }
 }
-

@@ -6,15 +6,31 @@
     <Version>1.1.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
+      <PackageId>sqlcode.sqlite</PackageId>
+      <Title>SQLite</Title>
+      <Authors>Datconn</Authors>
+      <Description>Sqlcode for SQLite library</Description>
+      <Company>Datconn</Company>
+      <Copyright>Copyright 2023-2025</Copyright>
+      <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+      <PackageReleaseNotes>
+          9/18/2025 v1.1.0
+          Improvements/Enhancements:
+          1.
+          2.
+          Bug Fixes:
+          1.
+          2.
+      </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
+    <PackageReference Include="System.Data.SQLite" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
