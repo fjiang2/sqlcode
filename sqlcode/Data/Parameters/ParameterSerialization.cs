@@ -56,12 +56,10 @@ namespace Sys.Data
 			string _type = (string)xml.Attribute(_TYPE);
 			string _direction = (string)xml.Attribute(_DIRECTION);
 
-			DbType type;
-			if (!Enum.TryParse(_type, out type))
+			if (!Enum.TryParse(_type, out DbType type))
 				type = DbType.String;
 
-			ParameterDirection direction;
-			if (!Enum.TryParse(_direction, out direction))
+			if (!Enum.TryParse(_direction, out ParameterDirection direction))
 				direction = ParameterDirection.Input;
 
 			object value = Parse(_value, type);

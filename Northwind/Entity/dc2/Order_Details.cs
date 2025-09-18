@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc2
+namespace Northwind.Entity.dc2
 {
 	public partial class Order_Details
 		: IEntityRow, IEquatable<Order_Details>
@@ -96,12 +96,12 @@ namespace UnitTestProject.Northwind.dc2
 			this.Discount = (float)dict[_DISCOUNT];
 		}
 		
-		public Order_DetailsAssociation GetAssociation(IQuery query)
+		public Order_DetailsAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Order_Details[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<Order_DetailsAssociation> GetAssociation(IQuery query, IEnumerable<Order_Details> entities)
+		public static IEnumerable<Order_DetailsAssociation> GetAssociation(IDbQuery query, IEnumerable<Order_Details> entities)
 		{
 			var reader = query.Expand(entities);
 			

@@ -3,12 +3,28 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Sys.Data.SqlRemote</RootNamespace>
-    <Version>1.0.14</Version>
+    <Version>1.1.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
+    <PackageId>sqlcode.sqlremote</PackageId>
+    <Title>SQL Remote Agent</Title>
+    <Authors>Datconn</Authors>
+    <Description>SqlRemote for remote database server library</Description>
+    <Company>Datconn</Company>
+    <Copyright>Copyright 2021-2025</Copyright>
+    <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+    <PackageReleaseNotes>
+            9/18/2025 v1.1.0
+            Improvements/Enhancements:
+            1. Support .NET8
+            2.
+            Bug Fixes:
+            1.
+            2.
+        </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />

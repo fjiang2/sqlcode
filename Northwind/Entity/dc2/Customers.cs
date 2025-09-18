@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc2
+namespace Northwind.Entity.dc2
 {
 	public partial class Customers
 		: IEntityRow, IEquatable<Customers>
@@ -144,12 +144,12 @@ namespace UnitTestProject.Northwind.dc2
 			this.Fax = (string)dict[_FAX];
 		}
 		
-		public CustomersAssociation GetAssociation(IQuery query)
+		public CustomersAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Customers[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomersAssociation> GetAssociation(IQuery query, IEnumerable<Customers> entities)
+		public static IEnumerable<CustomersAssociation> GetAssociation(IDbQuery query, IEnumerable<Customers> entities)
 		{
 			var reader = query.Expand(entities);
 			

@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Sys.Data.Entity;
+
+namespace Sys.Data.SqlClient
+{
+    public class SqlDbClient : IDbClient
+    {
+        private readonly string connection;
+
+        public SqlDbClient(string connectionString)
+        {
+            connection = connectionString.Trim();
+
+#if NET8_0
+            if (!connection.EndsWith(";"))
+                connection += ";";
+
+            connection += "TrustServerCertificate=True;";
+#endif
+        }
+
+        public IDbAgent Agent => new SqlDbAgent(connection);
+        public IDbContext Context => new DbContext(Agent);
+        public IDbQuery Query => new DbQuery(Agent);
+
+        public void SetDefaultAgent()
+        {
+            Entity.Query.SetDefaultAgent(Agent);
+        }
+    }
+}

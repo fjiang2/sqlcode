@@ -16,12 +16,12 @@ namespace Sys.Data.Entity
         private readonly ITableSchema schema;
 
         public SqlGenerator Generator { get; }
-        public DataContext Context { get; }
+        public DbContext Context { get; }
 
-        internal Table(DataContext context)
+        internal Table(DbContext context)
         {
             this.Context = context;
-            this.broker = BrokerOfDataContract<TEntity>.CreateBroker(DataContext.EntityClassType);
+            this.broker = BrokerOfDataContract<TEntity>.CreateBroker(DbContext.EntityClassType);
             this.schema = broker.Schema;
             this.formalName = schema.FormalTableName();
 
@@ -108,7 +108,7 @@ namespace Sys.Data.Entity
 
 
         /// <summary>
-        /// Update partial columns of entity, values of primary key requried
+        /// Update partial columns of entity, values of primary key required
         /// </summary>
         /// <param name="entity">
         /// example of partial entity

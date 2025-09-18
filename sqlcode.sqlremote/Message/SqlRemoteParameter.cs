@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Runtime.Serialization;
-using Newtonsoft.Json.Converters;
 
 namespace Sys.Data.SqlRemote
 {
@@ -28,13 +27,13 @@ namespace Sys.Data.SqlRemote
         public override string ToString()
         {
             if (Direction == ParameterDirection.Input)
-                return $"{ParameterName} = {Value}";
+                return $"{ParameterName}={Value}";
             else if (Direction == ParameterDirection.Output)
-                return $"{ParameterName} = out {Value}";
+                return $"{ParameterName}=out {Value}";
             else if (Direction == ParameterDirection.InputOutput)
-                return $"{ParameterName} = ref {Value}";
+                return $"{ParameterName}=ref {Value}";
             else
-                return $"{ParameterName} = ret {Value}";
+                return $"{ParameterName}=ret {Value}";
         }
     }
 }

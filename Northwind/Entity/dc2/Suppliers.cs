@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc2
+namespace Northwind.Entity.dc2
 {
 	public partial class Suppliers
 		: IEntityRow, IEquatable<Suppliers>
@@ -152,12 +152,12 @@ namespace UnitTestProject.Northwind.dc2
 			this.HomePage = (string)dict[_HOMEPAGE];
 		}
 		
-		public SuppliersAssociation GetAssociation(IQuery query)
+		public SuppliersAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new Suppliers[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<SuppliersAssociation> GetAssociation(IQuery query, IEnumerable<Suppliers> entities)
+		public static IEnumerable<SuppliersAssociation> GetAssociation(IDbQuery query, IEnumerable<Suppliers> entities)
 		{
 			var reader = query.Expand(entities);
 			

@@ -10,7 +10,7 @@ namespace Sys.Data.SQLite
     /// <summary>
     /// Access SQLite database
     /// </summary>
-    public class SQLiteAccess : DbAccess, IDbAccess
+    internal class SQLiteAccess : DbAccess, IDbAccess
     {
         private readonly SQLiteCommand command;
         private readonly SQLiteConnection connection;

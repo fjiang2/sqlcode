@@ -9,7 +9,7 @@ namespace Sys.Data.SqlCe
     /// <summary>
     /// Access SQL Server Compact Edition
     /// </summary>
-    public class SqlCeAccess : DbAccess, IDbAccess
+    internal class SqlCeAccess : DbAccess, IDbAccess
     {
         private readonly SqlCeCommand command;
         private readonly SqlCeConnection connection;

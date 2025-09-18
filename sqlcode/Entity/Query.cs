@@ -32,7 +32,7 @@ namespace Sys.Data.Entity
         }
 
 
-        private static DataQuery DbQuery => new DataQuery(DefaultAgent);
+        private static DbQuery DbQuery => new DbQuery(DefaultAgent);
 
         /// <summary>
         /// Create DbCommand
@@ -73,9 +73,9 @@ namespace Sys.Data.Entity
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static T Invoke<T>(Func<DataContext, T> func)
+        public static T Invoke<T>(Func<DbContext, T> func)
         {
-            using (var db = new DataContext(DefaultAgent))
+            using (var db = new DbContext(DefaultAgent))
             {
                 return func(db);
             }
@@ -98,11 +98,11 @@ namespace Sys.Data.Entity
         }
 
         /// <summary>
-        /// Use SelectOnSumbit(...) in action
+        /// Use SelectOnSubmit(...) in action
         /// </summary>
         /// <param name="action"></param>
         /// <returns></returns>
-        public static IQueryResultReader Select(Action<DataContext> action)
+        public static IQueryResultReader Select(Action<DbContext> action)
             => DbQuery.Select(action);
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Sys.Data.Entity
             => Submit<TEntity>(table => table.UpdateOnSubmit(entity));
 
         /// <summary>
-        /// Update partial columns of entity, values of primary key requried
+        /// Update partial columns of entity, values of primary key required
         /// example of partial entity
         ///   1.object: new { Id=7, Name="XXXX"} 
         ///   2.Dictionary: new Dictionary&lt;string, object&gt;{["Id"]=7, ["Name"]="XXXX"}</string>
@@ -244,7 +244,7 @@ namespace Sys.Data.Entity
         /// <param name="modifiedProperties">The properties are modified</param>
         /// <param name="where"></param>
         /// <returns></returns>
-        public static int PatialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
+        public static int PartialUpdate<TEntity>(TEntity entity, Expression<Func<TEntity, object>> modifiedProperties, Expression<Func<TEntity, bool>> where) where TEntity : class
             => Submit<TEntity>(table => table.PartialUpdateOnSubmit(entity, modifiedProperties, where));
 
         /// <summary>
@@ -312,7 +312,7 @@ namespace Sys.Data.Entity
             => DbQuery.Expand<TEntity, TSubEntity>(entities);
 
         /// <summary>
-        /// Expand assocation tables with foreign keys
+        /// Expand association tables with foreign keys
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <param name="entities"></param>

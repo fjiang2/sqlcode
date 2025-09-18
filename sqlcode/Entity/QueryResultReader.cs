@@ -6,11 +6,11 @@ namespace Sys.Data.Entity
 {
     class QueryResultReader : IQueryResultReader
     {
-        private readonly DataContext db;
+        private readonly DbContext db;
         private readonly Type[] types;
         private readonly DataSet ds;
 
-        public QueryResultReader(DataContext db, Type[] types, DataSet ds)
+        public QueryResultReader(DbContext db, Type[] types, DataSet ds)
         {
             this.db = db;
             this.types = types;

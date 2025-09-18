@@ -9,5 +9,11 @@ namespace Sys.Data.Entity
     {
         void FillObject(DataRow row);
         IDictionary<string, object> ToDictionary();
+
+        /// <summary>
+        /// Used on updating data table.
+        /// </summary>
+        /// <param name="row"></param>
+        void UpdateRow(DataRow row);
     }
 }

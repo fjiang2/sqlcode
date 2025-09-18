@@ -85,7 +85,7 @@ namespace Sys.Data.Entity
 
 			foreach (var a in schema.Constraints)
 			{
-				var schema = broker.GetSchmea(a.OtherType);
+				var schema = broker.GetSchema(a.OtherType);
 				var formalName = schema.FormalTableName();
 
 				Expression where = Contains(entities,a.ThisKey, a.OtherKey);

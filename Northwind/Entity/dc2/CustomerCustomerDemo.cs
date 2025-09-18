@@ -5,7 +5,7 @@ using System.Linq;
 using Sys.Data;
 using Sys.Data.Entity;
 
-namespace UnitTestProject.Northwind.dc2
+namespace Northwind.Entity.dc2
 {
 	public partial class CustomerCustomerDemo
 		: IEntityRow, IEquatable<CustomerCustomerDemo>
@@ -72,12 +72,12 @@ namespace UnitTestProject.Northwind.dc2
 			this.CustomerTypeID = (string)dict[_CUSTOMERTYPEID];
 		}
 		
-		public CustomerCustomerDemoAssociation GetAssociation(IQuery query)
+		public CustomerCustomerDemoAssociation GetAssociation(IDbQuery query)
 		{
 			return GetAssociation(query, new CustomerCustomerDemo[] { this }).FirstOrDefault();
 		}
 		
-		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(IQuery query, IEnumerable<CustomerCustomerDemo> entities)
+		public static IEnumerable<CustomerCustomerDemoAssociation> GetAssociation(IDbQuery query, IEnumerable<CustomerCustomerDemo> entities)
 		{
 			var reader = query.Expand(entities);
 			
