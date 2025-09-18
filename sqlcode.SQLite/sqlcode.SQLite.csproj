@@ -6,14 +6,14 @@
     <Version>1.1.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
-      <PackageId>sqlcode.sqlite</PackageId>
-      <Title>SQLite</Title>
-      <Authors>Datconn</Authors>
-      <Description>Sqlcode for SQLite library</Description>
-      <Company>Datconn</Company>
-      <Copyright>Copyright 2023-2025</Copyright>
-      <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
-      <PackageReleaseNotes>
+    <PackageId>sqlcode.sqlite</PackageId>
+    <Title>SQLite Agent</Title>
+    <Authors>Datconn</Authors>
+    <Description>Sqlcode for SQLite library</Description>
+    <Company>Datconn</Company>
+    <Copyright>Copyright 2021-2025</Copyright>
+    <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+    <PackageReleaseNotes>
           9/18/2025 v1.1.0
           Improvements/Enhancements:
           1.

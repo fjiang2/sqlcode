@@ -20,6 +20,7 @@ For ($i=0; $i -lt $projects.Length; $i++) {
    if (Test-Path -Path $pak) 
    {
       Remove-Item -Recurse -Force  $pak
+	  Write-Host "deleted" $pak
    }
    else {
       Write-Host "not found" $pak
@@ -32,6 +33,7 @@ For ($i=0; $i -lt $projects.Length; $i++) {
    if (Test-Path -Path $pak) 
    {
       Remove-Item -Recurse -Force  $pak
+	  Write-Host "deleted" $pak
    }
    else {
       Write-Host "not found" $pak
