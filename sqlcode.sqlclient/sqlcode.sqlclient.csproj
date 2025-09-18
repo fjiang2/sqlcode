@@ -6,9 +6,25 @@
     <Version>1.1.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
+    <PackageId>sqlcode.sqlclient</PackageId>
+    <Title>SqlClient Agent</Title>
+    <Authors>Datconn</Authors>
+    <Description>SqlClient for SQLServer library</Description>
+    <Company>Datconn</Company>
+    <Copyright>Copyright 2021-2025</Copyright>
+    <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+    <PackageReleaseNotes>
+            9/18/2025 v1.1.0
+            Improvements/Enhancements:
+            1. Support .NET8
+            2.
+            Bug Fixes:
+            1.
+            2.
+        </PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />

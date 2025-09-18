@@ -1,19 +1,11 @@
 # Usage: & ./nuget-delete.ps1
 
 param(
-    [string]$Version=$Env:BUILDVER 	#BUILDVER X.Y.Z.A
+	[Parameter(Mandatory=$true, Position=0)]
+    [string]$Version=$Env:NuGetVersion 	#NuGetVersion X.Y.Z
 )
 
-$versionPattern = "\d+(\.\d+){1,2}"
-$match = $Version | Select-String -Pattern $versionPattern
-if ($match) {
-    $versionNumber = $match.Matches.Value
-    Write-Host "Version: $versionNumber"
-} else {
-    Write-Host "No version number found."
-}
-
-$env:Version=$versionNumber
+$env:Version=$Version
 
 $projects = @(
 	"sqlcode",
@@ -28,6 +20,7 @@ For ($i=0; $i -lt $projects.Length; $i++) {
    if (Test-Path -Path $pak) 
    {
       Remove-Item -Recurse -Force  $pak
+	  Write-Host "deleted" $pak
    }
    else {
       Write-Host "not found" $pak
@@ -40,6 +33,7 @@ For ($i=0; $i -lt $projects.Length; $i++) {
    if (Test-Path -Path $pak) 
    {
       Remove-Item -Recurse -Force  $pak
+	  Write-Host "deleted" $pak
    }
    else {
       Write-Host "not found" $pak

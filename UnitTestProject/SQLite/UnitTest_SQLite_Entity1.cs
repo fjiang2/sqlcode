@@ -28,6 +28,7 @@ namespace UnitTestProject.SQLite
         public UnitTest_SQLite_Entity1()
         {
             string fileName = Path.Combine(PATH_PROJECT, "..\\Northwind\\db\\Northwind.db");
+            fileName = Path.GetFullPath(fileName);
             this.connectionString = $"provider=sqlite;Data Source={fileName};Version=3; DateTimeFormat=Ticks; Pooling=True; Max Pool Size=100;";
 
             DbContext.EntityClassType = EntityClassType.ExtensionClass;
