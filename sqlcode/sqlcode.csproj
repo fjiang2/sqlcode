@@ -14,14 +14,14 @@
     <Copyright>Copyright 2021-2025</Copyright>
     <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
     <PackageReleaseNotes>
-        9/18/2025 v1.1.0
-        Improvements/Enhancements:
-        1.
-        2.
-        Bug Fixes:
-        1.
-        2.
-     </PackageReleaseNotes>
+            9/18/2025 v1.1.0
+            Improvements/Enhancements:
+            1. Support .NET8
+            2.
+            Bug Fixes:
+            1.
+            2.
+        </PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile></DocumentationFile>
