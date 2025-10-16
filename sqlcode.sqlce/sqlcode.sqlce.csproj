@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <RootNamespace>Sys.Data.SqlCe</RootNamespace>
-    <Version>1.1.0</Version>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
-    <PackageId>sqlcode.sqlce</PackageId>
-    <Title>SqlCe Agent</Title>
-    <Authors>Datconn</Authors>
-    <Description>SqlCe for SQL compact edition library</Description>
-    <Company>Datconn</Company>
-    <Copyright>Copyright 2021-2025</Copyright>
-    <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
-    <PackageReleaseNotes>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <RootNamespace>Sys.Data.SqlCe</RootNamespace>
+        <Version>1.1.0</Version>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
+        <PackageId>sqlcode.sqlce</PackageId>
+        <Title>SqlCe Agent</Title>
+        <Authors>Datconn</Authors>
+        <Description>SqlCe for SQL compact edition library</Description>
+        <Company>Datconn</Company>
+        <Copyright>Copyright 2021-2025</Copyright>
+        <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReleaseNotes>
             9/18/2025 v1.1.0
             Improvements/Enhancements:
             1. Support .NET8
@@ -22,11 +23,12 @@
             1.
             2.
         </PackageReleaseNotes>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <PackageReference Include="Microsoft.SqlServer.Compact" Version="4.0.8876.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
-  </ItemGroup>
+    </PropertyGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <PackageReference Include="Microsoft.SqlServer.Compact" Version="4.0.8876.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="docs\README.md"  Pack="true" PackagePath="\" />
+        <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
+    </ItemGroup>
 </Project>

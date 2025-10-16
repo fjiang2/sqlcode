@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Sys.Data</RootNamespace>
-    <Version>1.1.0</Version>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
-    <PackageId>sqlcode</PackageId>
-    <Title>SQL code generator</Title>
-    <Authors>Datconn</Authors>
-    <Description>SqlCode library</Description>
-    <Company>Datconn</Company>
-    <Copyright>Copyright 2021-2025</Copyright>
-    <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
-    <PackageReleaseNotes>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>Sys.Data</RootNamespace>
+        <Version>1.1.0</Version>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
+        <PackageId>sqlcode</PackageId>
+        <Title>SQL code generator</Title>
+        <Authors>Datconn</Authors>
+        <Description>SqlCode library</Description>
+        <Company>Datconn</Company>
+        <Copyright>Copyright 2021-2025</Copyright>
+        <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReleaseNotes>
             9/18/2025 v1.1.0
             Improvements/Enhancements:
             1. Support .NET8
@@ -22,8 +23,11 @@
             1.
             2.
         </PackageReleaseNotes>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile></DocumentationFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="docs\README.md"  Pack="true" PackagePath="\" />
+    </ItemGroup>
 </Project>

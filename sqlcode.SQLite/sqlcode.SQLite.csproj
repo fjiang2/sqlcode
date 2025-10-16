@@ -13,6 +13,7 @@
     <Company>Datconn</Company>
     <Copyright>Copyright 2021-2025</Copyright>
     <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>
             9/18/2025 v1.1.0
             Improvements/Enhancements:
@@ -33,6 +34,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
+      <None Include="docs\README.md"  Pack="true" PackagePath="\" />
+      <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
   </ItemGroup>
 </Project>
