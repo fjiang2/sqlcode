@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net8.0;net6.0;net48</TargetFrameworks>
     <RootNamespace>Sys.Data.SQLite</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
     <PackageId>sqlcode.sqlite</PackageId>
