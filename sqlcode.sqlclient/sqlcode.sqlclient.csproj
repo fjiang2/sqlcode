@@ -25,13 +25,13 @@
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.3" />
     </ItemGroup>
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
         <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="docs\README.md"  Pack="true" PackagePath="\" />
+        <None Include="docs\README.md" Pack="true" PackagePath="\" />
         <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
     </ItemGroup>
 </Project>
