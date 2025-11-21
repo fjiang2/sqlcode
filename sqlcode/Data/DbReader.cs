@@ -9,7 +9,7 @@ namespace Sys.Data
 {
     public class DbReader
     {
-        private readonly DbDataReader reader;
+        protected readonly DbDataReader reader;
 
         public int StartRecord { get; set; } = 0;
         public int MaxRecords { get; set; } = -1;
@@ -19,16 +19,22 @@ namespace Sys.Data
             this.reader = reader;
         }
 
-
         private DataRow ReadRow(DataTable table)
         {
             DataRow row = table.NewRow();
             for (int i = 0; i < reader.FieldCount; i++)
             {
-                row[i] = reader.GetValue(i);
+                object value = GetValue(i);
+                row[i] = value;
             }
 
             return row;
+        }
+
+        protected virtual object GetValue(int ordinal)
+        {
+            object value = reader.GetValue(ordinal);
+            return value;
         }
 
         public int ReadTable(DataTable table)
