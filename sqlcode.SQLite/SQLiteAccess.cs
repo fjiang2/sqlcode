@@ -128,8 +128,17 @@ namespace Sys.Data.SQLite
             try
             {
                 connection.Open();
-                var reader = command.ExecuteReader();
-                return new DbReader(reader).ReadDataSet(dataSet);
+
+                int count = 0;
+                foreach (string statement in statements)
+                {
+                    command.CommandText = statement;
+                    var reader = command.ExecuteReader();
+                    DataTable dt = new DataTable();
+                    count += new SQLiteDbReader(reader).ReadTable(dt);
+                    dataSet.Tables.Add(dt);
+                }
+                return count;
             }
             finally
             {
@@ -142,8 +151,9 @@ namespace Sys.Data.SQLite
             try
             {
                 connection.Open();
+                command.CommandText = statements.FirstOrDefault();
                 var reader = command.ExecuteReader();
-                return new DbReader(reader)
+                return new SQLiteDbReader(reader)
                 {
                     StartRecord = startRecord,
                     MaxRecords = maxRecords,

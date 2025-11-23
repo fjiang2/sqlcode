@@ -560,5 +560,25 @@ namespace UnitTestProject.SQLite
                 Debug.Assert(SQL == "DELETE FROM [Products] WHERE ((CategoryID = 1) AND (ProductName = 'Apple'))");
             }
         }
+
+        [TestMethod]
+        public void TestDateTime()
+        {
+            using (var ctx = dbClient.Context)
+            {
+                var dt = Query.Access("SELECT * FROM Employees").ReadDataTable();
+                Debug.Assert(dt.Rows[0]["BirthDate"].Equals(DateTime.Parse("1948-12-08 00:00:00.000")));
+
+                var loadOption = new DbLoadOption
+                {
+                    Mode = DbLoadMode.DbRead,
+                    MaxRecords = -1,
+                };
+
+                var rows = Query.Select<Employees>(row => row.EmployeeID == 1, loadOption);
+                Debug.Assert(rows.First().BirthDate == DateTime.Parse("1948-12-08 00:00:00.000"));
+            }
+        }
+
     }
 }
