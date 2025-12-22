@@ -25,7 +25,7 @@
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="System.Text.Json" Version="10.0.1" />
     </ItemGroup>
     <ItemGroup>
         <None Include="docs\README.md"  Pack="true" PackagePath="\" />

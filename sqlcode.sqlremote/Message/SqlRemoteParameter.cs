@@ -1,24 +1,23 @@
 ﻿using System.Data;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Sys.Data.SqlRemote
 {
-    [DataContract]
     public class SqlRemoteParameter : IDataParameter
     {
-        [DataMember(Name = "name", EmitDefaultValue = false)]
+        [JsonPropertyName("name")]
         public string ParameterName { get; set; }
 
-        [DataMember(Name = "value", EmitDefaultValue = false)]
+        [JsonPropertyName("value")]
         public object Value { get; set; }
 
-        [DataMember(Name = "direction", EmitDefaultValue = false)]
+        [JsonPropertyName("direction")]
         public ParameterDirection Direction { get; set; }
 
-        [DataMember(Name = "type", EmitDefaultValue = false)]
+        [JsonPropertyName("type")]
         public DbType DbType { get; set;}
 
-        [DataMember(Name = "nullable", EmitDefaultValue = false)]
+        [JsonPropertyName("nullable")]
         public bool IsNullable { get; set; }
         
         public string SourceColumn { get; set; }
