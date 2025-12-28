@@ -17,6 +17,7 @@ namespace Sys.Data.SqlRemote
         public string CommandText { get; set; }
 
         [JsonPropertyName("type")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public CommandType CommandType { get; set; }
 
         [JsonPropertyName("args")]

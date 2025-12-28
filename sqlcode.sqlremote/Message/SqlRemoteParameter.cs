@@ -12,9 +12,11 @@ namespace Sys.Data.SqlRemote
         public object Value { get; set; }
 
         [JsonPropertyName("direction")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public ParameterDirection Direction { get; set; }
 
         [JsonPropertyName("type")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public DbType DbType { get; set;}
 
         [JsonPropertyName("nullable")]
