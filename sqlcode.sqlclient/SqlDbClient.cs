@@ -15,7 +15,7 @@ namespace Sys.Data.SqlClient
         {
             connection = connectionString.Trim();
 
-#if NET8_0
+#if NET10_0
             if (!connection.EndsWith(";"))
                 connection += ";";
 

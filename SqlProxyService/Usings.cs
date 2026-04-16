@@ -4,7 +4,7 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Sys.Data;
 
-#if NET8_0
+#if NET10_0
 global using Microsoft.Data.SqlClient;
 #else
 global using System.Data.SqlClient;
