@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
-#if NET8_0
+#if NET10_0
 using Microsoft.Data.SqlClient;
 #else
 using System.Data.SqlClient;

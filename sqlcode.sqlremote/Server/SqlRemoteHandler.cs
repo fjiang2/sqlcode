@@ -58,7 +58,7 @@ namespace Sys.Data.SqlRemote
                         {
                             ds.WriteXml(stream, XmlWriteMode.WriteSchema);
                             string xml = stream.ToString();
-                            result.Xml = xml;
+                            result.Result = xml;
                         }
 
                         break;
@@ -74,7 +74,7 @@ namespace Sys.Data.SqlRemote
                         {
                             dt.WriteXml(stream);
                             string xml = stream.ToString();
-                            result.Xml = xml;
+                            result.Result = xml;
                         }
                         break;
 

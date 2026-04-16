@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data;
-#if NET8_0
+#if NET10_0
 using Microsoft.Data.SqlClient;
 #else
 using System.Data.SqlClient;

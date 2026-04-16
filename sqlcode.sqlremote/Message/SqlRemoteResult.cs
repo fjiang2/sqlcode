@@ -2,37 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Sys.Data.SqlRemote
 {
-    [DataContract]
     public class SqlRemoteResult
     {
         /// <summary>
         /// Result of ExecuteNonQuery()
         /// </summary>
-        [DataMember(Name = "count", EmitDefaultValue = false)]
+        [JsonPropertyName("count")]
         public int Count { get; set; }
 
 
         /// <summary>
         /// Result of ExecuteScalar()
         /// </summary>
-        [DataMember(Name = "scalar", EmitDefaultValue = false)]
+        [JsonPropertyName("scalar")]
         public object Scalar { get; set; }
 
         /// <summary>
         /// Serialized text from DataTable or DataSet
         /// </summary>
-        [DataMember(Name = "data", EmitDefaultValue = false)]
-        public string Xml { get; set; }
+        [JsonPropertyName("data")]
+        public string Result { get; set; }
 
 
         /// <summary>
         /// Exception
         /// </summary>
-        [DataMember(Name = "error", EmitDefaultValue = false)]
+        [JsonPropertyName("error")]
         public string Error { get; set; }
 
         public SqlRemoteResult()
@@ -48,8 +47,8 @@ namespace Sys.Data.SqlRemote
             else
                 builder.Append($"Scalar={Scalar}");
 
-            if (Xml != null)
-                builder.Append($", Data-Length={Xml?.Length}");
+            if (Result != null)
+                builder.Append($", Data-Length={Result?.Length}");
 
             if (!string.IsNullOrWhiteSpace(Error))
                 builder.Append($", Error=\"{Error}\"");

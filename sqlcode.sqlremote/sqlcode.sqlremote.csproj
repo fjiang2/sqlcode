@@ -25,10 +25,10 @@
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="System.Text.Json" Version="10.0.6" />
     </ItemGroup>
     <ItemGroup>
-        <None Include="docs\README.md"  Pack="true" PackagePath="\" />
+        <None Include="docs\README.md" Pack="true" PackagePath="\" />
         <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
     </ItemGroup>
 </Project>
