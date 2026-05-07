@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33205.214
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11716.220 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sqlcode", "sqlcode\sqlcode.csproj", "{A2031DA7-E29B-4DDE-83E3-98D3DEC088E7}"
 EndProject
@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Northwind", "Northwind\Nort
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{CFF8C2B2-E67E-4847-AD3E-59ABA0BC0197}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlProxy.Service", "SqlProxyService\SqlProxy.Service.csproj", "{FFE2D156-2F2D-401C-8671-5D334230C802}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlProxy", "SqlProxyService\SqlProxy.csproj", "{FFE2D156-2F2D-401C-8671-5D334230C802}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{23CEFE28-1871-44F9-8373-DE82CBF7FA75}"
 EndProject

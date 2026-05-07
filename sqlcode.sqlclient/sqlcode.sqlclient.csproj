@@ -11,7 +11,7 @@
         <Authors>Datconn</Authors>
         <Description>SqlClient for SQLServer library</Description>
         <Company>Datconn</Company>
-        <Copyright>Copyright 2021-2025</Copyright>
+        <Copyright>Copyright 2021-2026</Copyright>
         <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>
