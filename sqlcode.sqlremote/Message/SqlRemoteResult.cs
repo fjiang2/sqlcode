@@ -8,6 +8,9 @@ namespace Sys.Data.SqlRemote
 {
     public class SqlRemoteResult
     {
+        [JsonPropertyName("id")]
+        public string RequestId { get; set; }
+
         /// <summary>
         /// Result of ExecuteNonQuery()
         /// </summary>

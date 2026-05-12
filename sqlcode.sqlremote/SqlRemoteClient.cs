@@ -13,11 +13,16 @@ namespace Sys.Data.SqlRemote
 
         public SqlRemoteClient(string url, DbAgentStyle style, string providerName)
         {
-            connection = new SqlHttpBroker(url)
+            this.connection = new SqlHttpBroker(url)
             {
                 ProviderName = providerName,
                 Style = style,
             };
+        }
+
+        public SqlRemoteClient(ISqlRemoteBroker remoteBroker)
+        {
+            this.connection = remoteBroker;
         }
 
         public IDbAgent Agent => new SqlRemoteAgent(connection);

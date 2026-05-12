@@ -10,6 +10,12 @@ namespace Sys.Data.SqlRemote
 
     public class SqlRemoteRequest
     {
+        [JsonPropertyName("id")]
+        public string RequestId { get; set; }
+
+        [JsonPropertyName("desc")]
+        public string Description { get; set; }
+
         [JsonPropertyName("dbx")]
         public DbProvider Provider { get; set; }
 
@@ -50,9 +56,12 @@ namespace Sys.Data.SqlRemote
             StringBuilder builder = new StringBuilder();
 
             builder.Append($"{Provider}:: {Function}(\"{CommandText}\"");
+
             string args = string.Join(",", Parameters.Select(x => $"@{x}"));
-            if(!string.IsNullOrEmpty(args))
+            if (!string.IsNullOrEmpty(args))
+            {
                 builder.Append($", {args}");
+            }
             builder.Append($")");
 
             return builder.ToString();

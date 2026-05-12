@@ -33,7 +33,11 @@ namespace SqlProxy.Service.Services
         {
             IDbAgent? agent = CreateDbAgent(request.Provider);
             if (agent == null)
-                return new SqlRemoteResult { Error = $"Cannot find provider or name: {request.Provider}" };
+                return new SqlRemoteResult 
+                { 
+                    RequestId = request.RequestId,
+                    Error = $"Cannot find provider or name: {request.Provider}" 
+                };
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
