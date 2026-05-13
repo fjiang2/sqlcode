@@ -1,30 +1,24 @@
-﻿using System.Text;
-using Grpc.Core;
+﻿using Grpc.Core;
 using Grpc.Net.Client;
-using SqlGrpcClient;
-using Sys.Data;
 using Sys.Data.SqlRemote;
 
 namespace SqlGrpcClient
 {
     public class GrpcRemoteBroker : SqlRemoteBroker
     {
-        private static string? token;
+        private static readonly string? token;
 
-        private readonly SqlApiOption option;
         private readonly SqlApi.SqlApiClient client;
 
-        public GrpcRemoteBroker(SqlApiOption option)
+        public GrpcRemoteBroker(string address)
         {
-            this.option = option;
-
             //var handler = new HttpClientHandler();
             //handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             //var x = new GrpcChannelOptions { HttpHandler = handler };
 
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-            var channel = CreateAuthenticatedChannel(option.Address);
+            var channel = CreateAuthenticatedChannel(address);
 
             this.client = new SqlApi.SqlApiClient(channel);
         }
@@ -62,27 +56,15 @@ namespace SqlGrpcClient
             return result;
         }
 
-        public override string ToString()
-        {
-            if (string.IsNullOrEmpty(ProviderName))
-                return option.Address;
-            else
-                return $"{option.Address} :: {ProviderName}";
-        }
 
-        public static SqlRemoteClient CreateRemoteClient(string address, DbAgentStyle style, string providerName)
+        public static SqlRemoteClient CreateRemoteClient(GrpcApiOption option)
         {
-            SqlApiOption option = new SqlApiOption
+            var dbClient = new SqlRemoteClient(new GrpcRemoteBroker(option.Address)
             {
-                Address = address,
-            };
-            
-            var dbClient = new SqlRemoteClient(new GrpcRemoteBroker(option)
-            {
-                ProviderName = providerName,
-                Style = style,
+                ProviderName = option.ProviderName,
+                Style = option.Style,
             });
-            
+
             return dbClient;
         }
     }

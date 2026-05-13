@@ -1,6 +1,4 @@
-﻿using Sys.Data;
-
-namespace SqlGrpcService.Settings
+﻿namespace SqlGrpcService.Settings
 {
     public class DbServerInfo
     {

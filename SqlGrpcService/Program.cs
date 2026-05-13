@@ -30,7 +30,7 @@ namespace SqlGrpcService
             app.UseAuthorization();
 
             // Configure the HTTP request pipeline.
-            app.MapGrpcService<SqlService>();
+            app.MapGrpcService<GrpcService>();
             app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
             app.Run();
@@ -49,10 +49,10 @@ namespace SqlGrpcService
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
-                {   
+                {
                     const string secureSecret = "xM12M092132_Kqw12455_21-12QOP-33D-77#2";
                     SymmetricSecurityKey SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secureSecret));
-                    
+
                     options.TokenValidationParameters =
                         new TokenValidationParameters
                         {

@@ -16,6 +16,11 @@ namespace Sys.Data.SqlRemote
         public DbAgentStyle Style { get; set; } = DbAgentOption.DefaultStyle;
 
         public abstract Task<SqlRemoteResult> RequestAsync(SqlRemoteRequest request);
-    
+
+
+        public override string ToString()
+        {
+            return $"ProviderName: {ProviderName}, Style: {Style}";
+        }
     }
 }

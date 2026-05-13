@@ -25,10 +25,14 @@ namespace UnitTestProject.SqlRemote
 
         public UnitTest_Grpc_SqlRemote_SQLServer()
         {
-            string address = "https://localhost:7187";
-            string db = "Northwind";
-            dbClient = GrpcRemoteBroker.CreateRemoteClient(address, DbAgentStyle.SqlServer, db);
+            GrpcApiOption option = new GrpcApiOption
+            {
+                Address = "https://localhost:7187",
+                ProviderName = "Northwind",
+                Style = DbAgentStyle.SqlServer,
+            };
 
+            dbClient = GrpcRemoteBroker.CreateRemoteClient(option);
             Query = dbClient.Query;
         }
 

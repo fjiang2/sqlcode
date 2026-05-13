@@ -6,12 +6,12 @@ using Sys.Data.SqlRemote;
 
 namespace SqlGrpcService.Services
 {
-    public class SqlService : SqlApi.SqlApiBase
+    public class GrpcService : SqlApi.SqlApiBase
     {
         private readonly List<DbServerInfo> dbServers;
-        private readonly ILogger<SqlService> logger;
+        private readonly ILogger<GrpcService> logger;
 
-        public SqlService(ILogger<SqlService> logger, ISetting setting)
+        public GrpcService(ILogger<GrpcService> logger, ISetting setting)
         {
             this.dbServers = setting.ServerOption.DbServers;
             this.logger = logger;
