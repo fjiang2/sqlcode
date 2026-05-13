@@ -61,7 +61,7 @@ namespace SqlGrpcClient
         {
             var dbClient = new SqlRemoteClient(new GrpcRemoteBroker(option.Address)
             {
-                ProviderName = option.ProviderName,
+                ServerName = option.ServerName,
                 Style = option.Style,
             });
 

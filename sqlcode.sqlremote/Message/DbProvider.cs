@@ -5,7 +5,7 @@
         /// <summary>
         /// Database server alias
         /// </summary>
-        public string Name { get; set; }
+        public string ServerName { get; set; }
 
         /// <summary>
         /// Style of database engine 
@@ -16,6 +16,6 @@
         { 
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => ServerName;
     }
 }

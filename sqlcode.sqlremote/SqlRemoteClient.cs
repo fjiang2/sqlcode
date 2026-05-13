@@ -15,7 +15,7 @@ namespace Sys.Data.SqlRemote
         {
             this.connection = new SqlHttpBroker(url)
             {
-                ProviderName = providerName,
+                ServerName = providerName,
                 Style = style,
             };
         }

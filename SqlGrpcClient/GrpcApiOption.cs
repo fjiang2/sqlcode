@@ -9,7 +9,7 @@ namespace SqlGrpcClient
         /// </summary>
         public string Address { get; set; }
 
-        public string ProviderName { get; set; } = string.Empty;
+        public string ServerName { get; set; } = string.Empty;
 
         /// <summary>
         /// Database Server style, default is SqlServer

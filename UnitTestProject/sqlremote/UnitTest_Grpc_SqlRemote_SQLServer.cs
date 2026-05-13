@@ -28,7 +28,7 @@ namespace UnitTestProject.SqlRemote
             GrpcApiOption option = new GrpcApiOption
             {
                 Address = "https://localhost:7187",
-                ProviderName = "Northwind",
+                ServerName = "Northwind",
                 Style = DbAgentStyle.SqlServer,
             };
 

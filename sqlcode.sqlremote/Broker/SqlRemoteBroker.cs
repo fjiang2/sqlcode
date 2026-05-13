@@ -11,7 +11,7 @@ namespace Sys.Data.SqlRemote
         { 
         }
 
-        public string ProviderName { get; set; } = string.Empty;
+        public string ServerName { get; set; } = string.Empty;
 
         public DbAgentStyle Style { get; set; } = DbAgentOption.DefaultStyle;
 
@@ -20,7 +20,7 @@ namespace Sys.Data.SqlRemote
 
         public override string ToString()
         {
-            return $"ProviderName: {ProviderName}, Style: {Style}";
+            return $"ServerName: {ServerName}, Style: {Style}";
         }
     }
 }

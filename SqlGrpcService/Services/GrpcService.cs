@@ -78,8 +78,8 @@ namespace SqlGrpcService.Services
         private IDbAgent? CreateDbAgent(DbProvider dbProvider)
         {
             DbServerInfo? serverInfo;
-            if (!string.IsNullOrEmpty(dbProvider.Name))
-                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.Name);
+            if (!string.IsNullOrEmpty(dbProvider.ServerName))
+                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.ServerName);
             else
                 serverInfo = dbServers.FirstOrDefault(x => x.Style == dbProvider.Style);
 

@@ -9,9 +9,9 @@ namespace SqlProxy.Service.Services
     {
         private readonly List<DbServerInfo> dbServers;
 
-        public SqlRemoteProxy(List<DbServerInfo> dbServers)
+        public SqlRemoteProxy(ServerOption option)
         {
-            this.dbServers = dbServers;
+            this.dbServers = option.DbServers;
         }
 
         private static string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
@@ -45,8 +45,8 @@ namespace SqlProxy.Service.Services
         private IDbAgent? CreateDbAgent(DbProvider dbProvider)
         {
             DbServerInfo? serverInfo;
-            if (!string.IsNullOrEmpty(dbProvider.Name))
-                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.Name);
+            if (!string.IsNullOrEmpty(dbProvider.ServerName))
+                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.ServerName);
             else
                 serverInfo = dbServers.FirstOrDefault(x => x.Style == dbProvider.Style);
 
