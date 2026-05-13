@@ -1,41 +1,47 @@
-﻿using Sys.Data.SqlRemote;
+using Grpc.Core;
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
-using SqlProxy.Service.Settings;
+using Sys.Data.SqlRemote;
 
-namespace SqlProxy.Service.Services
+namespace SqlGrpcService.Services
 {
-    class SqlRemoteProxy
+    public class SqlService : Greeter.GreeterBase
     {
         private readonly List<DbServerInfo> dbServers;
+        private readonly ILogger<SqlService> logger;
 
-        public SqlRemoteProxy(List<DbServerInfo> dbServers)
+        public SqlService(ILogger<SqlService> logger, ISetting setting)
         {
-            this.dbServers = dbServers;
+            this.dbServers = setting.ServerOption.DbServers;
+            this.logger = logger;
         }
 
-        private static string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
-
-        public string Execute(string json)
+        public override Task<HelloReply> Execute(HelloRequest request, ServerCallContext context)
         {
-            var request = Json.Deserialize<SqlRemoteRequest>(json);
-            Console.WriteLine($"{Now} [Tx] {request}");
+            logger.LogInformation("The message is received from {Name}", request.Body);
 
-            SqlRemoteResult result = Execute(request);
+            Console.WriteLine($"{DateTime.Now} [Req] {request.Body}");
+            var sqlRequest = Json.Deserialize<SqlRemoteRequest>(request.Body);
 
-            json = Json.Serialize(result);
-            Console.WriteLine($"{Now} [Rx] {result}");
+            SqlRemoteResult sqlResult = Execute(sqlRequest);
+            string json = Json.Serialize(sqlResult);
 
-            return json;
+            Console.WriteLine($"{DateTime.Now} [Ret] {json}");
+
+            return Task.FromResult(new HelloReply
+            {
+                RequestId = request.RequestId,
+                Result = json
+            });
         }
 
-        public SqlRemoteResult Execute(SqlRemoteRequest request)
+        private SqlRemoteResult Execute(SqlRemoteRequest request)
         {
             IDbAgent? agent = CreateDbAgent(request.Provider);
             if (agent == null)
-                return new SqlRemoteResult 
-                { 
-                    Error = $"Cannot find provider or name: {request.Provider}" 
+                return new SqlRemoteResult
+                {
+                    Error = $"Cannot find provider or name: {request.Provider}"
                 };
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);

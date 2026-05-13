@@ -27,10 +27,7 @@ namespace Sys.Data.SqlRemote
 
             var access = agent.Access(unit);
 
-            SqlRemoteResult result = new SqlRemoteResult
-            {
-                RequestId = request.RequestId
-            };
+            SqlRemoteResult result = new SqlRemoteResult();
 
             string func = request.Function;
 

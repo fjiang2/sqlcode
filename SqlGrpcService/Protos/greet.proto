@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "SqlGrpcService";
+
+package greet;
+
+service Greeter {
+  rpc Execute (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string requestId = 1;
+  string body = 2;
+  string description = 3;
+}
+
+message HelloReply {
+  string requestId = 1;
+  string result = 2;
+}

@@ -1,0 +1,81 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace SqlGrpcService.Settings
+{
+    public class Setting : ISetting
+    {
+        public ServerOption ServerOption { get; }
+
+        public Setting(IConfiguration configuration)
+        {
+            var proxy = configuration.GetSection("Proxy");
+            this.ServerOption = GetProxy(proxy);
+        }
+
+        private static ServerOption GetProxy(IConfigurationSection? section)
+        {
+            var serverOption = new ServerOption
+            {
+                DbServers = new List<DbServerInfo>(),
+            };
+
+            GetDbServers(section, serverOption.DbServers);
+            return serverOption;
+        }
+
+        private static void GetDbServers(IConfigurationSection? section, List<DbServerInfo> dbServers)
+        {
+            var servers = section?.GetSection("Servers").GetChildren();
+
+            if (servers == null)
+            {
+                Console.Error.WriteLine($"Undefined \"Servers\" in appsettings");
+                return;
+            }
+
+            foreach (var server in servers)
+            {
+                DbServerInfo? dbServerInfo = GetDbServerInfo(server);
+
+                if (dbServerInfo != null)
+                {
+                    dbServers.Add(dbServerInfo);
+                }
+            }
+        }
+
+        private static DbServerInfo? GetDbServerInfo(IConfigurationSection? server)
+        {
+            string name = server?.GetValue<string>("Name") ?? string.Empty;
+            bool active = server?.GetValue<bool>("Active") ?? false;
+
+            if (!active)
+                return null;
+
+            string? provider = server?.GetValue<string>("Provider");
+            if (!Enum.TryParse<DbAgentStyle>(provider, ignoreCase: true, out var style))
+            {
+                Console.Error.WriteLine($"Invalid provider: {provider}");
+                return null;
+            }
+
+            DbServerInfo dbServerInfo = new DbServerInfo
+            {
+                Name = name,
+                Style = style,
+                ConnectionString = server?.GetValue<string>("ConnectionString") ?? string.Empty,
+            };
+
+            if (style == DbAgentStyle.SqlServer)
+                dbServerInfo.ConnectionString += "TrustServerCertificate=True;";
+
+            return dbServerInfo;
+        }
+    }
+}
+

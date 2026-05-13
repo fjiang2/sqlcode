@@ -10,12 +10,6 @@ namespace Sys.Data.SqlRemote
 
     public class SqlRemoteRequest
     {
-        [JsonPropertyName("id")]
-        public string RequestId { get; set; }
-
-        [JsonPropertyName("desc")]
-        public string Description { get; set; }
-
         [JsonPropertyName("dbx")]
         public DbProvider Provider { get; set; }
 

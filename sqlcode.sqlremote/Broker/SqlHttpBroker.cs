@@ -50,7 +50,6 @@ namespace Sys.Data.SqlRemote
                     string exception = await response.Content.ReadAsStringAsync();
                     return new SqlRemoteResult
                     {
-                        RequestId = request.RequestId,
                         Error = $"status={response.StatusCode}, reason={response.ReasonPhrase}, {exception}"
                     };
                 }
