@@ -17,49 +17,24 @@ namespace SqlGrpcService.Services
             this.logger = logger;
         }
 
+        private static string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
         public override Task<SqlResponse> Execute(SqlRequest request, ServerCallContext context)
         {
-            logger.LogInformation("The message is received from {Name}", request.Body);
+            //logger.LogInformation("The message is received from {Name}", request.Body);
 
-            Console.WriteLine($"{DateTime.Now} [Req] {request.RequestId} {request.Body}");
-            var sqlRequest = Json.Deserialize<SqlRemoteRequest>(request.Body);
-
-            foreach (var parameter in sqlRequest.Parameters)
-            {
-                parameter.Value = Correct(parameter.Value);
-            }
+            SqlRemoteRequest sqlRequest = Json.ToSqlRemoteRequest(request.Body);
+            Console.WriteLine($"{Now} [Req] {request.RequestId} {sqlRequest}");
 
             SqlRemoteResult sqlResult = Execute(sqlRequest);
+            Console.WriteLine($"{Now} [Ret] {request.RequestId} {sqlResult}");
+            
             string json = Json.Serialize(sqlResult);
-
-            Console.WriteLine($"{DateTime.Now} [Ret] {request.RequestId} {json}");
-
             return Task.FromResult(new SqlResponse
             {
                 RequestId = request.RequestId,
                 Result = json
             });
-        }
-
-        public static object? Correct(object? value)
-        {
-            if (value is JsonElement element)
-            {
-                if (element.ValueKind == JsonValueKind.String)
-                {
-                    return element.GetString();
-                }
-                else if (element.ValueKind == JsonValueKind.Number)
-                {
-                    return element.GetDouble();
-                }
-                else if (element.ValueKind == JsonValueKind.True || element.ValueKind == JsonValueKind.False)
-                {
-                    return element.GetBoolean();
-                }
-            }
-
-            return value;
         }
 
         private SqlRemoteResult Execute(SqlRemoteRequest request)

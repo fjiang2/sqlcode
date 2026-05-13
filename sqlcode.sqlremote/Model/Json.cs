@@ -45,7 +45,37 @@ namespace Sys.Data.SqlRemote
             return obj;
         }
 
+        internal static object Correct(object value)
+        {
+            if (value is JsonElement element)
+            {
+                if (element.ValueKind == JsonValueKind.String)
+                {
+                    return element.GetString();
+                }
+                else if (element.ValueKind == JsonValueKind.Number)
+                {
+                    return element.GetDouble();
+                }
+                else if (element.ValueKind == JsonValueKind.True || element.ValueKind == JsonValueKind.False)
+                {
+                    return element.GetBoolean();
+                }
+            }
 
+            return value;
+        }
+
+        public static SqlRemoteRequest ToSqlRemoteRequest(this string json)
+        {
+            var sqlRequest = Json.Deserialize<SqlRemoteRequest>(json);
+            foreach (var parameter in sqlRequest.Parameters)
+            {
+                parameter.Value = Correct(parameter.Value);
+            }
+
+            return sqlRequest;
+        }
     }
 }
 

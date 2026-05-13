@@ -1,15 +1,16 @@
-﻿using Sys.Data.SqlRemote;
+﻿using System.Text.Json;
+using SqlProxy.Service.Settings;
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
-using SqlProxy.Service.Settings;
+using Sys.Data.SqlRemote;
 
 namespace SqlProxy.Service.Services
 {
-    class SqlRemoteProxy
+    class SqlProxyService
     {
         private readonly List<DbServerInfo> dbServers;
 
-        public SqlRemoteProxy(ServerOption option)
+        public SqlProxyService(ServerOption option)
         {
             this.dbServers = option.DbServers;
         }
@@ -18,14 +19,13 @@ namespace SqlProxy.Service.Services
 
         public string Execute(string json)
         {
-            var request = Json.Deserialize<SqlRemoteRequest>(json);
-            Console.WriteLine($"{Now} [Tx] {request}");
+            SqlRemoteRequest sqlRequest = Json.ToSqlRemoteRequest(json);
+            Console.WriteLine($"{Now} [Req] {sqlRequest}");
 
-            SqlRemoteResult result = Execute(request);
+            SqlRemoteResult sqlResult = Execute(sqlRequest);
+            Console.WriteLine($"{Now} [Ret] {sqlResult}");
 
-            json = Json.Serialize(result);
-            Console.WriteLine($"{Now} [Rx] {result}");
-
+            json = Json.Serialize(sqlResult);
             return json;
         }
 

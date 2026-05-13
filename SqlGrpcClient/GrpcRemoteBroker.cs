@@ -42,7 +42,6 @@ namespace SqlGrpcClient
             return channel;
         }
 
-
         public override async Task<SqlRemoteResult> RequestAsync(SqlRemoteRequest request)
         {
             SqlRequest _request = new SqlRequest
