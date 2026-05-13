@@ -2,19 +2,19 @@ syntax = "proto3";
 
 option csharp_namespace = "SqlGrpcService";
 
-package greet;
+package sqlremote;
 
-service Greeter {
-  rpc Execute (HelloRequest) returns (HelloReply);
+service SqlApi {
+  rpc Execute (SqlRequest) returns (SqlResponse);
 }
 
-message HelloRequest {
+message SqlRequest {
   string requestId = 1;
   string body = 2;
   string description = 3;
 }
 
-message HelloReply {
+message SqlResponse {
   string requestId = 1;
   string result = 2;
 }

@@ -10,6 +10,7 @@ using Northwind.Entity.dc2;
 using Sys.Data;
 using Sys.Data.SqlRemote;
 using Sys.Data.Entity;
+using SqlGrpcClient;
 
 namespace UnitTestProject.SqlRemote
 {
@@ -17,16 +18,23 @@ namespace UnitTestProject.SqlRemote
     /// SqlWebServer must run before run the test cases of this class
     /// </summary>
     [TestClass]
-    public class UnitTest_SqlRemote_SQLServer
+    public class UnitTest_Grpc_SqlRemote_SQLServer
     {
-        private readonly string url = "http://localhost:5689/sqlhandler/";
         private readonly SqlRemoteClient dbClient;
         private readonly IDbQuery Query;
 
-        public UnitTest_SqlRemote_SQLServer()
+        public UnitTest_Grpc_SqlRemote_SQLServer()
         {
-            //url = "https://localhost:5690/sqlhandler/";
-            dbClient = new SqlRemoteClient(url, DbAgentStyle.SqlServer, "Northwind");
+            SqlApiOption option = new SqlApiOption
+            {
+                Address = "http://localhost:5058",
+            };
+            dbClient = new SqlRemoteClient(new GrpcRemoteBroker(option)
+            {
+                ProviderName = "Northwind",
+                Style = DbAgentStyle.SqlServer,
+            });
+
             Query = dbClient.Query;
         }
 

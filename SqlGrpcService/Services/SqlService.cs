@@ -5,7 +5,7 @@ using Sys.Data.SqlRemote;
 
 namespace SqlGrpcService.Services
 {
-    public class SqlService : Greeter.GreeterBase
+    public class SqlService : SqlApi.SqlApiBase
     {
         private readonly List<DbServerInfo> dbServers;
         private readonly ILogger<SqlService> logger;
@@ -16,19 +16,19 @@ namespace SqlGrpcService.Services
             this.logger = logger;
         }
 
-        public override Task<HelloReply> Execute(HelloRequest request, ServerCallContext context)
+        public override Task<SqlResponse> Execute(SqlRequest request, ServerCallContext context)
         {
             logger.LogInformation("The message is received from {Name}", request.Body);
 
-            Console.WriteLine($"{DateTime.Now} [Req] {request.Body}");
+            Console.WriteLine($"{DateTime.Now} [Req] {request.RequestId} {request.Body}");
             var sqlRequest = Json.Deserialize<SqlRemoteRequest>(request.Body);
 
             SqlRemoteResult sqlResult = Execute(sqlRequest);
             string json = Json.Serialize(sqlResult);
 
-            Console.WriteLine($"{DateTime.Now} [Ret] {json}");
+            Console.WriteLine($"{DateTime.Now} [Ret] {request.RequestId} {json}");
 
-            return Task.FromResult(new HelloReply
+            return Task.FromResult(new SqlResponse
             {
                 RequestId = request.RequestId,
                 Result = json
