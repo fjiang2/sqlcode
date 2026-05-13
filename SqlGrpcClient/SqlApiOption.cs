@@ -1,6 +1,6 @@
 ﻿namespace SqlGrpcClient
 {
-    public class SqlApiOption
+    class SqlApiOption
     {
         /// <summary>
         /// IP address of gRPC server
@@ -10,6 +10,11 @@
         public SqlApiOption()
         {
             Address = "https://localhost:5058";
+        }
+
+        public override string ToString()
+        {
+            return Address;
         }
     }
 }

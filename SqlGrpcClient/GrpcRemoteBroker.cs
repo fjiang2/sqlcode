@@ -2,6 +2,7 @@
 using Grpc.Core;
 using Grpc.Net.Client;
 using SqlGrpcClient;
+using Sys.Data;
 using Sys.Data.SqlRemote;
 
 namespace SqlGrpcClient
@@ -56,6 +57,7 @@ namespace SqlGrpcClient
                 Body = Json.Serialize(request)
             };
             SqlResponse response = await client.ExecuteAsync(_request);
+
             SqlRemoteResult result = Json.Deserialize<SqlRemoteResult>(response.Result);
             return result;
         }
@@ -66,6 +68,22 @@ namespace SqlGrpcClient
                 return option.Address;
             else
                 return $"{option.Address} :: {ProviderName}";
+        }
+
+        public static SqlRemoteClient CreateRemoteClient(string address, DbAgentStyle style, string providerName)
+        {
+            SqlApiOption option = new SqlApiOption
+            {
+                Address = address,
+            };
+            
+            var dbClient = new SqlRemoteClient(new GrpcRemoteBroker(option)
+            {
+                ProviderName = providerName,
+                Style = style,
+            });
+            
+            return dbClient;
         }
     }
 }

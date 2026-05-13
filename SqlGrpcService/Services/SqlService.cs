@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Grpc.Core;
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
@@ -23,6 +24,11 @@ namespace SqlGrpcService.Services
             Console.WriteLine($"{DateTime.Now} [Req] {request.RequestId} {request.Body}");
             var sqlRequest = Json.Deserialize<SqlRemoteRequest>(request.Body);
 
+            foreach (var parameter in sqlRequest.Parameters)
+            {
+                parameter.Value = Correct(parameter.Value);
+            }
+
             SqlRemoteResult sqlResult = Execute(sqlRequest);
             string json = Json.Serialize(sqlResult);
 
@@ -33,6 +39,27 @@ namespace SqlGrpcService.Services
                 RequestId = request.RequestId,
                 Result = json
             });
+        }
+
+        public static object? Correct(object? value)
+        {
+            if (value is JsonElement element)
+            {
+                if (element.ValueKind == JsonValueKind.String)
+                {
+                    return element.GetString();
+                }
+                else if (element.ValueKind == JsonValueKind.Number)
+                {
+                    return element.GetDouble();
+                }
+                else if (element.ValueKind == JsonValueKind.True || element.ValueKind == JsonValueKind.False)
+                {
+                    return element.GetBoolean();
+                }
+            }
+
+            return value;
         }
 
         private SqlRemoteResult Execute(SqlRemoteRequest request)
