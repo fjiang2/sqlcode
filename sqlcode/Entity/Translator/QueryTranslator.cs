@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Sys.Data.Entity
 {
-    class QueryTranslator : ExpressionVisitor
+    public class QueryTranslator : ExpressionVisitor
     {
         private readonly StringBuilder builder;
         private readonly DbAgentStyle style;
