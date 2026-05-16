@@ -24,11 +24,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.15" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="docs\README.md"  Pack="true" PackagePath="\" />
+	<None Include="docs\README.md" Pack="true" PackagePath="\" />
     <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
   </ItemGroup>
 </Project>
