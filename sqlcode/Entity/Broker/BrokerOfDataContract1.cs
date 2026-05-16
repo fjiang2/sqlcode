@@ -15,14 +15,12 @@ namespace Sys.Data.Entity
         private readonly Type type;
         private readonly Type extension;
         private readonly MethodInfo functionToDictionary;
-        public ITableSchema Schema { get; }
 
         public BrokerOfDataContract1()
         {
             this.type = typeof(TEntity);
             this.extension = GetType(type, type.FullName + EXTENSION);
 
-            this.Schema = extension.GetTableSchemaFromType();
             this.functionToDictionary = extension.GetMethod(nameof(ToDictionary), BindingFlags.Public | BindingFlags.Static);
         }
 

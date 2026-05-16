@@ -12,12 +12,10 @@ namespace Sys.Data.Entity
     class BrokerOfDataContract2<TEntity> : IDataContractBroker<TEntity>
     {
         private readonly Type type;
-        public ITableSchema Schema { get; }
 
         public BrokerOfDataContract2()
         {
             this.type = typeof(TEntity);
-            this.Schema = type.GetTableSchemaFromType();
         }
 
         public ITableSchema GetSchema(Type type)

@@ -1,0 +1,101 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Reflection;
+using System.Data;
+
+namespace Sys.Data.Entity
+{
+    /// <summary>
+    /// Default broker of data contract
+    /// Table name is the same as class name, and primary key is the first property of the class.
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    public class DataContractBroker<TEntity> : IDataContractBroker<TEntity>
+    {
+        private readonly Type type;
+        
+        public List<string> NotMappedColumns { get; set; } = new List<string>();
+
+        public DataContractBroker()
+        {
+            this.type = typeof(TEntity);
+        }
+
+        public virtual ITableSchema GetSchema(Type type)
+        {
+            List<string> keys = new List<string>();
+
+            string column = type.GetProperties().FirstOrDefault()?.Name;
+            if (column != null)
+                keys.Add(column);
+
+            return new TableSchema
+            {
+                TableName = type.Name,
+                PrimaryKeys = keys.ToArray(),
+            };
+        }
+
+
+        public virtual IDictionary<string, object> ToDictionary(TEntity entity)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>();
+
+            PropertyInfo[] properties = type.GetProperties();
+            foreach (PropertyInfo propertyInfo in properties)
+            {
+                string columnName = propertyInfo.Name;
+                if (NotMappedColumns.Contains(columnName))
+                {
+                    continue;
+                }
+
+                object value = propertyInfo.GetValue(entity) ?? DBNull.Value;
+                dict.Add(columnName, value);
+            }
+
+            return dict;
+        }
+
+
+        public virtual List<TEntity> ToList(DataTable dt)
+        {
+            PropertyInfo[] properties = type.GetProperties();
+
+            List<TEntity> list = new List<TEntity>();
+            foreach (DataRow row in dt.Rows)
+            {
+                TEntity entity = (TEntity)Activator.CreateInstance(type);
+                foreach (PropertyInfo propertyInfo in properties)
+                {
+                    string columnName = propertyInfo.Name;
+                    if (NotMappedColumns.Contains(columnName))
+                    {
+                        continue;
+                    }
+
+                    if (dt.Columns.Contains(columnName))
+                    {
+                        object value = row[columnName];
+                        if (value == DBNull.Value)
+                        {
+                            value = null;
+                        }
+
+                        propertyInfo.SetValue(entity, value);
+                    }
+                    else
+                    {
+                        throw new Exception($"Column={columnName} in entity={type.Name} not found in DataTable: {dt.TableName}.");
+                    }
+                }
+            }
+
+            return list;
+        }
+
+    }
+}

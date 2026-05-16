@@ -97,7 +97,21 @@ namespace Sys.Data.Entity
             if (tables.ContainsKey(key))
                 return (Table<TEntity>)tables[key];
 
-            var obj = new Table<TEntity>(this);
+            IDataContractBroker<TEntity> broker = BrokerOfDataContract.CreateBroker<TEntity>(DbContext.EntityClassType);
+            
+            var obj = new Table<TEntity>(this, broker);
+            tables.Add(key, obj);
+            return obj;
+        }
+
+        public Table<TEntity> GetTable<TEntity>(IDataContractBroker<TEntity> broker)
+            where TEntity : class
+        {
+            Type key = typeof(TEntity);
+            if (tables.ContainsKey(key))
+                return (Table<TEntity>)tables[key];
+
+            var obj = new Table<TEntity>(this, broker);
             tables.Add(key, obj);
             return obj;
         }
