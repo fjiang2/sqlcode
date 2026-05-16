@@ -90,28 +90,20 @@ namespace Sys.Data.Entity
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public Table<TEntity> GetTable<TEntity>()
+        public virtual Table<TEntity> GetTable<TEntity>()
             where TEntity : class
         {
-            Type key = typeof(TEntity);
-            if (tables.ContainsKey(key))
-                return (Table<TEntity>)tables[key];
-
-            IDataContractBroker<TEntity> broker = BrokerOfDataContract.CreateBroker<TEntity>(DbContext.EntityClassType);
-            
-            var obj = new Table<TEntity>(this, broker);
-            tables.Add(key, obj);
-            return obj;
+            return GetTable(t => BrokerOfDataContract.CreateBroker<TEntity>(EntityClassType));   
         }
 
-        public Table<TEntity> GetTable<TEntity>(IDataContractBroker<TEntity> broker)
+        public Table<TEntity> GetTable<TEntity>(Func<EntityClassType, IDataContractBroker<TEntity>> createBroker)
             where TEntity : class
         {
             Type key = typeof(TEntity);
             if (tables.ContainsKey(key))
                 return (Table<TEntity>)tables[key];
 
-            var obj = new Table<TEntity>(this, broker);
+            var obj = new Table<TEntity>(this, createBroker(EntityClassType));
             tables.Add(key, obj);
             return obj;
         }

@@ -6,7 +6,7 @@ namespace SqlGrpcClient
 {
     public class GrpcRemoteBroker : SqlRemoteBroker
     {
-        private static readonly string? token;
+        public static string? Token { get; set; }
 
         private readonly SqlApi.SqlApiClient client;
 
@@ -28,9 +28,9 @@ namespace SqlGrpcClient
         {
             var credentials = CallCredentials.FromInterceptor((context, metadata) =>
             {
-                if (!string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(Token))
                 {
-                    metadata.Add("Authorization", $"Bearer {token}");
+                    metadata.Add("Authorization", $"Bearer {Token}");
                 }
                 return Task.CompletedTask;
             });
