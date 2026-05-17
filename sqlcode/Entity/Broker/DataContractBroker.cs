@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Data;
+using Sys.Data.Attributes;
 
 namespace Sys.Data.Entity
 {
@@ -15,6 +16,7 @@ namespace Sys.Data.Entity
     /// <typeparam name="TEntity"></typeparam>
     public class DataContractBroker<TEntity> : IDataContractBroker<TEntity>
     {
+        const string dbo = "dbo";
         private readonly Type type;
 
         public List<string> NotMappedColumns { get; set; } = new List<string>();
@@ -26,32 +28,74 @@ namespace Sys.Data.Entity
 
         public virtual ITableSchema GetSchema(Type type)
         {
-            var attr = Attribute.GetCustomAttribute(type, typeof(TableSchemaAttribute)) as TableSchemaAttribute;
-            if (attr != null)
+            string tableName = type.Name;
+            string schemaName = dbo;
+            var attrTable = Attribute.GetCustomAttribute(type, typeof(TableAttribute)) as TableAttribute;
+            if (attrTable != null)
             {
-                return new TableSchema
-                {
-                    TableName = attr.TableName,
-                    SchemaName = attr.SchemaName,
-                    PrimaryKeys = attr.PrimaryKeys,  
-                    IdentityKeys = attr.IdentityKeys,
-                };
+                tableName = attrTable.Name;
+                schemaName = attrTable.SchemaName ?? dbo;
+            }
+
+            string[] primaryKeys;
+            var attrPrimaryKeys = Attribute.GetCustomAttribute(type, typeof(PrimaryKeysAttribute)) as PrimaryKeysAttribute;
+            if (attrPrimaryKeys != null)
+            {
+                primaryKeys = attrPrimaryKeys.Columns;
             }
             else
             {
-
                 List<string> keys = new List<string>();
 
                 string column = type.GetProperties().FirstOrDefault()?.Name;
                 if (column != null)
                     keys.Add(column);
 
-                return new TableSchema
-                {
-                    TableName = type.Name,
-                    PrimaryKeys = keys.ToArray(),
-                };
+                primaryKeys = keys.ToArray();
             }
+
+            string[] identityKeys;
+            var attrIdentityKeys = Attribute.GetCustomAttribute(type, typeof(IdentityKeysAttribute)) as IdentityKeysAttribute;
+            if (attrIdentityKeys != null)
+            {
+                identityKeys = attrIdentityKeys.Columns;
+            }
+            else
+            {
+                identityKeys = new string[] { };
+            }
+
+
+            var attrNotMappedColumns = Attribute.GetCustomAttribute(type, typeof(NotMappedColumnsAttribute)) as NotMappedColumnsAttribute;
+            if (attrNotMappedColumns != null)
+            {
+                NotMappedColumns.AddRange(attrNotMappedColumns.Columns);
+            }
+
+            return new TableSchema
+            {
+                TableName = tableName,
+                SchemaName = schemaName,
+                PrimaryKeys = primaryKeys,
+                IdentityKeys = identityKeys,
+            };
+        }
+
+
+        private string[] GetColumns<T>() where T : Attribute, IColumnsAttribute
+        {
+            string[] keys;
+            var attr = Attribute.GetCustomAttribute(type, typeof(T)) as T;
+            if (attr != null)
+            {
+                keys = attr.Columns;
+            }
+            else
+            {
+                keys = new string[] { };
+            }
+
+            return keys;
         }
 
 
