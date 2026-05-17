@@ -24,7 +24,7 @@ namespace Sys.Data.SqlRemote
             this.requestUri = requestUri;
         }
 
-        public string ProviderName { get; set; } = string.Empty;
+        public string ServerName { get; set; } = string.Empty;
         public DbAgentStyle Style { get; set; } = DbAgentOption.DefaultStyle;
 
         public async Task<SqlRemoteResult> RequestAsync(SqlRemoteRequest request)
@@ -58,10 +58,10 @@ namespace Sys.Data.SqlRemote
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(ProviderName))
+            if (string.IsNullOrEmpty(ServerName))
                 return requestUri;
             else
-                return $"{requestUri} :: {ProviderName}";
+                return $"{requestUri} :: {ServerName}";
         }
     }
 }

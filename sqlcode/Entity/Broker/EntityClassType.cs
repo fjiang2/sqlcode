@@ -6,6 +6,11 @@
 	public enum EntityClassType
     {
         /// <summary>
+        /// Describe table schema information in POCO (Plain Old CLR Object) entity class
+        /// </summary>
+        PocoClass,
+
+        /// <summary>
         /// Use extension class to describe table schema information
         /// </summary>
         ExtensionClass,
@@ -13,6 +18,6 @@
         /// <summary>
         /// Describe table schema information in a single class
         /// </summary>
-        SingleClass
+        SingleClass,
     }
 }

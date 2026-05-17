@@ -1,15 +1,9 @@
-﻿#define USE_Query_Class
-using System;
+﻿using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
-#if NET10_0
-using Microsoft.Data.SqlClient;
-#else
-using System.Data.SqlClient;
-#endif
 
 using Sys.Data.Entity;
 using Northwind.Entity.dc1;
@@ -26,19 +20,12 @@ namespace UnitTestProject.SqlDb
 	{
 		private readonly static string connectionString = Setting.ConnectionString;
 		private readonly SqlDbClient dbClient;
-#if !USE_Query_Class
-		private readonly DataQuery Query;
-#endif
+		private readonly IDbQuery Query;
 		public UnitTest_SqlServer_Entity1()
 		{
 			DbContext.EntityClassType = EntityClassType.ExtensionClass;
 			this.dbClient = new SqlDbClient(connectionString);
-
-#if USE_Query_Class
-            dbClient.SetDefaultAgent();
-#else
-			Query = sqlDb.Query;
-#endif
+			Query = dbClient.Query;
         }
 
 

@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "SqlGrpcClient";
+
+package sqlremote;
+
+service SqlApi {
+  rpc Execute (SqlRequest) returns (SqlResponse);
+}
+
+message SqlRequest {
+  string requestId = 1;
+  string body = 2;
+  string description = 3;
+}
+
+message SqlResponse {
+  string requestId = 1;
+  string result = 2;
+}

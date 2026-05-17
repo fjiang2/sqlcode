@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
         <RootNamespace>Sys.Data.SqlCe</RootNamespace>
-        <Version>1.1.1</Version>
+        <Version>1.2.0</Version>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
         <PackageId>sqlcode.sqlce</PackageId>
@@ -11,7 +11,7 @@
         <Authors>Datconn</Authors>
         <Description>SqlCe for SQL compact edition library</Description>
         <Company>Datconn</Company>
-        <Copyright>Copyright 2021-2025</Copyright>
+        <Copyright>Copyright 2021-2026</Copyright>
         <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>

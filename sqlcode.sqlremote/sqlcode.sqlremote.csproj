@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>Sys.Data.SqlRemote</RootNamespace>
-        <Version>1.1.1</Version>
+        <Version>1.2.0</Version>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
         <PackageId>sqlcode.sqlremote</PackageId>
@@ -11,7 +11,7 @@
         <Authors>Datconn</Authors>
         <Description>SqlRemote for remote database server library</Description>
         <Company>Datconn</Company>
-        <Copyright>Copyright 2021-2025</Copyright>
+        <Copyright>Copyright 2021-2026</Copyright>
         <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>
@@ -25,7 +25,7 @@
         </PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="System.Text.Json" Version="10.0.6" />
+        <PackageReference Include="System.Text.Json" Version="10.0.8" />
     </ItemGroup>
     <ItemGroup>
         <None Include="docs\README.md" Pack="true" PackagePath="\" />

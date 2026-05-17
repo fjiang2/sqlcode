@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net48</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <Version>1.1.0</Version>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.2.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.2.3" />
+    <PackageReference Include="coverlet.collector" Version="10.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <ProjectReference Include="..\sqlcode.sqlce\sqlcode.sqlce.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Northwind\Northwind.csproj" />
+    <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
+    <ProjectReference Include="..\sqlcode.sqlclient\sqlcode.sqlclient.csproj" />
+    <ProjectReference Include="..\sqlcode.sqlite\sqlcode.sqlite.csproj" />
+    <ProjectReference Include="..\sqlcode.sqlremote\sqlcode.sqlremote.csproj" />
+  </ItemGroup>
+</Project>

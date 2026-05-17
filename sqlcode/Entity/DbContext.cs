@@ -36,7 +36,7 @@ namespace Sys.Data.Entity
         /// <summary>
         /// DataContext using extension class (dc1) or single class (dc2)
         /// </summary>
-        public static EntityClassType EntityClassType { get; set; } = EntityClassType.SingleClass;
+        public static EntityClassType EntityClassType { get; set; } = EntityClassType.PocoClass;
 
         /// <summary>
         /// 
@@ -90,14 +90,20 @@ namespace Sys.Data.Entity
         /// </summary>
         /// <typeparam name="TEntity"></typeparam>
         /// <returns></returns>
-        public Table<TEntity> GetTable<TEntity>()
+        public virtual Table<TEntity> GetTable<TEntity>()
+            where TEntity : class
+        {
+            return GetTable(t => BrokerOfDataContract.CreateBroker<TEntity>(EntityClassType));   
+        }
+
+        public Table<TEntity> GetTable<TEntity>(Func<EntityClassType, IDataContractBroker<TEntity>> createBroker)
             where TEntity : class
         {
             Type key = typeof(TEntity);
             if (tables.ContainsKey(key))
                 return (Table<TEntity>)tables[key];
 
-            var obj = new Table<TEntity>(this);
+            var obj = new Table<TEntity>(this, createBroker(EntityClassType));
             tables.Add(key, obj);
             return obj;
         }

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>Sys.Data</RootNamespace>
-        <Version>1.1.1</Version>
+        <Version>1.2.0</Version>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
         <PackageId>sqlcode</PackageId>
@@ -11,23 +11,26 @@
         <Authors>Datconn</Authors>
         <Description>SqlCode library</Description>
         <Company>Datconn</Company>
-        <Copyright>Copyright 2021-2025</Copyright>
+        <Copyright>Copyright 2021-2026</Copyright>
         <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>
-            9/18/2025 v1.1.0
-            Improvements/Enhancements:
-            1. Support .NET8
-            2.
-            Bug Fixes:
-            1.
-            2.
-        </PackageReleaseNotes>
+			5/15/2026 v1.12.0
+			Improvements/Enhancements:
+			1. Support .NET10
+			9/18/2025 v1.1.0
+			Improvements/Enhancements:
+			1. Support .NET8
+			2.
+			Bug Fixes:
+			1.
+			2.
+		</PackageReleaseNotes>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DocumentationFile></DocumentationFile>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="docs\README.md"  Pack="true" PackagePath="\" />
+        <None Include="docs\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
