@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Data;
-#if NET10_0
 using Microsoft.Data.SqlClient;
-#else
-using System.Data.SqlClient;
-#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sys.Data;
 using Sys.Data.Text;

@@ -26,10 +26,6 @@ namespace Sys.Data.SQLite
         public IDbAgent Agent => new SQLiteAgent(connection);
         public IDbContext Context => new DbContext(Agent);
         public IDbQuery Query => new DbQuery(Agent);
-
-        public void SetDefaultAgent()
-        {
-            Entity.Query.SetDefaultAgent(Agent);
-        }
+       
     }
 }
