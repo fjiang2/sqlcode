@@ -16,7 +16,7 @@ namespace Sys.Data.Entity
     public class DataContractBroker<TEntity> : IDataContractBroker<TEntity>
     {
         private readonly Type type;
-        
+
         public List<string> NotMappedColumns { get; set; } = new List<string>();
 
         public DataContractBroker()
@@ -26,17 +26,32 @@ namespace Sys.Data.Entity
 
         public virtual ITableSchema GetSchema(Type type)
         {
-            List<string> keys = new List<string>();
-
-            string column = type.GetProperties().FirstOrDefault()?.Name;
-            if (column != null)
-                keys.Add(column);
-
-            return new TableSchema
+            var attr = Attribute.GetCustomAttribute(type, typeof(TableSchemaAttribute)) as TableSchemaAttribute;
+            if (attr != null)
             {
-                TableName = type.Name,
-                PrimaryKeys = keys.ToArray(),
-            };
+                return new TableSchema
+                {
+                    TableName = attr.TableName,
+                    SchemaName = attr.SchemaName,
+                    PrimaryKeys = attr.PrimaryKeys,  
+                    IdentityKeys = attr.IdentityKeys,
+                };
+            }
+            else
+            {
+
+                List<string> keys = new List<string>();
+
+                string column = type.GetProperties().FirstOrDefault()?.Name;
+                if (column != null)
+                    keys.Add(column);
+
+                return new TableSchema
+                {
+                    TableName = type.Name,
+                    PrimaryKeys = keys.ToArray(),
+                };
+            }
         }
 
 

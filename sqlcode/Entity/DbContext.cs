@@ -36,7 +36,7 @@ namespace Sys.Data.Entity
         /// <summary>
         /// DataContext using extension class (dc1) or single class (dc2)
         /// </summary>
-        public static EntityClassType EntityClassType { get; set; } = EntityClassType.SingleClass;
+        public static EntityClassType EntityClassType { get; set; } = EntityClassType.PocoClass;
 
         /// <summary>
         /// 

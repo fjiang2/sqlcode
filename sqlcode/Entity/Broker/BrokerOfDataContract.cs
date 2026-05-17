@@ -14,9 +14,13 @@ namespace Sys.Data.Entity
 
                 case EntityClassType.SingleClass:
                     return new BrokerOfDataContract2<TEntity>();
-            }
 
-            return new DataContractBroker<TEntity>();
+                case EntityClassType.PocoClass:
+                    return new DataContractBroker<TEntity>();
+
+                default:
+                    throw new NotImplementedException($"Entity class type '{classType}' is not implemented.");
+            }
         }
     }
 }

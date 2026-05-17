@@ -12,7 +12,7 @@ namespace Sys.Data.EfCore
         public EfContext(IDbAgent agent)
             : base(agent)
         {
-            EntityClassType = EntityClassType.EntityClass;
+            EntityClassType = EntityClassType.PocoClass;
         }
 
         public override Table<TEntity> GetTable<TEntity>()
