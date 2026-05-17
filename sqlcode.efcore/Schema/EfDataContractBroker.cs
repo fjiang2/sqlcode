@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection;
+
 using Microsoft.EntityFrameworkCore;
+using Sys.Data;
 using Sys.Data.Entity;
 
-namespace Sys.Data.EfCore
+namespace Sys.Data.EfCore.Schema
 {
     public class EfDataContractBroker<TEntity> : DataContractBroker<TEntity>
     {

@@ -1,6 +1,6 @@
 ﻿using Sys.Data.Entity;
 
-namespace Sys.Data.EfCore
+namespace Sys.Data.EfCore.Schema
 {
     class TableSchema : ITableSchema
     {
