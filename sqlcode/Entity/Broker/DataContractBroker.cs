@@ -27,10 +27,16 @@ namespace Sys.Data.Entity
 
         public virtual ITableSchema GetSchema(Type type)
         {
+            // Check if the schema is already registered in EntitySchema
+            var schema = EntitySchema.GetSchema(type);
+            if (schema != null)
+            {
+                return schema;
+            }
+
             string tableName = type.Name;
             string schemaName = null;
-            var attrTable = Attribute.GetCustomAttribute(type, typeof(TableAttribute)) as TableAttribute;
-            if (attrTable != null)
+            if (Attribute.GetCustomAttribute(type, typeof(TableAttribute)) is TableAttribute attrTable)
             {
                 tableName = attrTable.Name;
                 schemaName = attrTable.SchemaName;
@@ -71,8 +77,7 @@ namespace Sys.Data.Entity
         private string[] GetColumns<T>() where T : Attribute, IColumnsAttribute
         {
             string[] columns;
-            var attr = Attribute.GetCustomAttribute(type, typeof(T)) as T;
-            if (attr != null)
+            if (Attribute.GetCustomAttribute(type, typeof(T)) is T attr)
             {
                 columns = attr.Columns;
             }
