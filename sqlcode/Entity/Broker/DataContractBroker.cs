@@ -16,7 +16,6 @@ namespace Sys.Data.Entity
     /// <typeparam name="TEntity"></typeparam>
     public class DataContractBroker<TEntity> : IDataContractBroker<TEntity>
     {
-        const string dbo = "dbo";
         private readonly Type type;
 
         public List<string> NotMappedColumns { get; set; } = new List<string>();
@@ -29,21 +28,18 @@ namespace Sys.Data.Entity
         public virtual ITableSchema GetSchema(Type type)
         {
             string tableName = type.Name;
-            string schemaName = dbo;
+            string schemaName = null;
             var attrTable = Attribute.GetCustomAttribute(type, typeof(TableAttribute)) as TableAttribute;
             if (attrTable != null)
             {
                 tableName = attrTable.Name;
-                schemaName = attrTable.SchemaName ?? dbo;
+                schemaName = attrTable.SchemaName;
             }
 
-            string[] primaryKeys;
-            var attrPrimaryKeys = Attribute.GetCustomAttribute(type, typeof(PrimaryKeysAttribute)) as PrimaryKeysAttribute;
-            if (attrPrimaryKeys != null)
-            {
-                primaryKeys = attrPrimaryKeys.Columns;
-            }
-            else
+            string[] primaryKeys = GetColumns<PrimaryKeyAttribute>();
+
+            // If primary keys are not defined, use the first property as the primary key by default
+            if (primaryKeys.Length == 0)
             {
                 List<string> keys = new List<string>();
 
@@ -54,22 +50,12 @@ namespace Sys.Data.Entity
                 primaryKeys = keys.ToArray();
             }
 
-            string[] identityKeys;
-            var attrIdentityKeys = Attribute.GetCustomAttribute(type, typeof(IdentityKeysAttribute)) as IdentityKeysAttribute;
-            if (attrIdentityKeys != null)
-            {
-                identityKeys = attrIdentityKeys.Columns;
-            }
-            else
-            {
-                identityKeys = new string[] { };
-            }
+            string[] identityKeys = GetColumns<IdentityKeyAttribute>();
 
-
-            var attrNotMappedColumns = Attribute.GetCustomAttribute(type, typeof(NotMappedColumnsAttribute)) as NotMappedColumnsAttribute;
-            if (attrNotMappedColumns != null)
+            var notMappedColumns = GetColumns<NotMappedColumnAttribute>();
+            if (notMappedColumns.Length > 0)
             {
-                NotMappedColumns.AddRange(attrNotMappedColumns.Columns);
+                NotMappedColumns.AddRange(notMappedColumns);
             }
 
             return new TableSchema
@@ -84,18 +70,18 @@ namespace Sys.Data.Entity
 
         private string[] GetColumns<T>() where T : Attribute, IColumnsAttribute
         {
-            string[] keys;
+            string[] columns;
             var attr = Attribute.GetCustomAttribute(type, typeof(T)) as T;
             if (attr != null)
             {
-                keys = attr.Columns;
+                columns = attr.Columns;
             }
             else
             {
-                keys = new string[] { };
+                columns = new string[] { };
             }
 
-            return keys;
+            return columns;
         }
 
 
