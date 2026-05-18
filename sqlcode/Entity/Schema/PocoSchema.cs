@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sys.Data.Entity
 {
-    public class EntitySchema
+    public class PocoSchema
     {
         private static readonly IDictionary<Type, ITableSchema> schemas = new Dictionary<Type, ITableSchema>();
 

@@ -14,13 +14,13 @@ namespace Sys.Data.Entity
     /// Table name is the same as class name, and primary key is the first property of the class.
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public class DataContractBroker<TEntity> : IDataContractBroker<TEntity>
+    public class PocoDataContractBroker<TEntity> : IDataContractBroker<TEntity>
     {
         private readonly Type type;
 
         public List<string> NotMappedColumns { get; set; } = new List<string>();
 
-        public DataContractBroker()
+        public PocoDataContractBroker()
         {
             this.type = typeof(TEntity);
         }
@@ -28,7 +28,7 @@ namespace Sys.Data.Entity
         public virtual ITableSchema GetSchema(Type type)
         {
             // Check if the schema is already registered in EntitySchema
-            var schema = EntitySchema.GetSchema(type);
+            var schema = PocoSchema.GetSchema(type);
             if (schema != null)
             {
                 return schema;
