@@ -16,7 +16,7 @@ namespace Sys.Data.Entity
                     return new BrokerOfDataContract2<TEntity>();
 
                 case EntityClassType.PocoClass:
-                    return new DataContractBroker<TEntity>();
+                    return new PocoDataContractBroker<TEntity>();
 
                 default:
                     throw new NotImplementedException($"Entity class type '{classType}' is not implemented.");

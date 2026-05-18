@@ -7,7 +7,7 @@ using Sys.Data.Entity;
 
 namespace Sys.Data.EfCore.Schema
 {
-    public class EfDataContractBroker<TEntity> : DataContractBroker<TEntity>
+    public class EfDataContractBroker<TEntity> : PocoDataContractBroker<TEntity>
     {
         public EfDataContractBroker()
         {
