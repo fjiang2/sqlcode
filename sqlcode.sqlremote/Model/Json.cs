@@ -2,40 +2,80 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Sys.Data.SqlRemote
 {
     public static class Json
     {
+        private static JsonSerializerOptions Options
+        {
+            get
+            {
+                var option = new JsonSerializerOptions
+                {
+                    WriteIndented = false,
+                    AllowTrailingCommas = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                    //IgnoreReadOnlyProperties = true,
+                    //ReadCommentHandling = JsonCommentHandling.Allow,
+
+                };
+
+                option.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                return option;
+            }
+        }
+
+        public static string Serialize(object value, bool indented = false)
+        {
+            var options = Options;
+            options.WriteIndented = indented;
+            return JsonSerializer.Serialize(value, options);
+        }
+
+
         public static T Deserialize<T>(string json)
         {
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new StringEnumConverter());
-
-            return JsonConvert.DeserializeObject<T>(json, settings);
+            var obj = JsonSerializer.Deserialize<T>(json, Options);
+            return obj;
         }
 
-        public static T Deserialize<T>(string json, T definition)
+        internal static object Correct(object value)
         {
-            return JsonConvert.DeserializeAnonymousType(json, definition);
-        }
-
-
-        public static string Serialize(object obj, bool indented = false)
-        {
-            var settings = new JsonSerializerSettings
+            if (value is JsonElement element)
             {
-                Formatting = indented ? Formatting.Indented : Formatting.None,
-            };
+                if (element.ValueKind == JsonValueKind.String)
+                {
+                    return element.GetString();
+                }
+                else if (element.ValueKind == JsonValueKind.Number)
+                {
+                    return element.GetDouble();
+                }
+                else if (element.ValueKind == JsonValueKind.True || element.ValueKind == JsonValueKind.False)
+                {
+                    return element.GetBoolean();
+                }
+            }
 
-            settings.Converters.Add(new StringEnumConverter());
-            return JsonConvert.SerializeObject(obj, settings);
+            return value;
         }
 
+        public static SqlRemoteRequest ToSqlRemoteRequest(this string json)
+        {
+            var sqlRequest = Json.Deserialize<SqlRemoteRequest>(json);
+            foreach (var parameter in sqlRequest.Parameters)
+            {
+                parameter.Value = Correct(parameter.Value);
+            }
+
+            return sqlRequest;
+        }
     }
 }
 

@@ -4,12 +4,6 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using System.Linq;
-#if NET8_0
-using Microsoft.Data.SqlClient;
-#else
-using System.Data.SqlClient;
-#endif
-
 
 using Northwind.Entity.dc2;
 using Sys.Data.SqlClient;

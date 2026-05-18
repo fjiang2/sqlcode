@@ -2,34 +2,34 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Sys.Data.SqlRemote
 {
 
-    [DataContract]
     public class SqlRemoteRequest
     {
-        [DataMember(Name = "dbx", EmitDefaultValue = false)]
+        [JsonPropertyName("dbx")]
         public DbProvider Provider { get; set; }
 
-        [DataMember(Name = "sql", EmitDefaultValue = false)]
+        [JsonPropertyName("sql")]
         public string CommandText { get; set; }
 
-        [DataMember(Name = "type", EmitDefaultValue = false)]
+        [JsonPropertyName("type")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public CommandType CommandType { get; set; }
 
-        [DataMember(Name = "args", EmitDefaultValue = false)]
+        [JsonPropertyName("args")]
         public IList<SqlRemoteParameter> Parameters { get; set; }
 
-        [DataMember(Name = "func", EmitDefaultValue = false)]
+        [JsonPropertyName("func")]
         public string Function { get; set; }
 
-        [DataMember(Name = "start", EmitDefaultValue = false)]
+        [JsonPropertyName("start")]
         public int StartRecord { get; set; }
 
-        [DataMember(Name = "maxRows", EmitDefaultValue = false)]
+        [JsonPropertyName("maxRows")]
         public int MaxRecords { get; set; }
 
         public SqlRemoteRequest()
@@ -50,9 +50,12 @@ namespace Sys.Data.SqlRemote
             StringBuilder builder = new StringBuilder();
 
             builder.Append($"{Provider}:: {Function}(\"{CommandText}\"");
+
             string args = string.Join(",", Parameters.Select(x => $"@{x}"));
-            if(!string.IsNullOrEmpty(args))
+            if (!string.IsNullOrEmpty(args))
+            {
                 builder.Append($", {args}");
+            }
             builder.Append($")");
 
             return builder.ToString();

@@ -1,31 +1,31 @@
-﻿using Sys.Data.SqlRemote;
+﻿using System.Text.Json;
+using SqlProxy.Service.Settings;
 using Sys.Data.SqlClient;
 using Sys.Data.SQLite;
-using SqlProxy.Service.Settings;
+using Sys.Data.SqlRemote;
 
 namespace SqlProxy.Service.Services
 {
-    class SqlRemoteProxy
+    class SqlProxyService
     {
         private readonly List<DbServerInfo> dbServers;
 
-        public SqlRemoteProxy(List<DbServerInfo> dbServers)
+        public SqlProxyService(ServerOption option)
         {
-            this.dbServers = dbServers;
+            this.dbServers = option.DbServers;
         }
 
         private static string Now => DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
 
         public string Execute(string json)
         {
-            var request = Json.Deserialize<SqlRemoteRequest>(json);
-            Console.WriteLine($"{Now} [Tx] {request}");
+            SqlRemoteRequest sqlRequest = Json.ToSqlRemoteRequest(json);
+            Console.WriteLine($"{Now} [Req] {sqlRequest}");
 
-            SqlRemoteResult result = Execute(request);
+            SqlRemoteResult sqlResult = Execute(sqlRequest);
+            Console.WriteLine($"{Now} [Ret] {sqlResult}");
 
-            json = Json.Serialize(result);
-            Console.WriteLine($"{Now} [Rx] {result}");
-
+            json = Json.Serialize(sqlResult);
             return json;
         }
 
@@ -33,7 +33,10 @@ namespace SqlProxy.Service.Services
         {
             IDbAgent? agent = CreateDbAgent(request.Provider);
             if (agent == null)
-                return new SqlRemoteResult { Error = $"Cannot find provider or name: {request.Provider}" };
+                return new SqlRemoteResult 
+                { 
+                    Error = $"Cannot find provider or name: {request.Provider}" 
+                };
 
             SqlRemoteHandler handler = new SqlRemoteHandler(agent);
             return handler.Execute(request);
@@ -42,8 +45,8 @@ namespace SqlProxy.Service.Services
         private IDbAgent? CreateDbAgent(DbProvider dbProvider)
         {
             DbServerInfo? serverInfo;
-            if (!string.IsNullOrEmpty(dbProvider.Name))
-                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.Name);
+            if (!string.IsNullOrEmpty(dbProvider.ServerName))
+                serverInfo = dbServers.FirstOrDefault(x => x.Name == dbProvider.ServerName);
             else
                 serverInfo = dbServers.FirstOrDefault(x => x.Style == dbProvider.Style);
 

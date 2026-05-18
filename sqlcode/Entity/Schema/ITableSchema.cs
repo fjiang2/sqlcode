@@ -1,6 +1,6 @@
 ﻿namespace Sys.Data.Entity
 {
-    interface ITableSchema
+    public interface ITableSchema
     {
         string SchemaName { get; }
         string TableName { get; }

@@ -18,11 +18,11 @@ namespace Sys.Data.Entity
         public SqlGenerator Generator { get; }
         public DbContext Context { get; }
 
-        internal Table(DbContext context)
+        internal Table(DbContext context, IDataContractBroker<TEntity> broker)
         {
             this.Context = context;
-            this.broker = BrokerOfDataContract<TEntity>.CreateBroker(DbContext.EntityClassType);
-            this.schema = broker.Schema;
+            this.broker = broker;
+            this.schema = broker.GetSchema(typeof(TEntity));
             this.formalName = schema.FormalTableName();
 
             this.Generator = SqlGenerator.Create(formalName, context.Option);

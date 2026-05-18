@@ -1,13 +1,26 @@
-﻿namespace Sys.Data.Entity
+﻿using System;
+
+namespace Sys.Data.Entity
 {
-	class BrokerOfDataContract<TEntity> 
+    class BrokerOfDataContract
     {
-        public static IDataContractBroker<TEntity> CreateBroker(EntityClassType classType)
+
+        public static IDataContractBroker<TEntity> CreateBroker<TEntity>(EntityClassType classType)
         {
-            if (classType == EntityClassType.ExtensionClass)
-                return new BrokerOfDataContract1<TEntity>();
-            else
-                return new BrokerOfDataContract2<TEntity>();
+            switch (classType)
+            {
+                case EntityClassType.ExtensionClass:
+                    return new BrokerOfDataContract1<TEntity>();
+
+                case EntityClassType.SingleClass:
+                    return new BrokerOfDataContract2<TEntity>();
+
+                case EntityClassType.PocoClass:
+                    return new PocoDataContractBroker<TEntity>();
+
+                default:
+                    throw new NotImplementedException($"Entity class type '{classType}' is not implemented.");
+            }
         }
     }
 }

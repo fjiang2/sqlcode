@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <RootNamespace>Sys.Data.EfCore</RootNamespace>
+	  <Version>1.2.0</Version>
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <PackageOutputPath>$(LocalNugetPackages)</PackageOutputPath>
+	  <PackageId>sqlcode.efcore</PackageId>
+	  <Title>SQL code generator</Title>
+	  <Authors>Datconn</Authors>
+	  <Description>SqlCode Entity Framework library</Description>
+	  <Company>Datconn</Company>
+	  <Copyright>Copyright 2021-2026</Copyright>
+	  <PackageProjectUrl>https://github.com/fjiang2/sqlcode</PackageProjectUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageReleaseNotes>
+		  5/15/2026 v1.12.0
+		  Improvements/Enhancements:
+		  1. Support .NET10
+	  </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<None Include="docs\README.md" Pack="true" PackagePath="\" />
+    <ProjectReference Include="..\sqlcode\sqlcode.csproj" />
+  </ItemGroup>
+</Project>

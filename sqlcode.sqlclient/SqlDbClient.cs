@@ -15,7 +15,7 @@ namespace Sys.Data.SqlClient
         {
             connection = connectionString.Trim();
 
-#if NET8_0
+#if NET10_0
             if (!connection.EndsWith(";"))
                 connection += ";";
 
@@ -27,9 +27,5 @@ namespace Sys.Data.SqlClient
         public IDbContext Context => new DbContext(Agent);
         public IDbQuery Query => new DbQuery(Agent);
 
-        public void SetDefaultAgent()
-        {
-            Entity.Query.SetDefaultAgent(Agent);
-        }
     }
 }

@@ -26,7 +26,7 @@ namespace Sys.Data.SqlRemote
 
             DbProvider provider = new DbProvider
             {
-                Name = broker.ProviderName,
+                ServerName = broker.ServerName,
                 Style = broker.Style,
             };
 

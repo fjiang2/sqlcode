@@ -8,7 +8,5 @@ namespace Sys.Data
         IDbAgent Agent { get; }
         IDbContext Context { get; }
         IDbQuery Query { get; }
-
-        void SetDefaultAgent();
     }
 }

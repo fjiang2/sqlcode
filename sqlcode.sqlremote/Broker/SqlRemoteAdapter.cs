@@ -38,10 +38,10 @@ namespace Sys.Data.SqlRemote
         {
             SqlRemoteResult result = Request();
 
-            if (string.IsNullOrEmpty(result.Xml))
+            if (string.IsNullOrEmpty(result.Result))
                 return -1;
 
-            using (var stream = new StringReader(result.Xml))
+            using (var stream = new StringReader(result.Result))
             {
                 dataSet.ReadXml(stream, XmlReadMode.ReadSchema);
             }
@@ -53,10 +53,10 @@ namespace Sys.Data.SqlRemote
         {
             SqlRemoteResult result = Request();
 
-            if (string.IsNullOrEmpty(result.Xml))
+            if (string.IsNullOrEmpty(result.Result))
                 return -1;
 
-            using (var stream = new StringReader(result.Xml))
+            using (var stream = new StringReader(result.Result))
             {
                 dataTable.ReadXml(stream);
             }

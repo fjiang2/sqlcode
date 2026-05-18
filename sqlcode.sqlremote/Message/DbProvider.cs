@@ -5,13 +5,17 @@
         /// <summary>
         /// Database server alias
         /// </summary>
-        public string Name { get; set; }
+        public string ServerName { get; set; }
 
         /// <summary>
         /// Style of database engine 
         /// </summary>
         public DbAgentStyle Style { get; set; }
 
-        public override string ToString() => $"{Name}";
+        public DbProvider() 
+        { 
+        }
+
+        public override string ToString() => ServerName;
     }
 }
